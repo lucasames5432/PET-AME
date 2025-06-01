@@ -1,1 +1,728 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PET-AME UNESPAR</title>
+    <meta name="description" content="Conheça o PET-AME UNESPAR com um novo visual">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            /* Tema Verde Bebê com Cores Diversificadas */
+            --bg-main: #e8f5e9; 
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+
+            --text-primary: #37474f; 
+            --text-secondary: #38703b; /* Verde escuro para borda da logo */
+
+            --accent-primary: #4db6ac; /* Teal Médio */
+            --accent-secondary: #4fc3f7; /* Azul claro vivo */
+            
+            --sombra: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 7px 14px rgba(0, 0, 0, 0.1);
+
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --transicao-suave: all 0.3s ease-in-out;
+            
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --gradiente-secundario: linear-gradient(135deg, var(--accent-primary), #80deea);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body, html {
+            font-family: var(--fonte-principal);
+            line-height: 1.7;
+            color: var(--text-secondary);
+            background-color: var(--bg-main); 
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            cursor: default; 
+        }
+
+        #blob-background { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; 
+            pointer-events: none; 
+        }
+
+        .page-content-wrapper {
+            position: relative;
+            z-index: 1; 
+            width: 100%;
+            background-color: transparent; 
+        }
+        .page-content-wrapper > main {
+            padding-top: 100px; /* Ajustado para nova altura do navbar se necessário */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--fonte-secundaria);
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1.2rem;
+            color: var(--text-primary);
+        }
+        h2.section-title {
+            color: var(--text-primary);
+            font-size: 2.6rem;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            text-align: center;
+            position: relative;
+        }
+        h2.section-title::after {
+            content: ''; display: block; width: 70px; height: 4px;
+            background: var(--gradiente-primario);
+            margin: 15px auto; border-radius: 3px;
+        }
+        h3 {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p { margin-bottom: 1.5rem; font-size: 1rem; text-align: justify;}
+        section p:first-of-type {font-size: 1.05rem;}
+
+        a { text-decoration: none; color: var(--accent-primary); font-weight: 500; transition: var(--transicao-suave); }
+        a:hover { color: var(--accent-secondary); }
+        img { max-width: 100%; height: auto; display: block; border-radius: 8px; }
+
+        .container { width: 90%; max-width: 1080px; margin: 0 auto; }
+
+        .section { padding: 60px 20px; position: relative; }
+        .section:nth-child(even) { background-color: rgba(0,0,0,0.015); }
+        .section .container { padding: 0; }
+
+        .btn { display: inline-block; padding: 10px 25px; border-radius: 25px; font-weight: 600; text-align: center; transition: var(--transicao-suave); border: none; font-size: 0.9rem; box-shadow: var(--sombra); text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
+        .btn-primario { background: var(--accent-primary); color: #fff; }
+        .btn-primario:hover { background: var(--accent-secondary); color: var(--text-primary); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-contorno { background: transparent; border: 2px solid var(--accent-primary); color: var(--accent-primary); }
+        .btn-contorno:hover { background-color: var(--accent-primary); color: #fff; transform: translateY(-2px); }
+
+        .navbar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            z-index: 1000; 
+            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
+            background: var(--bg-navbar); 
+            backdrop-filter: blur(8px); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            padding: 15px 0;
+        }
+        .navbar.scrolled { 
+            padding: 10px 0;
+            background: rgba(212, 237, 218, 0.97); 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
+        }
+        .navbar .container.navbar-container { 
+            padding: 0 20px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 65px; /* Tamanho da logo */
+            height: 65px; /* Tamanho da logo */
+            border-radius: 50%; /* Deixa a logo redonda */
+            border: 3px solid var(--text-secondary); /* Borda verde mais escura */
+            overflow: hidden; /* Garante que a imagem não saia do círculo */
+            background-color: var(--bg-main); /* Cor de fundo caso a imagem seja menor */
+            flex-shrink: 0; /* Impede que as logos encolham */
+            transition: var(--transicao-suave);
+        }
+        .navbar-logo:hover {
+            transform: scale(1.05);
+            box-shadow: var(--sombra);
+        }
+
+        .navbar-logo img {
+            width: 100%; 
+            height: 100%;
+            object-fit: cover; /* 'cover' para preencher, 'contain' para mostrar inteira */
+            border-radius: 50%; /* Garante que a imagem dentro também pareça redonda */
+        }
+        
+        .nav-links-wrapper { 
+            display: flex;
+            align-items: center;
+            /* flex-grow: 1; /* Ocupa o espaço entre as logos no desktop */
+            /* justify-content: center; /* Centraliza os links de navegação */
+        }
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
+        .nav-links li { margin-left: 28px; }
+        .nav-links li:first-child { margin-left: 0; }
+        .nav-links a { color: var(--text-primary); font-weight: 500; position: relative; padding: 6px 0; font-size: 0.88rem; }
+        .nav-links a::before { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background-color: var(--accent-primary); transition: width 0.3s ease; }
+        .nav-links a:hover::before { width: 100%; }
+        .nav-links a:hover { color: var(--accent-primary); }
+        
+        .mobile-menu-button { 
+            display: none; /* Escondido no desktop */
+            background: none; 
+            border: none; 
+            font-size: 1.7rem; 
+            color: var(--text-primary); 
+            cursor: pointer; 
+            margin-left: 20px; /* Espaço após os links, se visíveis juntos */
+        }
+
+        ul { list-style: none; padding-left: 0; margin-bottom: 1.5rem;}
+        li {
+            margin-bottom: 0.7rem;
+            padding-left: 1.4em;
+            position: relative;
+            font-size: 0.95rem;
+        }
+        li::before {
+            content: '\f138'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--accent-primary);
+            position: absolute;
+            left: 0;
+            top: 2.5px;
+            font-size: 0.8em;
+        }
+
+        .divider-pet {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-primary), transparent);
+            margin: 35px auto;
+            width: 50%;
+            opacity: 0.3;
+        }
+
+        .carousel-section-wrapper {
+            background: var(--bg-main);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            margin: 10px auto;
+            overflow: hidden;
+            border-radius: 6px;
+            background-color: var(--bg-main);
+        }
+        .carousel { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel img { width: 100%; flex-shrink: 0; object-fit: contain; max-height: 420px; background-color: transparent; border-radius: 0; }
+        .carousel-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); z-index: 10; }
+        .carousel-nav button {
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid rgba(0,0,0,0.08) !important;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            transition: var(--transicao-suave);
+            margin: 0 8px;
+            opacity: 0.9;
+            cursor: pointer;
+        }
+        .carousel-nav button:hover {
+            background-color: var(--accent-primary) !important;
+            color: #fff !important;
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .carousel-dots { display: flex; justify-content: center; margin-top: 10px; padding-bottom: 6px; flex-wrap: wrap; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(0,0,0,0.15); margin: 4px; transition: var(--transicao-suave); cursor: pointer; }
+        .dot.active { background-color: var(--accent-primary); transform: scale(1.15); }
+
+        #contato p { text-align: center; font-size: 1.05rem; }
+        #contato a { font-weight: 600; }
+        #contato i { color: var(--accent-primary) !important; margin-right: 8px; }
+
+        .footer { background-color: #dceae0; color: var(--text-secondary); padding: 40px 0 20px; text-align: center;}
+        .footer .container { padding: 0 20px; }
+        .footer p { margin-bottom: 0.3rem; font-size: 0.8rem; }
+        .footer a { color: var(--accent-primary); }
+        .footer a:hover { color: var(--accent-secondary); }
+        .footer i {color: var(--accent-primary) !important; }
+
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            width: 0%; z-index: 10002; transition: width 0.05s linear; }
+
+        .hidden { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .revealed { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 992px) {
+            .container { width: 90%; }
+            /* .navbar .container.navbar-container { width: 100%; } */
+
+            h2.section-title { font-size: 2rem; margin-bottom: 2.5rem; }
+            h3 { font-size: 1.3rem; }
+            
+            .navbar .container.navbar-container {
+                justify-content: space-between; /* Espaçar logos e wrapper do menu/botão */
+                flex-wrap: nowrap; /* Para garantir que fiquem na mesma linha */
+            }
+
+            .navbar-logo { 
+                width: 50px; /* Logos menores */
+                height: 50px;
+                border-width: 2px;
+            }
+            .navbar-logo.logo-petame { order: 1; }
+            .navbar-logo.logo-unespar { order: 3; }
+            
+            .nav-links-wrapper { 
+                order: 2;
+                /* width: auto;  /* Não ocupa 100% */
+                flex-grow: 1; /* Ocupa espaço entre logos */
+                justify-content: center; /* Centraliza o botão do menu */
+                margin: 0 10px; /* Espaçamento entre logos e botão/menu */
+            }
+
+            .nav-links { 
+                display: none; /* Links escondidos por padrão */
+                flex-direction: column; 
+                width: 100%; 
+                background: var(--bg-navbar); 
+                padding: 15px 0; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+                align-items: center; 
+                
+                position: absolute; /* Para aparecer abaixo do navbar */
+                top: 100%; /* Logo abaixo do navbar */
+                left: 0;
+                right: 0;
+                z-index: 999;
+                border-top: 1px solid rgba(0,0,0,0.05);
+            }
+            .nav-links.active { 
+                display: flex; 
+            }
+            .nav-links li { 
+                margin-left: 0; 
+                margin-bottom: 8px; 
+                width: 100%; 
+                text-align: center; 
+            }
+            .nav-links li a { 
+                padding: 10px 0; 
+                display: block; 
+                width:100%; 
+            }
+
+            .mobile-menu-button { 
+                display: block; /* Torna o botão visível */
+                margin-left: 0; /* Reset de margem */
+                /* Removido position: absolute e transform para ficar no fluxo */
+            }
+            
+            .page-content-wrapper > main { 
+                padding-top: 90px; /* Altura navbar mobile ~70-85px + margem */
+            }
+
+            .carousel img { max-height: 320px; }
+        }
+        @media (max-width: 768px) {
+            .section { padding: 45px 20px; }
+            h2.section-title { font-size: 1.7rem; }
+            h3 { font-size: 1.15rem; }
+            p { font-size: 0.88rem; text-align: left; }
+            section p:first-of-type { font-size: 0.92rem; }
+            
+            .navbar-logo { 
+                width: 45px; 
+                height: 45px;
+            }
+            .nav-links-wrapper {
+                margin: 0 5px; /* Menor espaçamento */
+            }
+            .mobile-menu-button { 
+                font-size: 1.5rem; 
+            }
+            .carousel img { max-height: 250px; }
+            .carousel-nav button { width: 28px; height: 28px; font-size: 0.9rem; margin: 0 4px; }
+            .dot { width: 6px; height: 6px; }
+            .footer { padding: 30px 0 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="blob-background"></div> 
+    <div id="scroll-progress"></div>
+
+    <div class="page-content-wrapper">
+        <nav class="navbar">
+            <div class="container navbar-container">
+                <a href="https://files.fm/f/amcwa22ukg" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
+                    <img src="https://files.fm/thumb_show.php?i=amcwa22ukg" alt="Logo PET-AME UNESPAR">
+                </a>
+        
+                <div class="nav-links-wrapper"> 
+                    <ul class="nav-links" id="navLinksGlobal">
+                        <li><a href="#quemsomos">Quem Somos</a></li>
+                        <li><a href="#atividades">O Que Fazemos</a></li>
+                        <li><a href="#participar">Como Participar</a></li>
+                        <li><a href="#equipe">Equipe</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                    <button class="mobile-menu-button" id="mobileMenuBtnGlobal">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+        
+                <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
+                    <img src="https://www.unespar.edu.br/images/logo_unespar_compacta.png" alt="Logo UNESPAR">
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="section hero-like" id="quemsomos">
+                <div class="container">
+                    <h2 class="section-title">Quem Somos?</h2>
+                    <p>O PET-AME é o Grupo de Educação Tutorial Interdisciplinar dos cursos de Administração, Matemática e Engenharia de Produção Agroindustrial da UNESPAR – Campus Campo Mourão. Desenvolvemos atividades acadêmicas com foco na excelência e na interdisciplinaridade.</p>
+                    <p>Nossa equipe é formada por 12 estudantes, orientados pelas professoras Gislaine Aparecida Perígaro (tutora) e Solange Regina dos Santos (co-tutora). Nosso objetivo é promover a formação completa dos bolsistas, integrando ensino, pesquisa e extensão com ética, cidadania e consciência social.</p>
+                </div>
+            </section>
+
+            <div class="divider-pet"></div>
+
+            <section class="section" id="atividades">
+                <div class="container">
+                    <h2 class="section-title">O Que Fazemos?</h2>
+                    <p>O PET-AME realiza atividades que enriquecem a formação universitária com foco na prática, integração e impacto social, visando o desenvolvimento acadêmico e pessoal de seus membros.</p>
+
+                    <div>
+                        <h3>Atividades Principais:</h3>
+                        <ul>
+                            <li>Projetos interdisciplinares entre Administração, Matemática e Engenharia de Produção Agroindustrial</li>
+                            <li>Pesquisas aplicadas e inovadoras nas áreas dos cursos</li>
+                            <li>Eventos acadêmicos e culturais que conectam a universidade à comunidade local e regional</li>
+                            <li>Produção e divulgação científica através de publicações e participação em congressos</li>
+                            <li>Organização de seminários, workshops e minicursos para aprimoramento contínuo</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3>Compromissos dos Integrantes:</h3>
+                        <ul>
+                            <li>Dedicação de 20 horas semanais às atividades do grupo</li>
+                            <li>Manutenção de um bom desempenho acadêmico em seus respectivos cursos</li>
+                            <li>Engajamento ativo na produção e divulgação de pesquisas e conhecimentos</li>
+                            <li>Registro e documentação das atividades realizadas para acompanhamento e memória do grupo</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider-pet"></div>
+
+            <section class="section" id="participar">
+                <div class="container">
+                    <h2 class="section-title">Quem Pode Participar?</h2>
+                    <p>O processo seletivo para integrar o PET-AME é aberto a estudantes dos cursos envolvidos, seguindo critérios que valorizam o mérito e o potencial de contribuição para o grupo.</p>
+
+                    <div>
+                        <h3>Requisitos:</h3>
+                        <ul>
+                            <li>Estar regularmente matriculado(a) em um dos cursos participantes: Administração, Matemática ou Engenharia de Produção Agroindustrial.</li>
+                            <li>Não possuir vínculo empregatício ou acumular outras bolsas acadêmicas (exceto bolsas de assistência estudantil).</li>
+                            <li>Disponibilidade para dedicação de 20 horas semanais às atividades propostas pelo grupo PET.</li>
+                            <li>Compromisso em manter um bom rendimento acadêmico ao longo da participação no programa.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3>Seleção:</h3>
+                        <ul>
+                            <li>Inscrição realizada através de formulário eletrônico divulgado nos canais oficiais.</li>
+                            <li>Apresentação de documentação comprobatória (RG, CPF, comprovantes de matrícula e residência).</li>
+                            <li>Participação em entrevista com a equipe tutora e membros do grupo.</li>
+                            <li>Os resultados do processo seletivo são publicados oficialmente no portal da UNESPAR.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3>Benefícios:</h3>
+                        <ul>
+                            <li>Bolsa mensal no valor de R$ 700,00 (conforme editais vigentes).</li>
+                            <li>Participação no programa por um período de até 24 meses.</li>
+                            <li>Oportunidade de vivenciar uma formação interdisciplinar e complementar à graduação.</li>
+                            <li>Desenvolvimento de habilidades profissionais, acadêmicas e pessoais valiosas para a carreira.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider-pet"></div>
+
+            <section class="section" id="equipe">
+                <div class="container">
+                    <h2 class="section-title">Nossa Equipe</h2>
+                    <p style="text-align: center; margin-bottom: 2rem;">Conheça os estudantes e tutoras que compõem o grupo PET-AME, dedicados a fomentar a excelência acadêmica e a interdisciplinaridade.</p>
+
+                    <div class="carousel-section-wrapper">
+                        <div class="carousel-container">
+                            <div class="carousel">
+                                <img src="https://files.fm/thumb_show.php?i=ysk52keytp" alt="Apresentação Elaine">
+                                <img src="https://files.fm/thumb_show.php?i=6xgx7qzf4d" alt="Apresentação Emy">
+                                <img src="https://files.fm/thumb_show.php?i=zwmgd5ud9p" alt="Apresentação Leticia">
+                                <img src="https://files.fm/thumb_show.php?i=rpk48p8zjp" alt="Apresentação Lucas">
+                                <img src="https://files.fm/thumb_show.php?i=qybj43c3mw" alt="Apresentação Mario">
+                                <img src="https://files.fm/thumb_show.php?i=pjwt8kv47d" alt="Apresentação Rodrigo">
+                                <img src="https://files.fm/thumb_show.php?i=n5tengkhsm" alt="Apresentação Tainá">
+                            </div>
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
+                        </div>
+                        <div class="carousel-dots">
+                            </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider-pet"></div>
+
+            <section class="section" id="contato">
+                <div class="container" style="text-align: center;">
+                    <h2 class="section-title">Contato</h2>
+                    <p>Para mais informações, dúvidas ou parcerias, entre em contato conosco:</p>
+                    <p><i class="fas fa-envelope"></i> Email: <a href="mailto:petame.unespar@gmail.com">petame.unespar@gmail.com</a></p>
+                    <p><i class="fab fa-instagram"></i> Instagram: <a href="#" target="_blank" rel="noopener noreferrer">@petame_unespar (Adicionar Link)</a></p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; <span id="currentYear"></span> PET-AME UNESPAR - Campus Campo Mourão. Todos os direitos reservados.</p>
+                <p>Design adaptado com <i class="fa-solid fa-palette"></i>.</p>
+                <p><a href="https://www.unespar.edu.br/" target="_blank" rel="noopener noreferrer">UNESPAR - Universidade Estadual do Paraná</a></p>
+            </div>
+        </footer>
+
+    </div> 
+    
+    <script src="https://cdn.jsdelivr.net/npm/blobz.js@latest/dist/blobz.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentYearEl = document.getElementById('currentYear');
+            if (currentYearEl) {
+                currentYearEl.textContent = new Date().getFullYear();
+            }
+
+            // --- INICIALIZAÇÃO DO BLOBZ.JS ---
+            try {
+                // console.log("Tentando inicializar blobz.js...");
+                const blobContainer = document.getElementById('blob-background');
+                if (blobContainer && typeof blobz !== 'undefined') {
+                    new blobz.Renderer(blobContainer, {
+                        num_blobs: 5, 
+                        blob_color: ['#c8e6c9', '#b2dfdb', '#dcedc8', 'rgba(77, 182, 172, 0.6)'], 
+                        speed: 0.12, 
+                        blob_radius_factor: 0.8, 
+                        animation_smoothness: 0.07,
+                        show_blob_borders: false 
+                    });
+                    // console.log('blobz.js inicializado com sucesso.');
+                } else {
+                    if (!blobContainer) console.error('#blob-background element NÃO FOI ENCONTRADO no DOM para blobz.js');
+                    if (typeof blobz === 'undefined') console.error('Biblioteca blobz.js NÃO FOI CARREGADA corretamente.');
+                }
+            } catch (error) {
+                console.error('Erro durante a inicialização do blobz.js:', error);
+            }
+            // --- FIM DA INICIALIZAÇÃO DO BLOBZ.JS ---
+
+            const mobileMenuBtn = document.getElementById('mobileMenuBtnGlobal');
+            const navLinks = document.getElementById('navLinksGlobal');
+            const navbar = document.querySelector('.navbar');
+            const scrollProgress = document.getElementById('scroll-progress');
+            
+            const carousel = document.querySelector('.carousel');
+            const images = carousel ? carousel.querySelectorAll('img') : [];
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const dotsContainer = document.querySelector('.carousel-dots');
+            const carouselContainer = document.querySelector('.carousel-container');
+            const elementsToReveal = document.querySelectorAll('.section > .container > *, .carousel-section-wrapper, .divider-pet');
+
+            if (mobileMenuBtn && navLinks) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                    mobileMenuBtn.innerHTML = navLinks.classList.contains('active')
+                        ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+                });
+            }
+
+            window.addEventListener('scroll', () => {
+                if (navbar) { 
+                    if (window.scrollY > 30) { navbar.classList.add('scrolled'); }
+                    else { navbar.classList.remove('scrolled'); }
+                }
+                if (scrollProgress) { 
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    scrollProgress.style.width = progress + '%';
+                }
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => { 
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#') && href.length > 1) { 
+                        e.preventDefault(); 
+                        const targetId = href;
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            let offset = navbar ? navbar.offsetHeight : 70; 
+                            window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
+
+                            if (navLinks && navLinks.classList.contains('active')) {
+                                navLinks.classList.remove('active');
+                                if (mobileMenuBtn) { mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>'; }
+                            }
+                        }
+                    }
+                });
+            });
+
+            function revealElementsOnScroll() {
+                elementsToReveal.forEach(element => {
+                    if (element && !element.classList.contains('revealed')) { 
+                        const elementPosition = element.getBoundingClientRect().top;
+                        const screenPosition = window.innerHeight / 1.1;
+                        if (elementPosition < screenPosition) {
+                            element.classList.add('revealed');
+                        }
+                    }
+                });
+            }
+            elementsToReveal.forEach(el => {
+                if(el) el.classList.add('hidden'); 
+            });
+            window.addEventListener('scroll', revealElementsOnScroll);
+            revealElementsOnScroll(); // Revela elementos já visíveis no carregamento
+
+            if (carousel && images && images.length > 0 && prevBtn && nextBtn && dotsContainer && carouselContainer) {
+                let currentIndex = 0;
+                const totalImages = images.length;
+                let autoSlide;
+                let touchStartX = 0;
+
+                images.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    if (index === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => {
+                        goToSlide(index);
+                        resetAutoSlide();
+                    });
+                    dotsContainer.appendChild(dot);
+                });
+
+                const dots = dotsContainer.querySelectorAll('.dot');
+
+                function goToSlide(index) {
+                    currentIndex = (index + totalImages) % totalImages;
+                    updateCarousel();
+                }
+
+                function updateCarousel() {
+                    if (carousel) { 
+                        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    }
+                    if (dots && dots.length > 0) { 
+                        dots.forEach((dot, idx) => {
+                            dot.classList.toggle('active', idx === currentIndex);
+                        });
+                    }
+                }
+
+                function startAutoSlide() {
+                    clearInterval(autoSlide);
+                    autoSlide = setInterval(() => {
+                        goToSlide(currentIndex + 1);
+                    }, 7000);
+                }
+
+                startAutoSlide();
+
+                function resetAutoSlide() {
+                    clearInterval(autoSlide);
+                    startAutoSlide();
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    goToSlide(currentIndex - 1);
+                    resetAutoSlide();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    goToSlide(currentIndex + 1);
+                    resetAutoSlide();
+                });
+
+                let isTouching = false;
+
+                carousel.addEventListener('touchstart', (e) => {
+                    isTouching = true;
+                    touchStartX = e.changedTouches[0].screenX;
+                    clearInterval(autoSlide);
+                }, { passive: true });
+
+                carousel.addEventListener('touchend', (e) => {
+                    if (!isTouching) return;
+                    const touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe(touchStartX, touchEndX);
+                    startAutoSlide();
+                    isTouching = false;
+                }, { passive: true });
+
+                carouselContainer.addEventListener('mouseenter', () => clearInterval(autoSlide));
+                carouselContainer.addEventListener('mouseleave', startAutoSlide);
+
+                function handleSwipe(startX, endX) {
+                    const difference = startX - endX;
+                    const threshold = 40; 
+                    if (Math.abs(difference) > threshold) {
+                        if (difference > 0) { // Swipe left
+                            goToSlide(currentIndex + 1);
+                        } else { // Swipe right
+                            goToSlide(currentIndex - 1);
+                        }
+                    }
+                }
+                updateCarousel(); 
+            } else {
+                if (!carousel) console.log("Debug: Elemento .carousel não encontrado no DOM.");
+                if (!images || images.length === 0) console.log("Debug: Nenhuma imagem .carousel img encontrada.");
+            }
+        });
+    </script>
+</body>
+</html>
 
