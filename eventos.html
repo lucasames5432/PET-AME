@@ -91,11 +91,11 @@
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
         .nav-links-wrapper { display: flex; align-items: center; }
         .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
-        .nav-links li { margin-left: 28px; }
+        .nav-links li { margin-left: 22px; } /* Ajustado para mais links */
         .nav-links li:first-child { margin-left: 0; }
         .nav-links a { 
             color: var(--text-primary); font-weight: 500; position: relative; 
-            padding: 6px 0; font-size: 0.88rem; 
+            padding: 6px 0; font-size: 0.85rem; /* Ajustado para mais links */
         }
         .nav-links a::before { 
             content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); 
@@ -122,6 +122,7 @@
             width: 0%; z-index: 10002; transition: width 0.05s linear; 
         }
 
+        /* Estilos para a página de evento */
         .event-content-card {
             background: var(--bg-card-formulario); 
             padding: 30px 40px;
@@ -182,41 +183,40 @@
             font-size: 0.9em; 
         }
 
-        /* Estilos do Carrossel para Transição de Fade */
+        /* Estilos do Carrossel Adaptados ao Tema */
         .carousel-container.styled-carousel { 
             position: relative;
             max-width: 100%; 
             margin: 2.5rem auto; 
-            overflow: hidden; /* Importante para o posicionamento absoluto das imagens */
+            overflow: hidden; 
             border-radius: 10px; 
             box-shadow: var(--shadow-lg);
             background-color: var(--bg-main); 
-            height: 450px; /* Altura fixa para o carrossel */
+            height: 450px; 
         }
         .carousel {
-            display: block; /* Mudado de flex para block */
-            position: relative; /* Para posicionar imagens absolutamente dentro dele */
+            display: block; 
+            position: relative; 
             width: 100%;
-            height: 100%; /* Para preencher o .carousel-container */
-            /* Removido: transition: transform 0.5s ease-in-out; */
+            height: 100%; 
         }
         .carousel img {
             width: 100%;
-            height: 100%; /* Imagens preenchem a altura do .carousel */
+            height: 100%; 
             object-fit: contain; 
             background-color: transparent; 
             border-radius: 0; 
             
-            position: absolute; /* Para empilhar as imagens */
+            position: absolute; 
             top: 0;
             left: 0;
-            opacity: 0; /* Todas invisíveis por padrão */
-            transition: opacity 0.8s ease-in-out, transform 0.2s ease-out; /* Transição para fade e tilt */
+            opacity: 0; 
+            transition: opacity 0.8s ease-in-out, transform 0.2s ease-out; 
             will-change: opacity, transform;
         }
-        .carousel img.active-slide { /* Classe para a imagem ativa */
+        .carousel img.active-slide { 
             opacity: 1;
-            z-index: 1; /* Garante que a imagem ativa fique na frente */
+            z-index: 1; 
         }
 
         .carousel-nav {
@@ -284,7 +284,9 @@
             .navbar-logo { width: 50px; height: 50px; border-width: 2px; }
             .navbar-logo.logo-petame { order: 1; }
             .navbar-logo.logo-unespar { order: 3; }
-            .nav-links-wrapper { order: 2; flex-grow: 1; justify-content: center; margin: 0 10px; }
+            .nav-links-wrapper { order: 2; flex-grow: 1; justify-content: center; margin: 0 5px; } /* Reduzido margin para mais links */
+            .nav-links li { margin-left: 15px; } 
+            .nav-links a { font-size: 0.82rem; }
             .nav-links { 
                 display: none; flex-direction: column; width: 100%; 
                 background: var(--bg-navbar); padding: 15px 0; 
@@ -294,7 +296,7 @@
             }
             .nav-links.active { display: flex; }
             .nav-links li { margin-left: 0; margin-bottom: 8px; width: 100%; text-align: center; }
-            .nav-links li a { padding: 10px 0; display: block; width:100%; }
+            .nav-links li a { padding: 10px 0; display: block; width:100%; font-size: 0.9rem;}
             .mobile-menu-button { display: block; margin-left: 0; }
             .page-content-wrapper > main { padding-top: 90px; }
             
@@ -302,12 +304,14 @@
             .event-content-card > h2 { font-size: 1.8rem; }
             .past-event-details h3 { font-size: 1.4rem; }
             
-            .carousel-container.styled-carousel { height: 350px; } /* Ajuste da altura no mobile */
+            .carousel-container.styled-carousel { height: 350px; } 
         }
         @media (max-width: 768px) {
             h2.section-title { font-size: 1.7rem; }
             .navbar-logo { width: 45px; height: 45px;}
-            .nav-links-wrapper { margin: 0 5px; }
+            .nav-links-wrapper { margin: 0 2px; }
+             .nav-links li { margin-left: 10px; } 
+             .nav-links a { font-size: 0.78rem; }
             .mobile-menu-button { font-size: 1.5rem; }
             
             .event-content-card { padding: 20px 15px; }
@@ -317,9 +321,21 @@
             .event-date { font-size: 0.9rem; }
             .past-event-details li { font-size: 0.95rem; }
 
-            .carousel-container.styled-carousel { height: 280px; } /* Ajuste da altura no mobile menor */
+            .carousel-container.styled-carousel { height: 280px; } 
             .carousel-nav button { width: 36px; height: 36px; font-size: 1.1rem; margin: 0 10px; }
             .dot { width: 8px; height: 8px; }
+        }
+        @media (max-width: 480px) { 
+            .nav-links li { margin-left: 8px; }
+            .nav-links a { font-size: 0.75rem; padding: 4px 0;}
+             .navbar-logo { 
+                width: 40px; 
+                height: 40px;
+                border-width: 2px;
+            }
+             .mobile-menu-button { 
+                font-size: 1.3rem; 
+            }
         }
     </style>
 </head>
@@ -331,25 +347,20 @@
         <nav class="navbar">
             <div class="container navbar-container">
                 <a href="index.html" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
-                    <img src="https://files.fm/thumb_show.php?i=amcwa22ukg" alt="Logo PET-AME UNESPAR">
-                </a>
+                    <img src="./logopet.png" alt="Logo PET-AME UNESPAR"> </a>
                 <div class="nav-links-wrapper"> 
                     <ul class="nav-links" id="navLinksGlobal">
-                        <li><a href="index.html#quemsomos">Quem Somos</a></li>
-                        <li><a href="index.html#atividades">O Que Fazemos</a></li>
-                        <li><a href="index.html#participar">Como Participar</a></li>
-                        <li><a href="index.html#equipe">Equipe</a></li>
-                        <li><a href="index.html#contato">Contato</a></li>
+                        <li><a href="index.html">Início</a></li>
                         <li><a href="eventos.html">Eventos</a></li>
                         <li><a href="formulario-apoio.html">Apoio Acadêmico</a></li>
+                        <li><a href="formulario-duvidas.html">Dúvidas/Sugestões</a></li>
                     </ul>
                     <button class="mobile-menu-button" id="mobileMenuBtnGlobal">
                         <i class="fa-solid fa-bars"></i>
                     </button>
                 </div>
                 <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
-                    <img src="https://www.unespar.edu.br/images/logo_unespar_compacta.png" alt="Logo UNESPAR">
-                </a>
+                    <img src="./logounespar.png" alt="Logo UNESPAR"> </a>
             </div>
         </nav>
 
@@ -378,8 +389,7 @@
                         
                         <div class="carousel-container styled-carousel">
                             <div class="carousel">
-                                <img src="https://files.fm/thumb_show.php?i=fpw7myb9u4" alt="Participantes atentos durante palestra no Esquenta Matemático">
-                                <img src="https://files.fm/thumb_show.php?i=qjnw9wqehr" alt="Alunos realizando atividades práticas em grupo">
+                                <img src="https://files.fm/thumb_show.php?i=fpw7myb9u4" alt="Participantes atentos durante palestra no Esquenta Matemático" class="active-slide"> <img src="https://files.fm/thumb_show.php?i=qjnw9wqehr" alt="Alunos realizando atividades práticas em grupo">
                                 <img src="https://files.fm/thumb_show.php?i=z57ja6rh57" alt="Momento de interação entre calouros e veteranos">
                                 <img src="https://files.fm/thumb_show.php?i=p562ek2ecf" alt="Professor ministrando oficina de matemática">
                                 <img src="https://files.fm/thumb_show.php?i=cxk6wdde64" alt="Encerramento do evento com participantes reunidos">
@@ -475,11 +485,19 @@
             }
         });
 
-        document.querySelectorAll('a[href^="#"], a[href^="index.html#"]').forEach(anchor => {
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
-                if (href.startsWith('index.html#') && !window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') { 
-                } else if (href.startsWith('#') && href.length > 1) { 
+                // Se o link NÃO for para uma âncora na mesma página, permite a navegação padrão
+                if (!href.startsWith('#') || (href.startsWith('#') && !document.getElementById(href.substring(1)))) {
+                    if (navLinksList && navLinksList.classList.contains('active')) { // Fecha o menu se estiver aberto
+                        navLinksList.classList.remove('active');
+                        if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                    }
+                    return; 
+                }
+                // Se for uma âncora na mesma página
+                if (href.startsWith('#') && href.length > 1) { 
                     e.preventDefault();
                     const targetElement = document.querySelector(href);
                     if (targetElement) {
@@ -508,7 +526,6 @@
             carouselImages.forEach((_, index) => {
                 const dot = document.createElement('div');
                 dot.classList.add('dot');
-                // active class será controlada no updateCarousel
                 dot.addEventListener('click', () => {
                     goToSlide(index);
                     resetAutoSlide();
@@ -525,11 +542,7 @@
             
             function updateCarousel() {
                 carouselImages.forEach((img, idx) => {
-                    if (idx === currentIndex) {
-                        img.classList.add('active-slide');
-                    } else {
-                        img.classList.remove('active-slide');
-                    }
+                    img.classList.toggle('active-slide', idx === currentIndex);
                 });
                 if (dots && dots.length > 0) {
                     dots.forEach((dot, idx) => {
@@ -543,7 +556,7 @@
                 autoSlideInterval = setInterval(() => {
                     currentIndex = (currentIndex < totalImages - 1) ? currentIndex + 1 : 0;
                     updateCarousel();
-                }, 5000); // Tempo de troca automática
+                }, 5000); 
             }
             
             function resetAutoSlide() {
@@ -581,7 +594,6 @@
                     const deltaY = y - centerY;
                     const rotateX = (deltaY / centerY) * tiltEffectStrength * -1; 
                     const rotateY = (deltaX / centerX) * tiltEffectStrength;
-                    // Aplica o tilt apenas se a imagem estiver ativa para evitar cálculos desnecessários
                     if (img.classList.contains('active-slide')) {
                         img.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
                     }
@@ -591,7 +603,7 @@
                 });
             });
 
-            updateCarousel(); // Garante o estado inicial correto
+            updateCarousel(); 
             startAutoSlide(); 
         }
     });
