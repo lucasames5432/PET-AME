@@ -13,7 +13,7 @@
     <style>
         :root {
             --bg-main: #e8f5e9; 
-            --bg-card-formulario: #eafcd6; /* Verde claro para o fundo do formulário */
+            --bg-card-formulario: #eafcd6; 
             --bg-navbar: rgba(220, 240, 220, 0.92);
             --text-primary: #37474f; 
             --text-secondary: #38703b; 
@@ -33,7 +33,7 @@
             --cor-erro-texto: #b71c1c;
             --cor-erro-fundo: #ffcdd2;
             --cor-erro-borda: #ef9a9a;
-            --bg-question-enunciado: rgba(255, 255, 255, 0.8); /* Branco translúcido para enunciado */
+            --bg-question-enunciado: rgba(255, 255, 255, 0.8); 
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
@@ -100,11 +100,11 @@
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
         .nav-links-wrapper { display: flex; align-items: center; }
         .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
-        .nav-links li { margin-left: 28px; }
+        .nav-links li { margin-left: 22px; } /* Ajustado para mais links */
         .nav-links li:first-child { margin-left: 0; }
         .nav-links a { 
             color: var(--text-primary); font-weight: 500; position: relative; 
-            padding: 6px 0; font-size: 0.88rem; 
+            padding: 6px 0; font-size: 0.85rem; /* Ajustado para mais links */
         }
         .nav-links a::before { 
             content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); 
@@ -226,7 +226,9 @@
             .navbar-logo { width: 50px; height: 50px; border-width: 2px; }
             .navbar-logo.logo-petame { order: 1; }
             .navbar-logo.logo-unespar { order: 3; }
-            .nav-links-wrapper { order: 2; flex-grow: 1; justify-content: center; margin: 0 10px; }
+            .nav-links-wrapper { order: 2; flex-grow: 1; justify-content: center; margin: 0 5px; }
+            .nav-links li { margin-left: 15px; } 
+            .nav-links a { font-size: 0.82rem; }
             .nav-links { 
                 display: none; flex-direction: column; width: 100%; 
                 background: var(--bg-navbar); padding: 15px 0; 
@@ -236,7 +238,7 @@
             }
             .nav-links.active { display: flex; }
             .nav-links li { margin-left: 0; margin-bottom: 8px; width: 100%; text-align: center; }
-            .nav-links li a { padding: 10px 0; display: block; width:100%; }
+            .nav-links li a { padding: 10px 0; display: block; width:100%; font-size:0.9rem; }
             .mobile-menu-button { display: block; margin-left: 0; }
             .page-content-wrapper > main { padding-top: 90px; }
             .form-container-styled { padding: 20px; }
@@ -246,11 +248,25 @@
         @media (max-width: 768px) {
             h2.section-title { font-size: 1.7rem; }
             .navbar-logo { width: 45px; height: 45px;}
-            .nav-links-wrapper { margin: 0 5px; }
+            .nav-links-wrapper { margin: 0 2px; }
+            .nav-links li { margin-left: 10px; } 
+            .nav-links a { font-size: 0.78rem; }
             .mobile-menu-button { font-size: 1.5rem; }
             .form-container-styled { padding: 20px 15px; }
             .question {font-size: 1.05rem;}
             label, input[type="text"], input[type="email"], textarea {font-size: 0.9rem;}
+        }
+        @media (max-width: 480px) { 
+            .nav-links li { margin-left: 8px; }
+            .nav-links a { font-size: 0.75rem; padding: 4px 0;}
+             .navbar-logo { 
+                width: 40px; 
+                height: 40px;
+                border-width: 2px;
+            }
+             .mobile-menu-button { 
+                font-size: 1.3rem; 
+            }
         }
     </style>
 </head>
@@ -262,23 +278,20 @@
         <nav class="navbar">
             <div class="container navbar-container">
                 <a href="index.html" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
-                    <img src="https://files.fm/thumb_show.php?i=amcwa22ukg" alt="Logo PET-AME UNESPAR">
-                </a>
+                    <img src="logopet.png" alt="Logo PET-AME UNESPAR"> </a>
                 <div class="nav-links-wrapper"> 
                     <ul class="nav-links" id="navLinksGlobal">
-                        <li><a href="index.html#quemsomos">Quem Somos</a></li>
-                        <li><a href="index.html#atividades">O Que Fazemos</a></li>
-                        <li><a href="index.html#participar">Como Participar</a></li>
-                        <li><a href="index.html#equipe">Equipe</a></li>
-                        <li><a href="index.html#contato">Contato</a></li>
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="formulario-apoio.html">Apoio Acadêmico</a></li>
+                        <li><a href="formulario-duvidas.html">Dúvidas/Sugestões</a></li>
                     </ul>
                     <button class="mobile-menu-button" id="mobileMenuBtnGlobal">
                         <i class="fa-solid fa-bars"></i>
                     </button>
                 </div>
                 <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
-                    <img src="https://www.unespar.edu.br/images/logo_unespar_compacta.png" alt="Logo UNESPAR">
-                </a>
+                    <img src="logounespar.png" alt="Logo UNESPAR"> </a>
             </div>
         </nav>
 
@@ -458,7 +471,7 @@
         } catch (error) { console.error('Erro no blobz.js:', error); }
 
         const mobileMenuBtn = document.getElementById('mobileMenuBtnGlobal');
-        const navLinksList = document.getElementById('navLinksGlobal');
+        const navLinksList = document.getElementById('navLinksGlobal'); // Renomeado para evitar conflito
         const navbar = document.querySelector('.navbar');
         const scrollProgress = document.getElementById('scroll-progress');
         const elementsToReveal = document.querySelectorAll('.form-container-styled, .intro-text, h2.section-title');
@@ -482,21 +495,28 @@
             }
         });
 
-        document.querySelectorAll('a[href^="#"], a[href^="index.html#"]').forEach(anchor => {
+        // Scroll suave para âncoras e navegação para outras páginas
+        document.querySelectorAll('.nav-links a').forEach(anchor => { 
             anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
-                if (href.startsWith('index.html#')) return;
-                if (href.startsWith('#') && href.length > 1) {
-                    e.preventDefault();
+                
+                // Se o link for para uma seção na mesma página (começa com #)
+                if (href.startsWith('#') && href.length > 1 && window.location.pathname.endsWith('formulario-apoio.html')) { // Verifica se está na mesma página
+                    e.preventDefault(); 
+                    // Como esta página é um formulário e não tem seções de scroll,
+                    // esta lógica pode não ser necessária aqui, a menos que adicione seções futuras.
+                    // Para agora, ela não fará nada se não houver elementos com os IDs.
                     const targetElement = document.querySelector(href);
                     if (targetElement) {
-                        let offset = navbar ? navbar.offsetHeight : 70;
+                        let offset = navbar ? navbar.offsetHeight : 70; 
                         window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
-                        if (navLinksList && navLinksList.classList.contains('active')) {
-                            navLinksList.classList.remove('active');
-                            if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-                        }
                     }
+                }
+                // Para links para outras páginas (ex: index.html, eventos.html), a navegação padrão ocorrerá.
+
+                if (navLinksList && navLinksList.classList.contains('active')) {
+                    navLinksList.classList.remove('active');
+                    if (mobileMenuBtn) { mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>'; }
                 }
             });
         });
@@ -545,10 +565,10 @@
 
                 targetElement.style.display = shouldShow ? 'block' : 'none';
                 if (inputField) {
-                    inputField.required = shouldShow; // Torna o input obrigatório APENAS se estiver visível
+                    inputField.required = shouldShow; 
                     if (!shouldShow) {
-                         inputField.value = ''; // Limpa o valor se escondido para não enviar dados desnecessários
-                         inputField.required = false; // Garante que não seja obrigatório se escondido
+                         inputField.value = ''; 
+                         inputField.required = false; 
                     }
                 }
             }
@@ -571,7 +591,7 @@
                 
                 const now = new Date();
                 const day = String(now.getDate()).padStart(2, '0');
-                const month = String(now.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
+                const month = String(now.getMonth() + 1).padStart(2, '0'); 
                 const year = now.getFullYear();
                 const hours = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -598,7 +618,6 @@
                     if (response.ok) {
                         if(successMsg) successMsg.style.display = 'block';
                         academicForm.reset();
-                        // Re-chamar a lógica de visibilidade condicional para resetar os campos ao estado inicial
                         setupConditionalDisplay('frequenta_monitorias', 'Não, por outro motivo', 'motivo_monitoria_outro_wrapper');
                         setupConditionalDisplay('interesse_plantao_duvidas', 'Outro comentário', 'comentario_plantao_outro_wrapper');
                         setupConditionalDisplay('divulgacao_editais', 'Outro comentário', 'comentario_editais_outro_wrapper');
