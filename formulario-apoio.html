@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOIO ACADÊMICO - PET-AME UNESPAR</title>
+    <meta name="description" content="Formulário de Apoio Acadêmico do PET-AME UNESPAR para planejamento de atividades.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --bg-main: #e8f5e9; 
+            --bg-card-formulario: #eafcd6; /* Verde claro para o fundo do formulário */
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+            --text-primary: #37474f; 
+            --text-secondary: #38703b; 
+            --text-placeholder: #757575;
+            --accent-primary: #4db6ac; 
+            --accent-secondary: #4fc3f7; 
+            --sombra: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 7px 14px rgba(0, 0, 0, 0.1);
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --transicao-suave: all 0.3s ease-in-out;
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --cor-obrigatorio: #e53935;
+            --cor-sucesso-texto: #1b5e20;
+            --cor-sucesso-fundo: #c8e6c9;
+            --cor-sucesso-borda: #a5d6a7;
+            --cor-erro-texto: #b71c1c;
+            --cor-erro-fundo: #ffcdd2;
+            --cor-erro-borda: #ef9a9a;
+            --bg-question-enunciado: rgba(255, 255, 255, 0.8); /* Branco translúcido para enunciado */
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            font-family: var(--fonte-principal); line-height: 1.7; color: var(--text-secondary);
+            background-color: var(--bg-main); scroll-behavior: smooth; overflow-x: hidden; cursor: default; 
+        }
+        #blob-background { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; 
+        }
+        .page-content-wrapper {
+            position: relative; z-index: 1; width: 100%; background-color: transparent; 
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .page-content-wrapper > main { padding-top: 100px; flex-grow: 1; }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--fonte-secundaria); font-weight: 600; line-height: 1.3;
+            margin-bottom: 1.2rem; color: var(--text-primary);
+        }
+        h2.section-title {
+            color: var(--text-primary); font-size: 2.6rem; margin-bottom: 2rem; 
+            text-transform: uppercase; letter-spacing: 0.07em; text-align: center; position: relative;
+        }
+        h2.section-title::after {
+            content: ''; display: block; width: 70px; height: 4px; background: var(--gradiente-primario);
+            margin: 15px auto 30px auto; border-radius: 3px;
+        }
+        p { margin-bottom: 1.5rem; font-size: 1rem; text-align: justify;}
+        a { text-decoration: none; color: var(--accent-primary); font-weight: 500; transition: var(--transicao-suave); }
+        a:hover { color: var(--accent-secondary); }
+        img { max-width: 100%; height: auto; display: block; border-radius: 8px; }
+        .container { width: 90%; max-width: 1080px; margin: 0 auto; }
+        .form-container-maxwidth { max-width: 800px; }
+        .section { padding: 40px 20px; position: relative; }
+        .btn { 
+            display: inline-block; padding: 10px 25px; border-radius: 25px; font-weight: 600; 
+            text-align: center; transition: var(--transicao-suave); border: none; font-size: 0.9rem; 
+            box-shadow: var(--sombra); text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; 
+        }
+        .btn-primario { background: var(--accent-primary); color: #fff; }
+        .btn-primario:hover { background: var(--accent-secondary); color: var(--text-primary); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn:disabled, .btn-primario:disabled {
+            background-color: #b0bec5; border-color: #b0bec5; color: #78909c;
+            cursor: not-allowed; transform: none; box-shadow: none;
+        }
+        .btn-primario:disabled:hover { background: #b0bec5; color: #78909c; }
+        .navbar { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
+            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
+            background: var(--bg-navbar); backdrop-filter: blur(8px); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04); padding: 15px 0;
+        }
+        .navbar.scrolled { 
+            padding: 10px 0; background: rgba(212, 237, 218, 0.97); box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
+        }
+        .navbar .container.navbar-container { 
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .navbar-logo {
+            display: flex; align-items: center; justify-content: center;
+            width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--text-secondary); 
+            overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; transition: var(--transicao-suave);
+        }
+        .navbar-logo:hover { transform: scale(1.05); box-shadow: var(--sombra); }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .nav-links-wrapper { display: flex; align-items: center; }
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
+        .nav-links li { margin-left: 28px; }
+        .nav-links li:first-child { margin-left: 0; }
+        .nav-links a { 
+            color: var(--text-primary); font-weight: 500; position: relative; 
+            padding: 6px 0; font-size: 0.88rem; 
+        }
+        .nav-links a::before { 
+            content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); 
+            width: 0; height: 2px; background-color: var(--accent-primary); transition: width 0.3s ease; 
+        }
+        .nav-links a:hover::before { width: 100%; }
+        .nav-links a:hover { color: var(--accent-primary); }
+        .mobile-menu-button { 
+            display: none; background: none; border: none; font-size: 1.7rem; 
+            color: var(--text-primary); cursor: pointer; margin-left: 20px; 
+        }
+        .footer { 
+            background-color: #dceae0; color: var(--text-secondary); 
+            padding: 40px 0 20px; text-align: center; margin-top: auto;
+        }
+        .footer .container { padding: 0 20px; }
+        .footer p { margin-bottom: 0.3rem; font-size: 0.8rem; }
+        .footer a { color: var(--accent-primary); }
+        .footer a:hover { color: var(--accent-secondary); }
+        .footer i {color: var(--accent-primary) !important; }
+        #scroll-progress { 
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            width: 0%; z-index: 10002; transition: width 0.05s linear; 
+        }
+        .form-container-styled {
+            background: var(--bg-card-formulario); 
+            padding: 30px 40px;
+            border-radius: 12px; 
+            box-shadow: var(--shadow-lg);
+        }
+        .intro-text { margin-bottom: 2.5rem; }
+        .intro-text p {
+            color: var(--text-secondary); text-align: left;
+            font-size: 1rem; line-height: 1.8; margin-bottom: 0.8rem;
+        }
+        .form-section {
+            margin-bottom: 2.5rem; padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+        .form-section:last-of-type { border-bottom: none; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        
+        .question {
+            font-weight: 600;
+            margin-bottom: 1rem; 
+            color: var(--text-primary); 
+            font-family: var(--fonte-secundaria);
+            font-size: 1.15rem;
+            line-height: 1.4;
+            background-color: var(--bg-question-enunciado); 
+            padding: 12px 18px; 
+            border-radius: 8px; 
+            border-left: 5px solid var(--accent-primary); 
+        }
+        .required::after { content: " *"; color: var(--cor-obrigatorio); }
+        .options { margin-left: 5px; margin-top: 0.5rem; }
+        .checkbox-option, .radio-option { margin-bottom: 1rem; display: flex; align-items: flex-start; }
+        label {
+            color: var(--text-secondary); font-size: 0.95rem; cursor: pointer;
+            line-height: 1.5; display: inline-block; margin-left: 8px;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            accent-color: var(--accent-primary); transform: scale(1.15);
+            margin-right: 0; flex-shrink: 0; margin-top: 0.2em; 
+        }
+        textarea, input[type="text"], input[type="email"] {
+            width: 100%; padding: 12px 15px; border: 1px solid #b0bec5; 
+            border-radius: 6px; resize: vertical; background-color: var(--bg-main); 
+            color: var(--text-primary); font-family: var(--fonte-principal);
+            font-size: 0.95rem; transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        input[type="text"], input[type="email"] { min-height: 48px; }
+        textarea { min-height: 100px; line-height: 1.6; }
+        textarea::placeholder, input[type="text"]::placeholder, input[type="email"]::placeholder {
+            color: var(--text-placeholder); opacity: 1;
+        }
+        textarea:focus, input[type="text"]:focus, input[type="email"]:focus {
+            outline: none; border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.25); background-color: #ffffff;
+        }
+        .note {
+            font-size: 0.85rem; color: var(--text-secondary); opacity: 0.85;
+            margin-bottom: 12px; margin-top: -5px; line-height: 1.4;
+        }
+        .conditional-input-wrapper {
+            display: none; 
+            margin-top: 10px; 
+            margin-left: 25px; 
+            padding-left: 5px;
+        }
+        .conditional-input-wrapper input[type="text"],
+        .conditional-input-wrapper input[type="email"],
+        .conditional-input-wrapper textarea {
+            max-width: 400px; 
+        }
+         .conditional-input-wrapper textarea {
+            max-width: 100%; 
+        }
+
+        .button-wrapper { text-align: center; margin-top: 2.5rem; margin-bottom: 1rem; }
+        #success-message, #error-message {
+            display: none; text-align: center; margin-top: 20px; padding: 15px 20px;
+            border-radius: 6px; font-weight: 500; font-size: 0.95rem; line-height: 1.6;
+        }
+        #success-message {
+            color: var(--cor-sucesso-texto); background-color: var(--cor-sucesso-fundo); 
+            border: 1px solid var(--cor-sucesso-borda);
+        }
+        #error-message {
+            color: var(--cor-erro-texto); background-color: var(--cor-erro-fundo); 
+            border: 1px solid var(--cor-erro-borda);
+        }
+        .hidden-visually { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+
+        @media (max-width: 992px) {
+            h2.section-title { font-size: 2rem; margin-bottom: 1.5rem; }
+            h2.section-title::after { margin: 10px auto 25px auto; }
+            .navbar .container.navbar-container { justify-content: space-between; flex-wrap: nowrap; }
+            .navbar-logo { width: 50px; height: 50px; border-width: 2px; }
+            .navbar-logo.logo-petame { order: 1; }
+            .navbar-logo.logo-unespar { order: 3; }
+            .nav-links-wrapper { order: 2; flex-grow: 1; justify-content: center; margin: 0 10px; }
+            .nav-links { 
+                display: none; flex-direction: column; width: 100%; 
+                background: var(--bg-navbar); padding: 15px 0; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05); align-items: center; 
+                position: absolute; top: 100%; left: 0; right: 0;
+                z-index: 999; border-top: 1px solid rgba(0,0,0,0.05);
+            }
+            .nav-links.active { display: flex; }
+            .nav-links li { margin-left: 0; margin-bottom: 8px; width: 100%; text-align: center; }
+            .nav-links li a { padding: 10px 0; display: block; width:100%; }
+            .mobile-menu-button { display: block; margin-left: 0; }
+            .page-content-wrapper > main { padding-top: 90px; }
+            .form-container-styled { padding: 20px; }
+            .conditional-input-wrapper input[type="text"],
+            .conditional-input-wrapper input[type="email"] { max-width: 100%; }
+        }
+        @media (max-width: 768px) {
+            h2.section-title { font-size: 1.7rem; }
+            .navbar-logo { width: 45px; height: 45px;}
+            .nav-links-wrapper { margin: 0 5px; }
+            .mobile-menu-button { font-size: 1.5rem; }
+            .form-container-styled { padding: 20px 15px; }
+            .question {font-size: 1.05rem;}
+            label, input[type="text"], input[type="email"], textarea {font-size: 0.9rem;}
+        }
+    </style>
+</head>
+<body>
+    <div id="blob-background"></div> 
+    <div id="scroll-progress"></div>
+
+    <div class="page-content-wrapper">
+        <nav class="navbar">
+            <div class="container navbar-container">
+                <a href="index.html" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
+                    <img src="https://files.fm/thumb_show.php?i=amcwa22ukg" alt="Logo PET-AME UNESPAR">
+                </a>
+                <div class="nav-links-wrapper"> 
+                    <ul class="nav-links" id="navLinksGlobal">
+                        <li><a href="index.html#quemsomos">Quem Somos</a></li>
+                        <li><a href="index.html#atividades">O Que Fazemos</a></li>
+                        <li><a href="index.html#participar">Como Participar</a></li>
+                        <li><a href="index.html#equipe">Equipe</a></li>
+                        <li><a href="index.html#contato">Contato</a></li>
+                    </ul>
+                    <button class="mobile-menu-button" id="mobileMenuBtnGlobal">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+                <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
+                    <img src="https://www.unespar.edu.br/images/logo_unespar_compacta.png" alt="Logo UNESPAR">
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="section">
+                <div class="container form-container-maxwidth">
+                    <h2 class="section-title">APOIO ACADÊMICO</h2>
+                    
+                    <div class="intro-text">
+                        <p>Prezada(o) estudante,</p>
+                        <p>O Programa de Educação Tutorial Interdisciplinar dos cursos de Administração, Matemática e Engenharia de Produção Agroindustrial - PET-AME - está organizando a ação Apoio Acadêmico, com o objetivo de oferecer oficinas, orientações e atividades voltadas às necessidades dos estudantes da graduação.</p>
+                        <p>Queremos ouvir você! Responda a este questionário e nos ajude a planejar ações que realmente contribuam com sua formação acadêmica e profissional.</p>
+                    </div>
+                    
+                    <div class="form-container-styled">
+                        <form id="academicForm">
+                            <input type="hidden" name="timestamp" id="timestamp">
+                            
+                            <div class="form-section">
+                                <div class="question required">1. Curso em que está matriculado(a):</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Administração" required> Administração</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Ciências Contábeis"> Ciências Contábeis</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Ciências Econômicas"> Ciências Econômicas</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Engenharia de Produção Agroindustrial"> Engenharia de Produção Agroindustrial</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Geografia"> Geografia</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Letras Português/Inglês"> Letras Português/Inglês</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Licenciatura em Matemática"> Licenciatura em Matemática</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Pedagogia"> Pedagogia</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="curso_matriculado" value="Turismo"> Turismo</label></div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="question required">2. Série atual:</div>
+                                <input type="text" name="serie_atual" id="serie_atual_input" placeholder="Ex: 2ª série, 3º ano..." required>
+                            </div>
+                            
+                            <div class="form-section">
+                                <div class="question">3. Você frequenta monitorias acadêmicas nas disciplinas em que tem maior dificuldade de aprendizagem?</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="frequenta_monitorias" value="Sim, regularmente"> Sim, regularmente</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="frequenta_monitorias" value="Ocasionalmente, quando há disponibilidade"> Ocasionalmente, quando há disponibilidade</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="frequenta_monitorias" value="Não, porque não é ofertada monitoria nessa disciplina"> Não, porque não é ofertada monitoria nessa disciplina</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="frequenta_monitorias" value="Não, por outro motivo"> Não, por outro motivo:</label></div>
+                                </div>
+                                <div class="conditional-input-wrapper" id="motivo_monitoria_outro_wrapper">
+                                    <input type="text" name="motivo_nao_frequenta_monitoria" id="motivo_nao_frequenta_monitoria_input" placeholder="Especifique o motivo">
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <div class="question">4. Você considera que seria interessante a criação de um plantão de dúvidas, organizado pelos alunos do PET, para apoio nas disciplinas da área de exatas?</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="interesse_plantao_duvidas" value="Sim, seria muito útil"> Sim, seria muito útil</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="interesse_plantao_duvidas" value="Talvez, dependendo do horário e formato"> Talvez, dependendo do horário e formato</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="interesse_plantao_duvidas" value="Não vejo necessidade"> Não vejo necessidade</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="interesse_plantao_duvidas" value="Outro comentário"> Outro comentário:</label></div>
+                                </div>
+                                <div class="conditional-input-wrapper" id="comentario_plantao_outro_wrapper">
+                                    <input type="text" name="comentario_plantao_duvidas" id="comentario_plantao_duvidas_input" placeholder="Seu comentário">
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="question">5. Em relação à divulgação de editais de bolsas e estágios disponíveis no campus, você considera que:</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="divulgacao_editais" value="As informações já são bem divulgadas na instituição"> As informações já são bem divulgadas na instituição</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="divulgacao_editais" value="Seria interessante que o PET-AME promovesse divulgação periódica"> Seria interessante que o PET-AME promovesse divulgação periódica</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="divulgacao_editais" value="Prefiro buscar essas informações diretamente nos canais oficiais da UNESPAR"> Prefiro buscar essas informações diretamente nos canais oficiais da UNESPAR</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="divulgacao_editais" value="Outro comentário"> Outro comentário:</label></div>
+                                </div>
+                                <div class="conditional-input-wrapper" id="comentario_editais_outro_wrapper">
+                                    <input type="text" name="comentario_divulgacao_editais" id="comentario_divulgacao_editais_input" placeholder="Seu comentário">
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <div class="question required">6. Você teria interesse em participar de oficinas, rodas de conversa ou atividades promovidas pelo PET-AME?</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="interesse_atividades_pet" value="Sim" required> Sim</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="interesse_atividades_pet" value="Talvez"> Talvez</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="interesse_atividades_pet" value="Não"> Não</label></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section conditional-input-wrapper" id="pergunta8_temas_wrapper">
+                                <div class="question">Em quais dos temas abaixo você teria interesse em participar de oficinas, minicursos ou bate-papos?</div>
+                                <div class="note">Marque quantos desejar.</div>
+                                <div class="options">
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Organização e planejamento de estudos"> Organização e planejamento de estudos</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Dicas e orientações para calouros"> Dicas e orientações para calouros</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Elaboração e atualização do Currículo Lattes"> Elaboração e atualização do Currículo Lattes</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Introdução ao Excel"> Introdução ao Excel</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Noções básicas de Python"> Noções básicas de Python</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Como utilizar o SIGES"> Como utilizar o SIGES</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Noções de finanças pessoais"> Noções de finanças pessoais</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Introdução à estatística computacional"> Introdução à estatística computacional</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Ferramentas digitais úteis na vida acadêmica"> Ferramentas digitais úteis na vida acadêmica</label></div>
+                                    <div class="checkbox-option"><label><input type="checkbox" name="temas_interesse[]" value="Escrita acadêmica e formatação de trabalhos"> Escrita acadêmica e formatação de trabalhos</label></div>
+                                </div>
+                                <div class="question" style="margin-top:1.5rem; font-size: 1rem; background-color: transparent; border-left: none; padding: 0;">Outros temas que gostaria de sugerir:</div>
+                                <input type="text" name="sugestao_outros_temas" id="sugestao_outros_temas_input" placeholder="Sua sugestão de tema">
+                            </div>
+
+                            <div class="form-section">
+                                <div class="question required">7. Qual o melhor turno para participar de atividades como oficinas, rodas de conversa ou plantões de dúvidas?</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="melhor_turno" value="Manhã" required> Manhã</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="melhor_turno" value="Tarde"> Tarde</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="melhor_turno" value="Noite"> Noite</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="melhor_turno" value="Depende do dia"> Depende do dia</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="melhor_turno" value="Prefiro atividades remotas/gravadas"> Prefiro atividades remotas/gravadas</label></div>
+                                    <div class="radio-option"><label><input type="radio" name="melhor_turno" value="Outro"> Outro (especificar):</label></div>
+                                </div>
+                                <div class="conditional-input-wrapper" id="outro_turno_wrapper">
+                                    <input type="text" name="outro_turno" id="outro_turno_input" placeholder="Especifique o turno/preferência">
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <div class="question required">8. Deseja receber informações futuras sobre as atividades do PET-AME por e-mail ou WhatsApp?</div>
+                                <div class="options">
+                                    <div class="radio-option"><label><input type="radio" name="receber_informacoes" value="Sim, por e-mail" required> Sim, por e-mail:</label></div>
+                                    <div class="conditional-input-wrapper" id="email_contato_wrapper">
+                                        <input type="email" name="email_contato" id="email_contato_input" placeholder="seuemail@exemplo.com">
+                                    </div>
+                                    <div class="radio-option" style="margin-top:1rem;"><label><input type="radio" name="receber_informacoes" value="Sim, por WhatsApp"> Sim, por WhatsApp:</label></div>
+                                    <div class="conditional-input-wrapper" id="whatsapp_contato_wrapper">
+                                        <input type="text" name="whatsapp_contato" id="whatsapp_contato_input" placeholder="(XX) XXXXX-XXXX">
+                                    </div>
+                                    <div class="radio-option" style="margin-top:1rem;"><label><input type="radio" name="receber_informacoes" value="Não desejo receber"> Não desejo receber</label></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <div class="question required">9. Deixe aqui outras sugestões, comentários ou dúvidas:</div>
+                                <textarea name="sugestoes_finais" required placeholder="Suas sugestões, comentários ou dúvidas..."></textarea>
+                            </div>
+                            
+                            <div class="button-wrapper">
+                                <button type="submit" class="btn btn-primario">Enviar Formulário</button>
+                            </div>
+                            <div id="success-message">Formulário enviado com sucesso! Obrigado pela sua contribuição.</div>
+                            <div id="error-message"></div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; <span id="currentYear"></span> PET-AME UNESPAR - Campus Campo Mourão. Todos os direitos reservados.</p>
+                <p>Design adaptado com <i class="fa-solid fa-palette"></i>.</p>
+                <p><a href="https://www.unespar.edu.br/" target="_blank" rel="noopener noreferrer">UNESPAR - Universidade Estadual do Paraná</a></p>
+            </div>
+        </footer>
+    </div> 
+    
+    <script src="https://cdn.jsdelivr.net/npm/blobz.js@latest/dist/blobz.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentYearEl = document.getElementById('currentYear');
+        if (currentYearEl) {
+            currentYearEl.textContent = new Date().getFullYear();
+        }
+
+        try {
+            const blobContainer = document.getElementById('blob-background');
+            if (blobContainer && typeof blobz !== 'undefined') {
+                new blobz.Renderer(blobContainer, {
+                    num_blobs: 5, blob_color: ['#c8e6c9', '#b2dfdb', '#dcedc8', 'rgba(77, 182, 172, 0.6)'],
+                    speed: 0.12, blob_radius_factor: 0.8, animation_smoothness: 0.07, show_blob_borders: false
+                });
+            }
+        } catch (error) { console.error('Erro no blobz.js:', error); }
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtnGlobal');
+        const navLinksList = document.getElementById('navLinksGlobal');
+        const navbar = document.querySelector('.navbar');
+        const scrollProgress = document.getElementById('scroll-progress');
+        const elementsToReveal = document.querySelectorAll('.form-container-styled, .intro-text, h2.section-title');
+
+        if (mobileMenuBtn && navLinksList) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinksList.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navLinksList.classList.contains('active')
+                    ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            if (navbar) {
+                navbar.classList.toggle('scrolled', window.scrollY > 30);
+            }
+            if (scrollProgress) {
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                scrollProgress.style.width = (scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0) + '%';
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"], a[href^="index.html#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('index.html#')) return;
+                if (href.startsWith('#') && href.length > 1) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        let offset = navbar ? navbar.offsetHeight : 70;
+                        window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
+                        if (navLinksList && navLinksList.classList.contains('active')) {
+                            navLinksList.classList.remove('active');
+                            if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                        }
+                    }
+                }
+            });
+        });
+        
+        elementsToReveal.forEach(el => {
+            if (el) {
+                el.classList.add('hidden-visually'); 
+                el.style.opacity = 0; 
+                el.style.transform = 'translateY(20px)'; 
+                el.style.transition = 'opacity 0.6s ease-out 0.2s, transform 0.6s ease-out 0.2s';
+            }
+        });
+
+        function revealElementsOnScroll() {
+            elementsToReveal.forEach(element => {
+                if (element && element.classList.contains('hidden-visually')) { 
+                    const elementPosition = element.getBoundingClientRect().top;
+                    if (elementPosition < window.innerHeight / 1.1) {
+                        element.classList.remove('hidden-visually');
+                        element.style.opacity = 1; 
+                        element.style.transform = 'translateY(0)';
+                    }
+                }
+            });
+        }
+        window.addEventListener('scroll', revealElementsOnScroll);
+        revealElementsOnScroll();
+
+
+        function setupConditionalDisplay(optionsGroupName, showConditionValue, targetElementId) {
+            const optionRadios = document.querySelectorAll(`input[name="${optionsGroupName}"]`);
+            const targetElement = document.getElementById(targetElementId);
+            const inputField = targetElement ? targetElement.querySelector('input[type="text"], input[type="email"], input[type="tel"], textarea') : null;
+
+            if (!targetElement) return;
+
+            function updateVisibility() {
+                let shouldShow = false;
+                optionRadios.forEach(radio => {
+                    if (radio.checked) {
+                        if (Array.isArray(showConditionValue) ? showConditionValue.includes(radio.value) : radio.value === showConditionValue) {
+                            shouldShow = true;
+                        }
+                    }
+                });
+
+                targetElement.style.display = shouldShow ? 'block' : 'none';
+                if (inputField) {
+                    inputField.required = shouldShow; // Torna o input obrigatório APENAS se estiver visível
+                    if (!shouldShow) {
+                         inputField.value = ''; // Limpa o valor se escondido para não enviar dados desnecessários
+                         inputField.required = false; // Garante que não seja obrigatório se escondido
+                    }
+                }
+            }
+            optionRadios.forEach(radio => radio.addEventListener('change', updateVisibility));
+            updateVisibility(); 
+        }
+
+        setupConditionalDisplay('frequenta_monitorias', 'Não, por outro motivo', 'motivo_monitoria_outro_wrapper');
+        setupConditionalDisplay('interesse_plantao_duvidas', 'Outro comentário', 'comentario_plantao_outro_wrapper');
+        setupConditionalDisplay('divulgacao_editais', 'Outro comentário', 'comentario_editais_outro_wrapper');
+        setupConditionalDisplay('interesse_atividades_pet', ['Sim', 'Talvez'], 'pergunta8_temas_wrapper');
+        setupConditionalDisplay('melhor_turno', 'Outro', 'outro_turno_wrapper');
+        setupConditionalDisplay('receber_informacoes', 'Sim, por e-mail', 'email_contato_wrapper');
+        setupConditionalDisplay('receber_informacoes', 'Sim, por WhatsApp', 'whatsapp_contato_wrapper');
+
+        const academicForm = document.getElementById('academicForm');
+        if (academicForm) {
+            academicForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
+                const year = now.getFullYear();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timestamp = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+                
+                const timestampField = academicForm.querySelector('#timestamp');
+                if(timestampField) timestampField.value = timestamp;
+                
+                const btn = academicForm.querySelector('.btn-primario');
+                const successMsg = document.getElementById('success-message');
+                const errorMsg = document.getElementById('error-message');
+                
+                if(btn) { btn.disabled = true; btn.textContent = "Enviando..."; }
+                if(successMsg) successMsg.style.display = 'none';
+                if(errorMsg) errorMsg.style.display = 'none';
+                
+                fetch("https://api.sheetmonkey.io/form/7cjQ579WzvvZaptMe3hN18", {
+                    method: "POST",
+                    body: new FormData(academicForm),
+                    headers: { "Accept": "application/json" }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        if(successMsg) successMsg.style.display = 'block';
+                        academicForm.reset();
+                        // Re-chamar a lógica de visibilidade condicional para resetar os campos ao estado inicial
+                        setupConditionalDisplay('frequenta_monitorias', 'Não, por outro motivo', 'motivo_monitoria_outro_wrapper');
+                        setupConditionalDisplay('interesse_plantao_duvidas', 'Outro comentário', 'comentario_plantao_outro_wrapper');
+                        setupConditionalDisplay('divulgacao_editais', 'Outro comentário', 'comentario_editais_outro_wrapper');
+                        setupConditionalDisplay('interesse_atividades_pet', ['Sim', 'Talvez'], 'pergunta8_temas_wrapper');
+                        setupConditionalDisplay('melhor_turno', 'Outro', 'outro_turno_wrapper');
+                        setupConditionalDisplay('receber_informacoes', 'Sim, por e-mail', 'email_contato_wrapper');
+                        setupConditionalDisplay('receber_informacoes', 'Sim, por WhatsApp', 'whatsapp_contato_wrapper');
+                        
+                        setTimeout(() => { if(successMsg) successMsg.style.display = 'none'; }, 6000);
+                    } else {
+                         return response.json().then(err => { throw new Error(err.error || 'Erro ao enviar formulário.') });
+                    }
+                })
+                .catch(error => {
+                    if(errorMsg) {
+                        errorMsg.textContent = "Erro ao enviar: " + error.message + " Verifique sua conexão e tente novamente.";
+                        errorMsg.style.display = 'block';
+                    }
+                    console.error("Erro detalhado:", error);
+                    setTimeout(() => { if(errorMsg) errorMsg.style.display = 'none'; }, 8000);
+                })
+                .finally(() => {
+                    if(btn) { btn.disabled = false; btn.textContent = "Enviar Formulário"; }
+                });
+            });
+        }
+    });
+    </script>
+</body>
+</html>
