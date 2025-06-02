@@ -13,11 +13,11 @@
     <style>
         :root {
             /* Tema Verde Bebê com Cores Diversificadas */
-            --bg-main: #e8f5e9; 
-            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-main: #e8f5e9;
+            --bg-card: rgba(255, 255, 255, 0.95); /* Levemente mais opaco */
             --bg-navbar: rgba(220, 240, 220, 0.92);
 
-            --text-primary: #37474f; 
+            --text-primary: #37474f;
             --text-secondary: #38703b; /* Verde escuro para borda da logo */
 
             --accent-primary: #4db6ac; /* Teal Médio */
@@ -40,30 +40,30 @@
             font-family: var(--fonte-principal);
             line-height: 1.7;
             color: var(--text-secondary);
-            background-color: var(--bg-main); 
+            background-color: var(--bg-main);
             scroll-behavior: smooth;
             overflow-x: hidden;
-            cursor: default; 
+            cursor: default;
         }
 
-        #blob-background { 
+        #blob-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; 
-            pointer-events: none; 
+            z-index: 0;
+            pointer-events: none;
         }
 
         .page-content-wrapper {
             position: relative;
-            z-index: 1; 
+            z-index: 1;
             width: 100%;
-            background-color: transparent; 
+            background-color: transparent;
         }
         .page-content-wrapper > main {
-            padding-top: 100px; /* Ajustado para nova altura do navbar se necessário */
+            padding-top: 115px; /* Ajustado para nova altura do navbar */
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -113,27 +113,27 @@
         .btn-contorno { background: transparent; border: 2px solid var(--accent-primary); color: var(--accent-primary); }
         .btn-contorno:hover { background-color: var(--accent-primary); color: #fff; transform: translateY(-2px); }
 
-        .navbar { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            z-index: 1000; 
-            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
-            background: var(--bg-navbar); 
-            backdrop-filter: blur(8px); 
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            background: var(--bg-navbar);
+            backdrop-filter: blur(8px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             padding: 15px 0;
         }
-        .navbar.scrolled { 
+        .navbar.scrolled {
             padding: 10px 0;
-            background: rgba(212, 237, 218, 0.97); 
-            box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
+            background: rgba(212, 237, 218, 0.97);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.06);
         }
-        .navbar .container.navbar-container { 
+        .navbar .container.navbar-container {
             padding: 0 20px;
-            display: flex; 
-            justify-content: space-between; 
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
         
@@ -141,13 +141,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 65px; /* Tamanho da logo */
-            height: 65px; /* Tamanho da logo */
-            border-radius: 50%; /* Deixa a logo redonda */
-            border: 3px solid var(--text-secondary); /* Borda verde mais escura */
-            overflow: hidden; /* Garante que a imagem não saia do círculo */
-            background-color: var(--bg-main); /* Cor de fundo caso a imagem seja menor */
-            flex-shrink: 0; /* Impede que as logos encolham */
+            width: 75px; /* Aumentado */
+            height: 75px; /* Aumentado */
+            border-radius: 50%;
+            border: 3px solid var(--text-secondary);
+            overflow: hidden;
+            background-color: var(--bg-main);
+            flex-shrink: 0;
             transition: var(--transicao-suave);
         }
         .navbar-logo:hover {
@@ -156,19 +156,20 @@
         }
 
         .navbar-logo img {
-            width: 100%; 
+            width: 100%;
             height: 100%;
-            object-fit: cover; /* 'cover' para preencher, 'contain' para mostrar inteira */
-            border-radius: 50%; /* Garante que a imagem dentro também pareça redonda */
+            object-fit: cover;
+            border-radius: 50%;
         }
         
-        .nav-links-wrapper { 
+        .nav-links-wrapper {
             display: flex;
             align-items: center;
-            /* flex-grow: 1; /* Ocupa o espaço entre as logos no desktop */
-            /* justify-content: center; /* Centraliza os links de navegação */
+            flex-grow: 1; /* Ocupa o espaço entre as logos */
+            justify-content: center; /* Centraliza os links de navegação ou o botão mobile */
+            margin: 0 15px; /* Espaçamento entre logos e conteúdo central */
         }
-        .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0;}
         .nav-links li { margin-left: 28px; }
         .nav-links li:first-child { margin-left: 0; }
         .nav-links a { color: var(--text-primary); font-weight: 500; position: relative; padding: 6px 0; font-size: 0.88rem; }
@@ -176,14 +177,14 @@
         .nav-links a:hover::before { width: 100%; }
         .nav-links a:hover { color: var(--accent-primary); }
         
-        .mobile-menu-button { 
+        .mobile-menu-button {
             display: none; /* Escondido no desktop */
-            background: none; 
-            border: none; 
-            font-size: 1.7rem; 
-            color: var(--text-primary); 
-            cursor: pointer; 
-            margin-left: 20px; /* Espaço após os links, se visíveis juntos */
+            background: none;
+            border: none;
+            font-size: 1.7rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            /* margin-left: 20px; Removido, o wrapper centraliza */
         }
 
         ul { list-style: none; padding-left: 0; margin-bottom: 1.5rem;}
@@ -194,7 +195,7 @@
             font-size: 0.95rem;
         }
         li::before {
-            content: '\f138'; 
+            content: '\f138';
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             color: var(--accent-primary);
@@ -213,33 +214,50 @@
         }
 
         .carousel-section-wrapper {
-            background: var(--bg-main);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 1.5rem;
+            background: var(--bg-card); /* Melhorado */
+            border-radius: 12px; /* Melhorado */
+            padding: 25px; /* Melhorado */
+            margin-top: 2rem; /* Melhorado */
             box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0,0,0,0.05); /* Melhorado */
         }
         .carousel-container {
             position: relative;
             max-width: 100%;
             margin: 10px auto;
             overflow: hidden;
-            border-radius: 6px;
-            background-color: var(--bg-main);
+            border-radius: 8px; /* Melhorado */
         }
-        .carousel { display: flex; transition: transform 0.5s ease-in-out; }
-        .carousel img { width: 100%; flex-shrink: 0; object-fit: contain; max-height: 420px; background-color: transparent; border-radius: 0; }
+        .carousel { display: flex; transition: transform 0.7s ease-in-out; } /* Transição mais suave */
+        
+        .carousel img {
+            width: 100%;
+            flex-shrink: 0;
+            object-fit: contain; /* Manter 'contain' se o conteúdo completo da imagem for crucial */
+            max-height: 450px; /* Aumentado */
+            background-color: transparent;
+            border-radius: 6px; /* Arredondamento para a imagem */
+            transition: transform 7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-in-out;
+            transform: scale(1); /* Estado base para o zoom */
+            opacity: 0.85; /* Opacidade para slides não ativos */
+        }
+        .carousel img.active-slide {
+            transform: scale(1.03); /* Efeito de zoom suave na imagem ativa */
+            opacity: 1; /* Imagem ativa totalmente visível */
+        }
+
         .carousel-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); z-index: 10; }
         .carousel-nav button {
-            background-color: rgba(255, 255, 255, 0.6) !important;
+            background-color: rgba(255, 255, 255, 0.75) !important; /* Melhorado */
             color: var(--text-primary) !important;
-            border: 1px solid rgba(0,0,0,0.08) !important;
-            width: 38px;
-            height: 38px;
+            border: none !important; /* Melhorado */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* Melhorado */
+            width: 42px; /* Aumentado */
+            height: 42px; /* Aumentado */
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 1.4rem; /* Aumentado */
             transition: var(--transicao-suave);
-            margin: 0 8px;
+            margin: 0 10px; /* Espaçamento */
             opacity: 0.9;
             cursor: pointer;
         }
@@ -247,11 +265,29 @@
             background-color: var(--accent-primary) !important;
             color: #fff !important;
             opacity: 1;
-            transform: scale(1.05);
+            transform: scale(1.1) translateY(-50%); /* Ajustar translateY para manter no centro */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Melhorado */
         }
-        .carousel-dots { display: flex; justify-content: center; margin-top: 10px; padding-bottom: 6px; flex-wrap: wrap; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(0,0,0,0.15); margin: 4px; transition: var(--transicao-suave); cursor: pointer; }
-        .dot.active { background-color: var(--accent-primary); transform: scale(1.15); }
+         .carousel-nav button.prev-btn:hover { transform: scale(1.1) translateX(-2px) translateY(-50%); }
+         .carousel-nav button.next-btn:hover { transform: scale(1.1) translateX(2px) translateY(-50%); }
+
+
+        .carousel-dots { display: flex; justify-content: center; margin-top: 15px; padding-bottom: 8px; flex-wrap: wrap; }
+        .dot {
+            width: 10px; /* Aumentado */
+            height: 10px; /* Aumentado */
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.25); /* Melhorado */
+            margin: 5px; /* Aumentado */
+            transition: var(--transicao-suave);
+            cursor: pointer;
+        }
+        .dot.active {
+            background-color: var(--accent-primary);
+            transform: scale(1.25); /* Melhorado */
+            box-shadow: 0 0 0 2px rgba(77, 182, 172, 0.3); /* Melhorado */
+        }
+
 
         #contato p { text-align: center; font-size: 1.05rem; }
         #contato a { font-weight: 600; }
@@ -273,74 +309,72 @@
 
         @media (max-width: 992px) {
             .container { width: 90%; }
-            /* .navbar .container.navbar-container { width: 100%; } */
 
             h2.section-title { font-size: 2rem; margin-bottom: 2.5rem; }
             h3 { font-size: 1.3rem; }
             
             .navbar .container.navbar-container {
-                justify-content: space-between; /* Espaçar logos e wrapper do menu/botão */
-                flex-wrap: nowrap; /* Para garantir que fiquem na mesma linha */
+                justify-content: space-between;
+                flex-wrap: nowrap;
             }
 
-            .navbar-logo { 
-                width: 50px; /* Logos menores */
-                height: 50px;
-                border-width: 2px;
+            .navbar-logo {
+                width: 60px; /* Aumentado para mobile */
+                height: 60px; /* Aumentado para mobile */
+                border-width: 2.5px; /* Ajustado */
             }
             .navbar-logo.logo-petame { order: 1; }
             .navbar-logo.logo-unespar { order: 3; }
             
-            .nav-links-wrapper { 
+            .nav-links-wrapper {
                 order: 2;
-                /* width: auto;  /* Não ocupa 100% */
-                flex-grow: 1; /* Ocupa espaço entre logos */
-                justify-content: center; /* Centraliza o botão do menu */
-                margin: 0 10px; /* Espaçamento entre logos e botão/menu */
+                flex-grow: 1;
+                justify-content: center;
+                margin: 0 10px;
             }
 
-            .nav-links { 
-                display: none; /* Links escondidos por padrão */
-                flex-direction: column; 
-                width: 100%; 
-                background: var(--bg-navbar); 
-                padding: 15px 0; 
-                box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-                align-items: center; 
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--bg-navbar);
+                padding: 15px 0;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                align-items: center;
                 
-                position: absolute; /* Para aparecer abaixo do navbar */
-                top: 100%; /* Logo abaixo do navbar */
+                position: absolute;
+                top: 100%;
                 left: 0;
                 right: 0;
                 z-index: 999;
                 border-top: 1px solid rgba(0,0,0,0.05);
             }
-            .nav-links.active { 
-                display: flex; 
+            .nav-links.active {
+                display: flex;
             }
-            .nav-links li { 
-                margin-left: 0; 
-                margin-bottom: 8px; 
-                width: 100%; 
-                text-align: center; 
+            .nav-links li {
+                margin-left: 0;
+                margin-bottom: 8px;
+                width: 100%;
+                text-align: center;
             }
-            .nav-links li a { 
-                padding: 10px 0; 
-                display: block; 
-                width:100%; 
+            .nav-links li a {
+                padding: 10px 0;
+                display: block;
+                width:100%;
             }
 
-            .mobile-menu-button { 
-                display: block; /* Torna o botão visível */
-                margin-left: 0; /* Reset de margem */
-                /* Removido position: absolute e transform para ficar no fluxo */
+            .mobile-menu-button {
+                display: block;
+                margin-left: 0;
             }
             
-            .page-content-wrapper > main { 
-                padding-top: 90px; /* Altura navbar mobile ~70-85px + margem */
+            .page-content-wrapper > main {
+                padding-top: 100px; /* navbar height (aprox 60 logo + 15*2 padding) + margem */
             }
 
-            .carousel img { max-height: 320px; }
+            .carousel img { max-height: 350px; } /* Aumentado */
+            .carousel-nav button { width: 36px; height: 36px; font-size: 1.1rem; margin: 0 6px;}
         }
         @media (max-width: 768px) {
             .section { padding: 45px 20px; }
@@ -349,25 +383,29 @@
             p { font-size: 0.88rem; text-align: left; }
             section p:first-of-type { font-size: 0.92rem; }
             
-            .navbar-logo { 
-                width: 45px; 
-                height: 45px;
+            .navbar-logo {
+                width: 50px; /* Aumentado para mobile menor */
+                height: 50px; /* Aumentado para mobile menor */
+                border-width: 2px;
             }
             .nav-links-wrapper {
-                margin: 0 5px; /* Menor espaçamento */
+                margin: 0 8px; /* Menor espaçamento */
             }
-            .mobile-menu-button { 
-                font-size: 1.5rem; 
+            .mobile-menu-button {
+                font-size: 1.5rem;
             }
-            .carousel img { max-height: 250px; }
-            .carousel-nav button { width: 28px; height: 28px; font-size: 0.9rem; margin: 0 4px; }
-            .dot { width: 6px; height: 6px; }
+            .page-content-wrapper > main {
+                padding-top: 90px; /* navbar height (aprox 50 logo + 15*2 padding) + margem */
+            }
+            .carousel img { max-height: 280px; } /* Aumentado */
+            .carousel-nav button { width: 32px; height: 32px; font-size: 1rem; margin: 0 5px; }
+            .dot { width: 8px; height: 8px; margin: 4px; }
             .footer { padding: 30px 0 15px; }
         }
     </style>
 </head>
 <body>
-    <div id="blob-background"></div> 
+    <div id="blob-background"></div>
     <div id="scroll-progress"></div>
 
     <div class="page-content-wrapper">
@@ -377,8 +415,10 @@
                     <img src="./logopet.png" alt="Logo PET-AME UNESPAR">
                 </a>
         
-                <div class="nav-links-wrapper"> 
+                <div class="nav-links-wrapper">
                     <ul class="nav-links" id="navLinksGlobal">
+                        <li><a href="#quemsomos">Quem Somos</a></li>
+                        <li><a href="#atividades">O Que Fazemos</a></li>
                         <li><a href="#participar">Como Participar</a></li>
                         <li><a href="#equipe">Equipe</a></li>
                         <li><a href="#contato">Contato</a></li>
@@ -499,7 +539,7 @@
                             </div>
                         </div>
                         <div class="carousel-dots">
-                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -524,7 +564,7 @@
             </div>
         </footer>
 
-    </div> 
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/blobz.js@latest/dist/blobz.min.js"></script>
     <script>
@@ -536,18 +576,16 @@
 
             // --- INICIALIZAÇÃO DO BLOBZ.JS ---
             try {
-                // console.log("Tentando inicializar blobz.js...");
                 const blobContainer = document.getElementById('blob-background');
                 if (blobContainer && typeof blobz !== 'undefined') {
                     new blobz.Renderer(blobContainer, {
-                        num_blobs: 5, 
-                        blob_color: ['#c8e6c9', '#b2dfdb', '#dcedc8', 'rgba(77, 182, 172, 0.6)'], 
-                        speed: 0.12, 
-                        blob_radius_factor: 0.8, 
+                        num_blobs: 5,
+                        blob_color: ['#c8e6c9', '#b2dfdb', '#dcedc8', 'rgba(77, 182, 172, 0.6)'],
+                        speed: 0.12,
+                        blob_radius_factor: 0.8,
                         animation_smoothness: 0.07,
-                        show_blob_borders: false 
+                        show_blob_borders: false
                     });
-                    // console.log('blobz.js inicializado com sucesso.');
                 } else {
                     if (!blobContainer) console.error('#blob-background element NÃO FOI ENCONTRADO no DOM para blobz.js');
                     if (typeof blobz === 'undefined') console.error('Biblioteca blobz.js NÃO FOI CARREGADA corretamente.');
@@ -563,7 +601,7 @@
             const scrollProgress = document.getElementById('scroll-progress');
             
             const carousel = document.querySelector('.carousel');
-            const images = carousel ? carousel.querySelectorAll('img') : [];
+            const images = carousel ? Array.from(carousel.querySelectorAll('img')) : []; // Convert to array
             const prevBtn = document.querySelector('.prev-btn');
             const nextBtn = document.querySelector('.next-btn');
             const dotsContainer = document.querySelector('.carousel-dots');
@@ -579,11 +617,11 @@
             }
 
             window.addEventListener('scroll', () => {
-                if (navbar) { 
+                if (navbar) {
                     if (window.scrollY > 30) { navbar.classList.add('scrolled'); }
                     else { navbar.classList.remove('scrolled'); }
                 }
-                if (scrollProgress) { 
+                if (scrollProgress) {
                     const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
                     const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
@@ -591,15 +629,15 @@
                 }
             });
 
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => { 
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
-                    if (href && href.startsWith('#') && href.length > 1) { 
-                        e.preventDefault(); 
+                    if (href && href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
                         const targetId = href;
                         const targetElement = document.querySelector(targetId);
                         if (targetElement) {
-                            let offset = navbar ? navbar.offsetHeight : 70; 
+                            let offset = navbar ? navbar.offsetHeight : 70;
                             window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
 
                             if (navLinks && navLinks.classList.contains('active')) {
@@ -613,7 +651,7 @@
 
             function revealElementsOnScroll() {
                 elementsToReveal.forEach(element => {
-                    if (element && !element.classList.contains('revealed')) { 
+                    if (element && !element.classList.contains('revealed')) {
                         const elementPosition = element.getBoundingClientRect().top;
                         const screenPosition = window.innerHeight / 1.1;
                         if (elementPosition < screenPosition) {
@@ -623,10 +661,10 @@
                 });
             }
             elementsToReveal.forEach(el => {
-                if(el) el.classList.add('hidden'); 
+                if(el) el.classList.add('hidden');
             });
             window.addEventListener('scroll', revealElementsOnScroll);
-            revealElementsOnScroll(); // Revela elementos já visíveis no carregamento
+            revealElementsOnScroll(); 
 
             if (carousel && images && images.length > 0 && prevBtn && nextBtn && dotsContainer && carouselContainer) {
                 let currentIndex = 0;
@@ -637,7 +675,6 @@
                 images.forEach((_, index) => {
                     const dot = document.createElement('div');
                     dot.classList.add('dot');
-                    if (index === 0) dot.classList.add('active');
                     dot.addEventListener('click', () => {
                         goToSlide(index);
                         resetAutoSlide();
@@ -653,21 +690,27 @@
                 }
 
                 function updateCarousel() {
-                    if (carousel) { 
+                    if (carousel) {
                         carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
                     }
-                    if (dots && dots.length > 0) { 
+                    if (dots && dots.length > 0) {
                         dots.forEach((dot, idx) => {
                             dot.classList.toggle('active', idx === currentIndex);
                         });
                     }
+                    // Add/remove class for zoom/opacity effect
+                    images.forEach((img, idx) => {
+                        img.classList.toggle('active-slide', idx === currentIndex);
+                    });
                 }
+                
+                updateCarousel(); // Initial call to set the first slide active
 
                 function startAutoSlide() {
                     clearInterval(autoSlide);
                     autoSlide = setInterval(() => {
                         goToSlide(currentIndex + 1);
-                    }, 7000);
+                    }, 7000); // Slide duration
                 }
 
                 startAutoSlide();
@@ -708,7 +751,7 @@
 
                 function handleSwipe(startX, endX) {
                     const difference = startX - endX;
-                    const threshold = 40; 
+                    const threshold = 40;
                     if (Math.abs(difference) > threshold) {
                         if (difference > 0) { // Swipe left
                             goToSlide(currentIndex + 1);
@@ -717,7 +760,6 @@
                         }
                     }
                 }
-                updateCarousel(); 
             } else {
                 if (!carousel) console.log("Debug: Elemento .carousel não encontrado no DOM.");
                 if (!images || images.length === 0) console.log("Debug: Nenhuma imagem .carousel img encontrada.");
@@ -726,4 +768,3 @@
     </script>
 </body>
 </html>
-
