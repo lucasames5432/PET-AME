@@ -294,12 +294,12 @@
             padding: 25px;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
-            margin-bottom: 2rem; /* Espaçamento abaixo do calendário */
+            margin-bottom: 2rem; 
         }
         .calendar-title {
             font-family: var(--fonte-secundaria);
             color: var(--text-primary);
-            font-size: 1.8rem; /* Tamanho do título "Próximos Eventos" */
+            font-size: 1.8rem; 
             text-align: center;
             margin-bottom: 0.5rem;
         }
@@ -308,19 +308,17 @@
             color: var(--text-secondary);
             font-size: 1rem;
             text-align: center;
-            margin-bottom: 1.5rem; /* Espaçamento abaixo do subtítulo */
+            margin-bottom: 1.5rem; 
         }
         .calendar-container {
             display: flex; 
             justify-content: center; 
         }
         .calendar-container iframe {
-            border: 1px solid #ddd; /* Borda sutil para o iframe */
+            border: none; /* Removido, pois o iframe já tem style="border: 0" */
             border-radius: 8px;
-            max-width: 100%; /* Garante que o iframe seja responsivo */
-            /* Defina uma largura e altura padrão, mas permita que o CSS do iframe do Google sobrescreva se necessário */
-            width: 800px; /* Exemplo, ajuste conforme o código do Google Agenda */
-            height: 600px; /* Exemplo, ajuste conforme o código do Google Agenda */
+            max-width: 100%; 
+            /* A largura e altura serão definidas pelo iframe do Google, mas max-width garante responsividade */
         }
 
 
@@ -387,7 +385,7 @@
             .calendar-section-wrapper { padding: 15px; }
             .calendar-title { font-size: 1.4rem; }
             .calendar-subtitle { font-size: 0.9rem; }
-            .calendar-container iframe { height: 500px; } /* Ajustar altura para mobile */
+            .calendar-container iframe { height: 500px; } 
         }
          @media (max-width: 480px) { 
             .navbar-logo { 
@@ -402,7 +400,7 @@
              .mobile-menu-button { 
                 font-size: 1.3rem; 
             }
-            .calendar-container iframe { height: 400px; } /* Ajustar altura para mobile menor */
+            .calendar-container iframe { height: 400px; } 
         }
     </style>
 </head>
@@ -448,12 +446,10 @@
                         <h3 class="calendar-title">Próximos eventos</h3>
                         <p class="calendar-subtitle">Nossos próximos eventos podem ser visualizados no calendário abaixo!</p>
                         <div class="calendar-container">
-                            <p style="text-align: center; padding: 20px; color: var(--text-placeholder);">
-                                Para exibir o calendário, obtenha o código de incorporação do Google Agenda e cole-o aqui, substituindo este parágrafo. <br>
-                                Certifique-se de que as permissões do calendário estejam configuradas para "Público".
-                            </p>
+                            <iframe src="https://calendar.google.com/calendar/embed?src=petame.unespar%40gmail.com&ctz=America%2FSao_Paulo" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
                         </div>
                     </div>
+                
                     <div class="event-content-card"> 
                         <h2>Evento Realizado: Esquenta Matemático</h2>
                         
@@ -563,7 +559,7 @@
             const mainElement = document.querySelector('.page-content-wrapper > main');
             if (navbar && mainElement) {
                 const navbarHeight = navbar.offsetHeight;
-                mainElement.style.paddingTop = (navbarHeight + 20) + 'px'; // Adiciona um respiro de 20px
+                mainElement.style.paddingTop = (navbarHeight + 20) + 'px'; 
             }
         }
 
@@ -592,29 +588,20 @@
                     }
                     return; 
                 }
-                // Se o link for para #calendario-pet nesta página
-                if (href === '#calendario-pet') {
+                
+                const targetElement = document.querySelector(href);
+                if (targetElement) {
                     e.preventDefault();
-                    const targetElement = document.getElementById('calendario-pet');
-                    if (targetElement) {
-                        let offset = navbar ? navbar.offsetHeight : 70;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                        const offsetPosition = elementPosition - offset - 10; // -10 para um pequeno espaço extra
-        
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: "smooth"
-                        });
-                    }
-                } else if (href.startsWith('#') && href.length > 1) { 
-                    // Para outras âncoras (se houver)
-                    e.preventDefault();
-                    const targetElement = document.querySelector(href);
-                    if (targetElement) {
-                        let offset = navbar ? navbar.offsetHeight : 70;
-                        window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
-                    }
+                    let offset = navbar ? navbar.offsetHeight : 70;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - offset - 10; 
+    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
                 }
+
                 if (navLinksList && navLinksList.classList.contains('active')) {
                     navLinksList.classList.remove('active');
                     if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
