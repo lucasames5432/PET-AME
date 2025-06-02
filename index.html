@@ -63,7 +63,7 @@
             background-color: transparent;
         }
         .page-content-wrapper > main {
-            padding-top: 115px; /* Ajustado para nova altura do navbar */
+            padding-top: 135px; /* AJUSTADO: Aumentado para nova altura do navbar */
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -141,8 +141,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 75px; /* Aumentado */
-            height: 75px; /* Aumentado */
+            width: 90px; /* AJUSTADO: Aumentado */
+            height: 90px; /* AJUSTADO: Aumentado */
             border-radius: 50%;
             border: 3px solid var(--text-secondary);
             overflow: hidden;
@@ -319,8 +319,8 @@
             }
 
             .navbar-logo {
-                width: 60px;
-                height: 60px;
+                width: 72px;  /* AJUSTADO: Aumentado */
+                height: 72px; /* AJUSTADO: Aumentado */
                 border-width: 2.5px;
             }
             .navbar-logo.logo-petame { order: 1; }
@@ -370,7 +370,7 @@
             }
             
             .page-content-wrapper > main {
-                padding-top: 100px;
+                padding-top: 112px; /* AJUSTADO: Aumentado */
             }
 
             .carousel img { max-height: 350px; }
@@ -384,8 +384,8 @@
             section p:first-of-type { font-size: 0.92rem; }
             
             .navbar-logo {
-                width: 50px;
-                height: 50px;
+                width: 60px;  /* AJUSTADO: Aumentado */
+                height: 60px; /* AJUSTADO: Aumentado */
                 border-width: 2px;
             }
             .nav-links-wrapper {
@@ -395,7 +395,7 @@
                 font-size: 1.5rem;
             }
             .page-content-wrapper > main {
-                padding-top: 90px;
+                padding-top: 100px; /* AJUSTADO: Aumentado */
             }
             .carousel img { max-height: 280px; }
             .carousel-nav button { width: 32px; height: 32px; font-size: 1rem; margin: 0 5px; }
@@ -636,7 +636,11 @@
                         const targetId = href;
                         const targetElement = document.querySelector(targetId);
                         if (targetElement) {
-                            let offset = navbar ? navbar.offsetHeight : 70;
+                            let offset = navbar ? navbar.offsetHeight : 70; // Usa a altura atual da navbar para o offset
+                            // Se a navbar tem padding diferente quando 'scrolled', você pode precisar ajustar isso
+                            // ou recalcular o offset de forma mais dinâmica se a altura da navbar muda significativamente com o scroll.
+                            // Para este caso, a altura da logo é o principal fator, e o padding da navbar é consistente no estado não-scrolled.
+
                             window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
 
                             if (navLinks && navLinks.classList.contains('active')) {
