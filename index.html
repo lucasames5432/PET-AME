@@ -184,7 +184,6 @@
             font-size: 1.7rem;
             color: var(--text-primary);
             cursor: pointer;
-            /* margin-left: 20px; Removido, o wrapper centraliza */
         }
 
         ul { list-style: none; padding-left: 0; margin-bottom: 1.5rem;}
@@ -214,50 +213,50 @@
         }
 
         .carousel-section-wrapper {
-            background: var(--bg-card); /* Melhorado */
-            border-radius: 12px; /* Melhorado */
-            padding: 25px; /* Melhorado */
-            margin-top: 2rem; /* Melhorado */
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 2rem;
             box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(0,0,0,0.05); /* Melhorado */
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .carousel-container {
             position: relative;
             max-width: 100%;
             margin: 10px auto;
             overflow: hidden;
-            border-radius: 8px; /* Melhorado */
+            border-radius: 8px;
         }
-        .carousel { display: flex; transition: transform 0.7s ease-in-out; } /* Transição mais suave */
+        .carousel { display: flex; transition: transform 0.7s ease-in-out; }
         
         .carousel img {
             width: 100%;
             flex-shrink: 0;
-            object-fit: contain; /* Manter 'contain' se o conteúdo completo da imagem for crucial */
-            max-height: 450px; /* Aumentado */
+            object-fit: contain;
+            max-height: 450px;
             background-color: transparent;
-            border-radius: 6px; /* Arredondamento para a imagem */
+            border-radius: 6px;
             transition: transform 7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-in-out;
-            transform: scale(1); /* Estado base para o zoom */
-            opacity: 0.85; /* Opacidade para slides não ativos */
+            transform: scale(1);
+            opacity: 0.85;
         }
         .carousel img.active-slide {
-            transform: scale(1.03); /* Efeito de zoom suave na imagem ativa */
-            opacity: 1; /* Imagem ativa totalmente visível */
+            transform: scale(1.03);
+            opacity: 1;
         }
 
         .carousel-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); z-index: 10; }
         .carousel-nav button {
-            background-color: rgba(255, 255, 255, 0.75) !important; /* Melhorado */
+            background-color: rgba(255, 255, 255, 0.75) !important;
             color: var(--text-primary) !important;
-            border: none !important; /* Melhorado */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* Melhorado */
-            width: 42px; /* Aumentado */
-            height: 42px; /* Aumentado */
+            border: none !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            font-size: 1.4rem; /* Aumentado */
+            font-size: 1.4rem;
             transition: var(--transicao-suave);
-            margin: 0 10px; /* Espaçamento */
+            margin: 0 10px;
             opacity: 0.9;
             cursor: pointer;
         }
@@ -265,27 +264,27 @@
             background-color: var(--accent-primary) !important;
             color: #fff !important;
             opacity: 1;
-            transform: scale(1.1) translateY(-50%); /* Ajustar translateY para manter no centro */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Melhorado */
+            transform: scale(1.1); /* Simplificado */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-         .carousel-nav button.prev-btn:hover { transform: scale(1.1) translateX(-2px) translateY(-50%); }
-         .carousel-nav button.next-btn:hover { transform: scale(1.1) translateX(2px) translateY(-50%); }
+         .carousel-nav button.prev-btn:hover { transform: scale(1.1) translateX(-2px); } /* Ajustado */
+         .carousel-nav button.next-btn:hover { transform: scale(1.1) translateX(2px); } /* Ajustado */
 
 
         .carousel-dots { display: flex; justify-content: center; margin-top: 15px; padding-bottom: 8px; flex-wrap: wrap; }
         .dot {
-            width: 10px; /* Aumentado */
-            height: 10px; /* Aumentado */
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background-color: rgba(0,0,0,0.25); /* Melhorado */
-            margin: 5px; /* Aumentado */
+            background-color: rgba(0,0,0,0.25);
+            margin: 5px;
             transition: var(--transicao-suave);
             cursor: pointer;
         }
         .dot.active {
             background-color: var(--accent-primary);
-            transform: scale(1.25); /* Melhorado */
-            box-shadow: 0 0 0 2px rgba(77, 182, 172, 0.3); /* Melhorado */
+            transform: scale(1.25);
+            box-shadow: 0 0 0 2px rgba(77, 182, 172, 0.3);
         }
 
 
@@ -304,6 +303,7 @@
             background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
             width: 0%; z-index: 10002; transition: width 0.05s linear; }
 
+        /* Estilos para a animação de revelação ao rolar */
         .hidden { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
         .revealed { opacity: 1; transform: translateY(0); }
 
@@ -319,9 +319,9 @@
             }
 
             .navbar-logo {
-                width: 60px; /* Aumentado para mobile */
-                height: 60px; /* Aumentado para mobile */
-                border-width: 2.5px; /* Ajustado */
+                width: 60px;
+                height: 60px;
+                border-width: 2.5px;
             }
             .navbar-logo.logo-petame { order: 1; }
             .navbar-logo.logo-unespar { order: 3; }
@@ -370,10 +370,10 @@
             }
             
             .page-content-wrapper > main {
-                padding-top: 100px; /* navbar height (aprox 60 logo + 15*2 padding) + margem */
+                padding-top: 100px;
             }
 
-            .carousel img { max-height: 350px; } /* Aumentado */
+            .carousel img { max-height: 350px; }
             .carousel-nav button { width: 36px; height: 36px; font-size: 1.1rem; margin: 0 6px;}
         }
         @media (max-width: 768px) {
@@ -384,20 +384,20 @@
             section p:first-of-type { font-size: 0.92rem; }
             
             .navbar-logo {
-                width: 50px; /* Aumentado para mobile menor */
-                height: 50px; /* Aumentado para mobile menor */
+                width: 50px;
+                height: 50px;
                 border-width: 2px;
             }
             .nav-links-wrapper {
-                margin: 0 8px; /* Menor espaçamento */
+                margin: 0 8px;
             }
             .mobile-menu-button {
                 font-size: 1.5rem;
             }
             .page-content-wrapper > main {
-                padding-top: 90px; /* navbar height (aprox 50 logo + 15*2 padding) + margem */
+                padding-top: 90px;
             }
-            .carousel img { max-height: 280px; } /* Aumentado */
+            .carousel img { max-height: 280px; }
             .carousel-nav button { width: 32px; height: 32px; font-size: 1rem; margin: 0 5px; }
             .dot { width: 8px; height: 8px; margin: 4px; }
             .footer { padding: 30px 0 15px; }
@@ -601,12 +601,15 @@
             const scrollProgress = document.getElementById('scroll-progress');
             
             const carousel = document.querySelector('.carousel');
-            const images = carousel ? Array.from(carousel.querySelectorAll('img')) : []; // Convert to array
+            const images = carousel ? Array.from(carousel.querySelectorAll('img')) : [];
             const prevBtn = document.querySelector('.prev-btn');
             const nextBtn = document.querySelector('.next-btn');
             const dotsContainer = document.querySelector('.carousel-dots');
             const carouselContainer = document.querySelector('.carousel-container');
-            const elementsToReveal = document.querySelectorAll('.section > .container > *, .carousel-section-wrapper, .divider-pet');
+            
+            // MODIFICAÇÃO DE TESTE: Removido '.carousel-section-wrapper' do querySelectorAll para 'elementsToReveal'
+            const elementsToReveal = document.querySelectorAll('.section > .container > *:not(.carousel-section-wrapper), .divider-pet');
+
 
             if (mobileMenuBtn && navLinks) {
                 mobileMenuBtn.addEventListener('click', () => {
@@ -649,9 +652,10 @@
                 });
             });
 
+            // Lógica de revelação ao rolar
             function revealElementsOnScroll() {
                 elementsToReveal.forEach(element => {
-                    if (element && !element.classList.contains('revealed')) {
+                    if (element && !element.classList.contains('revealed')) { 
                         const elementPosition = element.getBoundingClientRect().top;
                         const screenPosition = window.innerHeight / 1.1;
                         if (elementPosition < screenPosition) {
@@ -660,11 +664,18 @@
                     }
                 });
             }
-            elementsToReveal.forEach(el => {
+            
+            elementsToReveal.forEach(el => { // Aplica 'hidden' aos elementos selecionados
                 if(el) el.classList.add('hidden');
             });
+            
+            // Garante que o .carousel-section-wrapper não seja afetado pela lógica 'hidden' inicial se ele foi removido do elementsToReveal
+            // Se preferir que ele também tenha a animação, precisaremos de uma abordagem diferente para ele.
+            // Por enquanto, ele não terá a classe 'hidden' aplicada por este loop.
+            // Se quiser que ele tenha o efeito, mas está causando problemas, podemos precisar ajustar o timing ou a forma como é revelado.
+
             window.addEventListener('scroll', revealElementsOnScroll);
-            revealElementsOnScroll(); 
+            revealElementsOnScroll(); // Chama na carga inicial
 
             if (carousel && images && images.length > 0 && prevBtn && nextBtn && dotsContainer && carouselContainer) {
                 let currentIndex = 0;
@@ -698,19 +709,18 @@
                             dot.classList.toggle('active', idx === currentIndex);
                         });
                     }
-                    // Add/remove class for zoom/opacity effect
                     images.forEach((img, idx) => {
                         img.classList.toggle('active-slide', idx === currentIndex);
                     });
                 }
                 
-                updateCarousel(); // Initial call to set the first slide active
+                updateCarousel(); 
 
                 function startAutoSlide() {
                     clearInterval(autoSlide);
                     autoSlide = setInterval(() => {
                         goToSlide(currentIndex + 1);
-                    }, 7000); // Slide duration
+                    }, 7000);
                 }
 
                 startAutoSlide();
@@ -753,9 +763,9 @@
                     const difference = startX - endX;
                     const threshold = 40;
                     if (Math.abs(difference) > threshold) {
-                        if (difference > 0) { // Swipe left
+                        if (difference > 0) { 
                             goToSlide(currentIndex + 1);
-                        } else { // Swipe right
+                        } else { 
                             goToSlide(currentIndex - 1);
                         }
                     }
