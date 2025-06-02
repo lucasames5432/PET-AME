@@ -141,14 +141,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100px; /* AJUSTADO: Aumentado */
-            height: 100px; /* AJUSTADO: Aumentado */
+            width: 100px; 
+            height: 100px; 
             border-radius: 50%;
             border: 3px solid var(--text-secondary);
             overflow: hidden;
             background-color: var(--bg-main);
             flex-shrink: 0;
             transition: var(--transicao-suave);
+            margin: 0 5px; /* Pequena margem para separar logos agrupadas */
         }
         .navbar-logo:hover {
             transform: scale(1.05);
@@ -165,9 +166,9 @@
         .nav-links-wrapper {
             display: flex;
             align-items: center;
-            flex-grow: 1; /* Ocupa o espaço entre as logos */
-            justify-content: center; /* Centraliza os links de navegação ou o botão mobile */
-            margin: 0 15px; /* Espaçamento entre logos e conteúdo central */
+            flex-grow: 1; 
+            justify-content: center; 
+            margin: 0 10px; /* Ajustado para acomodar mais logos */
         }
         .nav-links { display: flex; list-style: none; margin: 0; padding: 0;}
         .nav-links li { margin-left: 28px; }
@@ -264,11 +265,11 @@
             background-color: var(--accent-primary) !important;
             color: #fff !important;
             opacity: 1;
-            transform: scale(1.1); /* Simplificado */
+            transform: scale(1.1); 
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-         .carousel-nav button.prev-btn:hover { transform: scale(1.1) translateX(-2px); } /* Ajustado */
-         .carousel-nav button.next-btn:hover { transform: scale(1.1) translateX(2px); } /* Ajustado */
+         .carousel-nav button.prev-btn:hover { transform: scale(1.1) translateX(-2px); } 
+         .carousel-nav button.next-btn:hover { transform: scale(1.1) translateX(2px); } 
 
 
         .carousel-dots { display: flex; justify-content: center; margin-top: 15px; padding-bottom: 8px; flex-wrap: wrap; }
@@ -315,24 +316,26 @@
             
             .navbar .container.navbar-container {
                 justify-content: space-between;
-                flex-wrap: nowrap;
+                flex-wrap: nowrap; /* Para manter logos e menu na mesma linha, se possível */
             }
 
             .navbar-logo {
-                width: 80px;  /* AJUSTADO: Aumentado */
-                height: 80px; /* AJUSTADO: Aumentado */
-                border-width: 2.5px;
+                width: 60px;  /* Reduzido para caber mais logos */
+                height: 60px; /* Reduzido para caber mais logos */
+                border-width: 2px;
+                margin: 0 3px; /* Espaçamento menor entre logos */
             }
-            .navbar-logo.logo-petame { order: 1; }
-            .navbar-logo.logo-unespar { order: 3; }
-            
+            .navbar-logo.logo-seti { order: 1; }      /* NOVO */
+            .navbar-logo.logo-petame { order: 2; }   /* Ajustado */
             .nav-links-wrapper {
-                order: 2;
+                order: 3; /* Ajustado */
                 flex-grow: 1;
                 justify-content: center;
-                margin: 0 10px;
+                margin: 0 5px; /* Reduzido */
             }
-
+            .navbar-logo.logo-unespar { order: 4; }  /* Ajustado */
+            .navbar-logo.logo-araucaria { order: 5; }/* NOVO */
+            
             .nav-links {
                 display: none;
                 flex-direction: column;
@@ -343,7 +346,7 @@
                 align-items: center;
                 
                 position: absolute;
-                top: 100%;
+                top: 100%; 
                 left: 0;
                 right: 0;
                 z-index: 999;
@@ -366,11 +369,14 @@
 
             .mobile-menu-button {
                 display: block;
-                margin-left: 0;
+                margin-left: 0; 
             }
             
             .page-content-wrapper > main {
-                padding-top: 112px; /* AJUSTADO: Aumentado */
+                 /* O padding-top de main pode precisar de ajuste se a altura da navbar mudar.
+                   Com logos de 60px + padding da navbar, a altura é ~80-90px.
+                   Original para esta breakpoint era 112px, mantendo por ora, pode precisar de ajuste fino. */
+                padding-top: 95px; 
             }
 
             .carousel img { max-height: 350px; }
@@ -384,23 +390,38 @@
             section p:first-of-type { font-size: 0.92rem; }
             
             .navbar-logo {
-                width: 70px;  /* AJUSTADO: Aumentado */
-                height: 70px; /* AJUSTADO: Aumentado */
+                width: 50px;  /* Ainda menor para telas pequenas */
+                height: 50px; /* Ainda menor para telas pequenas */
                 border-width: 2px;
+                margin: 0 2px;
             }
             .nav-links-wrapper {
-                margin: 0 8px;
+                margin: 0 5px; /* Mantido ou ligeiramente ajustado */
             }
             .mobile-menu-button {
                 font-size: 1.5rem;
             }
             .page-content-wrapper > main {
-                padding-top: 100px; /* AJUSTADO: Aumentado */
+                /* Com logos de 50px + padding, altura da navbar ~70-80px */
+                padding-top: 85px; 
             }
             .carousel img { max-height: 280px; }
             .carousel-nav button { width: 32px; height: 32px; font-size: 1rem; margin: 0 5px; }
             .dot { width: 8px; height: 8px; margin: 4px; }
             .footer { padding: 30px 0 15px; }
+        }
+         @media (max-width: 480px) { /* Breakpoint adicional para logos muito pequenas */
+            .navbar-logo {
+                width: 40px;
+                height: 40px;
+                margin: 0 1px;
+            }
+             .nav-links-wrapper {
+                margin: 0 3px;
+            }
+            .page-content-wrapper > main {
+                padding-top: 75px; /* Ajuste fino */
+            }
         }
     </style>
 </head>
@@ -411,6 +432,10 @@
     <div class="page-content-wrapper">
         <nav class="navbar">
             <div class="container navbar-container">
+                <a href="https://www.seti.pr.gov.br/" class="navbar-logo logo-seti" target="_blank" rel="noopener noreferrer" title="SETI - Secretaria da Ciência, Tecnologia e Ensino Superior do Paraná">
+                    <img src="./logoseti.png" alt="Logo SETI">
+                </a>
+
                 <a href="index.html" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
                     <img src="./logopet.png" alt="Logo PET-AME UNESPAR">
                 </a>
@@ -429,6 +454,10 @@
         
                 <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
                     <img src="./logounespar.png" alt="Logo UNESPAR">
+                </a>
+
+                <a href="https://www.fappr.pr.gov.br/" class="navbar-logo logo-araucaria" target="_blank" rel="noopener noreferrer" title="Fundação Araucária">
+                    <img src="./logoaraucaria.png" alt="Logo Fundação Araucária">
                 </a>
             </div>
         </nav>
@@ -508,6 +537,26 @@
                             <li>Desenvolvimento de habilidades profissionais, acadêmicas e pessoais valiosas para a carreira.</li>
                         </ul>
                     </div>
+                </div>
+            </section>
+
+            <div class="divider-pet"></div>
+
+            <section class="section" id="seti">
+                <div class="container">
+                    <h2 class="section-title">Sobre a SETI</h2>
+                    <p>A Secretaria da Ciência, Tecnologia e Ensino Superior do Paraná (SETI) é o órgão do Governo do Estado do Paraná responsável por formular, coordenar, implementar e acompanhar as políticas estaduais de desenvolvimento científico e tecnológico, bem como do ensino superior.</p>
+                    <p>Sua missão inclui promover a integração entre as instituições de ensino superior, pesquisa e o setor produtivo, visando o avanço do conhecimento, a inovação e o desenvolvimento socioeconômico sustentável do estado. A SETI também gerencia programas de fomento à pesquisa, bolsas de estudo e iniciativas para a popularização da ciência.</p>
+                </div>
+            </section>
+
+            <div class="divider-pet"></div>
+
+            <section class="section" id="fundacao-araucaria">
+                <div class="container">
+                    <h2 class="section-title">Sobre a Fundação Araucária</h2>
+                    <p>A Fundação Araucária de Apoio ao Desenvolvimento Científico e Tecnológico do Paraná (FA) é uma fundação de direito privado, sem fins lucrativos, vinculada à SETI. Seu principal objetivo é apoiar e fomentar a pesquisa científica, tecnológica e de inovação no estado do Paraná.</p>
+                    <p>Por meio de editais e programas, a Fundação Araucária concede bolsas de estudo e pesquisa, financia projetos, promove a internacionalização da ciência paranaense e estimula a transferência de tecnologia para a sociedade, contribuindo para a formação de recursos humanos qualificados e para o fortalecimento do sistema estadual de ciência, tecnologia e inovação.</p>
                 </div>
             </section>
 
@@ -603,7 +652,6 @@
             const dotsContainer = document.querySelector('.carousel-dots');
             const carouselContainer = document.querySelector('.carousel-container');
             
-            // MODIFICAÇÃO DE TESTE: Removido '.carousel-section-wrapper' do querySelectorAll para 'elementsToReveal'
             const elementsToReveal = document.querySelectorAll('.section > .container > *:not(.carousel-section-wrapper), .divider-pet');
 
 
@@ -615,10 +663,17 @@
                 });
             }
 
+            function updateNavbarHeight() {
+                if (navbar) {
+                    document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
+                }
+            }
+            
             window.addEventListener('scroll', () => {
                 if (navbar) {
                     if (window.scrollY > 30) { navbar.classList.add('scrolled'); }
                     else { navbar.classList.remove('scrolled'); }
+                    updateNavbarHeight(); // Atualiza a altura em caso de mudança de padding
                 }
                 if (scrollProgress) {
                     const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -627,6 +682,9 @@
                     scrollProgress.style.width = progress + '%';
                 }
             });
+            
+            updateNavbarHeight(); // Define na carga inicial
+            window.addEventListener('resize', updateNavbarHeight); // E no redimensionamento
 
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -636,11 +694,9 @@
                         const targetId = href;
                         const targetElement = document.querySelector(targetId);
                         if (targetElement) {
-                            let offset = navbar ? navbar.offsetHeight : 70; // Usa a altura atual da navbar para o offset
-                            // Se a navbar tem padding diferente quando 'scrolled', você pode precisar ajustar isso
-                            // ou recalcular o offset de forma mais dinâmica se a altura da navbar muda significativamente com o scroll.
-                            // Para este caso, a altura da logo é o principal fator, e o padding da navbar é consistente no estado não-scrolled.
-
+                            // Usa a variável CSS para o offset, ou um fallback se não definida
+                            let offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || (navbar ? navbar.offsetHeight : 70);
+                            
                             window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
 
                             if (navLinks && navLinks.classList.contains('active')) {
@@ -665,17 +721,12 @@
                 });
             }
             
-            elementsToReveal.forEach(el => { // Aplica 'hidden' aos elementos selecionados
+            elementsToReveal.forEach(el => { 
                 if(el) el.classList.add('hidden');
             });
             
-            // Garante que o .carousel-section-wrapper não seja afetado pela lógica 'hidden' inicial se ele foi removido do elementsToReveal
-            // Se preferir que ele também tenha a animação, precisaremos de uma abordagem diferente para ele.
-            // Por enquanto, ele não terá a classe 'hidden' aplicada por este loop.
-            // Se quiser que ele tenha o efeito, mas está causando problemas, podemos precisar ajustar o timing ou a forma como é revelado.
-
             window.addEventListener('scroll', revealElementsOnScroll);
-            revealElementsOnScroll(); // Chama na carga inicial
+            revealElementsOnScroll(); 
 
             if (carousel && images && images.length > 0 && prevBtn && nextBtn && dotsContainer && carouselContainer) {
                 let currentIndex = 0;
