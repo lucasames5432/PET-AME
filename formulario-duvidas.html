@@ -46,7 +46,11 @@
             position: relative; z-index: 1; width: 100%; background-color: transparent; 
             display: flex; flex-direction: column; min-height: 100vh;
         }
-        .page-content-wrapper > main { padding-top: 100px; flex-grow: 1; }
+        .page-content-wrapper > main { 
+            /* padding-top será definido por JS para se ajustar à altura da navbar */
+            flex-grow: 1; 
+        } 
+        
         h1, h2, h3, h4, h5, h6 {
             font-family: var(--fonte-secundaria); font-weight: 600; line-height: 1.3;
             margin-bottom: 1.2rem; color: var(--text-primary);
@@ -83,28 +87,39 @@
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
             background: var(--bg-navbar); backdrop-filter: blur(8px); 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04); padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04); 
+            padding: 15px 0; /* Igual à index.html */
         }
         .navbar.scrolled { 
-            padding: 10px 0; background: rgba(212, 237, 218, 0.97); box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
+            padding: 10px 0; /* Igual à index.html */
+            background: rgba(212, 237, 218, 0.97); box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
         }
         .navbar .container.navbar-container { 
-            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; /* Igual à index.html */
+            display: flex; justify-content: space-between; align-items: center;
         }
         .navbar-logo {
             display: flex; align-items: center; justify-content: center;
-            width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--text-secondary); 
+            width: 100px; height: 100px; /* Igual à index.html */
+            border-radius: 50%; border: 3px solid var(--text-secondary); /* Igual à index.html */
             overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; transition: var(--transicao-suave);
+            margin: 0 5px; /* Igual à index.html */
         }
         .navbar-logo:hover { transform: scale(1.05); box-shadow: var(--sombra); }
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .nav-links-wrapper { display: flex; align-items: center; }
+        
+        .nav-links-wrapper { 
+            display: flex; align-items: center; 
+            flex-grow: 1; 
+            justify-content: center;
+            margin: 0 10px; /* Ajustado para dar algum espaço, pode precisar de mais ou menos */
+        }
         .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
-        .nav-links li { margin-left: 22px; } /* Ajustado para mais links */
+        .nav-links li { margin-left: 10px; } /* Reduzido para caber com logos grandes */
         .nav-links li:first-child { margin-left: 0; }
         .nav-links a { 
             color: var(--text-primary); font-weight: 500; position: relative; 
-            padding: 6px 0; font-size: 0.85rem; /* Ajustado para mais links */
+            padding: 6px 0; font-size: 0.82rem; /* Reduzido para caber */
         }
         .nav-links a::before { 
             content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); 
@@ -114,7 +129,7 @@
         .nav-links a:hover { color: var(--accent-primary); }
         .mobile-menu-button { 
             display: none; background: none; border: none; font-size: 1.7rem; 
-            color: var(--text-primary); cursor: pointer; margin-left: 20px; 
+            color: var(--text-primary); cursor: pointer; margin-left: 15px; 
         }
         .footer { 
             background-color: #dceae0; color: var(--text-secondary); 
@@ -246,12 +261,22 @@
             h2.section-title { font-size: 2rem; margin-bottom: 1.5rem; }
             h2.section-title::after { margin: 10px auto 25px auto; }
             .navbar .container.navbar-container { justify-content: space-between; flex-wrap: nowrap; }
-            .navbar-logo { width: 50px; height: 50px; border-width: 2px; }
-            .navbar-logo.logo-petame { order: 1; }
-            .navbar-logo.logo-unespar { order: 3; }
-            .nav-links-wrapper { order: 2; flex-grow: 1; justify-content: center; margin: 0 5px; } /* Reduzido margin */
-            .nav-links li { margin-left: 15px; } 
-            .nav-links a { font-size: 0.82rem; }
+            
+            .navbar-logo { width: 60px; height: 60px; border-width: 2px; margin: 0 3px;} /* Igual à index.html */
+            .navbar-logo.logo-seti { order: 1; }      
+            .navbar-logo.logo-petame { order: 2; }   
+            .nav-links-wrapper { 
+                order: 3; 
+                flex-grow: 1; 
+                justify-content: center; 
+                margin: 0 5px; 
+            }
+            .navbar-logo.logo-unespar { order: 4; }  
+            .navbar-logo.logo-araucaria { order: 5; }
+
+            .nav-links li { margin-left: 8px; }  /* Ainda mais reduzido */
+            .nav-links a { font-size: 0.78rem; padding: 3px 0; } 
+
             .nav-links { 
                 display: none; flex-direction: column; width: 100%; 
                 background: var(--bg-navbar); padding: 15px 0; 
@@ -262,31 +287,35 @@
             .nav-links.active { display: flex; }
             .nav-links li { margin-left: 0; margin-bottom: 8px; width: 100%; text-align: center; }
             .nav-links li a { padding: 10px 0; display: block; width:100%; font-size: 0.9rem;}
-            .mobile-menu-button { display: block; margin-left: 0; }
-            .page-content-wrapper > main { padding-top: 90px; }
+            .mobile-menu-button { display: block; margin-left: 0; font-size: 1.5rem; } 
+            /* padding-top do main será ajustado pelo JS */
             .form-container-styled { padding: 20px; }
         }
         @media (max-width: 768px) {
             h2.section-title { font-size: 1.7rem; }
-            .navbar-logo { width: 45px; height: 45px;}
-            .nav-links-wrapper { margin: 0 2px; }
-            .nav-links li { margin-left: 10px; } 
-            .nav-links a { font-size: 0.78rem; }
-            .mobile-menu-button { font-size: 1.5rem; }
+            .navbar-logo { width: 50px; height: 50px; border-width: 2px; margin: 0 2px;} /* Igual à index.html */
+             .nav-links-wrapper { margin: 0 3px; } /* Ajustado */
+            .nav-links li { margin-left: 5px; } /* Ainda mais reduzido */
+            .nav-links a { font-size: 0.75rem; padding: 2px 0;} 
+            .mobile-menu-button { font-size: 1.4rem; } 
             .form-container-styled { padding: 20px 15px; }
             .form-container-styled label, input[type="text"], input[type="email"], select, textarea {font-size: 0.9rem;}
+             /* padding-top do main será ajustado pelo JS */
         }
          @media (max-width: 480px) { 
-            .nav-links li { margin-left: 8px; }
-            .nav-links a { font-size: 0.75rem; padding: 4px 0;}
-             .navbar-logo { 
+            .navbar-logo { 
                 width: 40px; 
                 height: 40px;
-                border-width: 2px;
+                border-width: 2px; /* Igual à index.html */
+                margin: 0 1px;
             }
+            .nav-links-wrapper { margin: 0 2px; } /* Ajustado */
+            .nav-links li { margin-left: 4px; } /* Extremamente reduzido, pode ser melhor esconder os links aqui */
+            .nav-links a { font-size: 0.7rem; padding: 1px 0;}
              .mobile-menu-button { 
                 font-size: 1.3rem; 
             }
+             /* padding-top do main será ajustado pelo JS */
         }
     </style>
 </head>
@@ -297,8 +326,12 @@
     <div class="page-content-wrapper">
         <nav class="navbar">
             <div class="container navbar-container">
+                <a href="https://www.seti.pr.gov.br/" class="navbar-logo logo-seti" target="_blank" rel="noopener noreferrer" title="SETI - Secretaria da Ciência, Tecnologia e Ensino Superior do Paraná">
+                    <img src="./logoseti.png" alt="Logo SETI">
+                </a>
                 <a href="index.html" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
-                    <img src="logopet.png" alt="Logo PET-AME UNESPAR"> </a>
+                    <img src="logopet.png" alt="Logo PET-AME UNESPAR">
+                </a>
                 <div class="nav-links-wrapper"> 
                     <ul class="nav-links" id="navLinksGlobal">
                         <li><a href="index.html">Início</a></li>
@@ -311,7 +344,11 @@
                     </button>
                 </div>
                 <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
-                    <img src="logounespar.png" alt="Logo UNESPAR"> </a>
+                    <img src="logounespar.png" alt="Logo UNESPAR">
+                </a>
+                <a href="https://www.fappr.pr.gov.br/" class="navbar-logo logo-araucaria" target="_blank" rel="noopener noreferrer" title="Fundação Araucária">
+                    <img src="./logoaraucaria.png" alt="Logo Fundação Araucária">
+                </a>
             </div>
         </nav>
 
@@ -473,8 +510,9 @@
                 });
             }
             window.addEventListener('scroll', revealElementsOnScroll);
-            revealElementsOnScroll();
+            revealElementsOnScroll(); 
         }
+
 
         if (mobileMenuBtn && navLinksList) {
             mobileMenuBtn.addEventListener('click', () => {
@@ -483,10 +521,21 @@
                     ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
             });
         }
+        
+        function updateNavbarHeightAndPadding() {
+            const mainElement = document.querySelector('.page-content-wrapper > main');
+            if (navbar && mainElement) {
+                const navbarHeight = navbar.offsetHeight;
+                mainElement.style.paddingTop = (navbarHeight + 20) + 'px'; // Adiciona um respiro de 20px
+            }
+        }
 
         window.addEventListener('scroll', () => {
             if (navbar) {
                 navbar.classList.toggle('scrolled', window.scrollY > 30);
+                 // Não precisa chamar updateNavbarHeightAndPadding() no scroll se a altura da navbar scrolled/unscrolled é a mesma
+                 // ou se a mudança de padding já está considerada na altura.
+                 // Se a altura da navbar mudar significativamente com 'scrolled', reative.
             }
             if (scrollProgress) {
                 const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -494,19 +543,21 @@
                 scrollProgress.style.width = (scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0) + '%';
             }
         });
+        
+        updateNavbarHeightAndPadding(); // Chamada inicial
+        window.addEventListener('resize', updateNavbarHeightAndPadding); // Ajuste no redimensionamento
+
 
         document.querySelectorAll('.nav-links a').forEach(anchor => { 
             anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
-                // Se o link NÃO for para uma âncora na mesma página, permite a navegação padrão
-                if (!href.startsWith('#') || (href.startsWith('#') && !document.getElementById(href.substring(1)))) {
-                     if (navLinksList && navLinksList.classList.contains('active')) { // Fecha o menu se estiver aberto
+                if (!href || !href.startsWith('#') || href === "#" || (href.startsWith('#') && !document.getElementById(href.substring(1)))) {
+                     if (navLinksList && navLinksList.classList.contains('active')) { 
                         navLinksList.classList.remove('active');
                         if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
                     }
                     return; 
                 }
-                // Se for uma âncora na mesma página (pouco provável nesta página de formulário)
                 if (href.startsWith('#') && href.length > 1) { 
                     e.preventDefault();
                     const targetElement = document.querySelector(href);
@@ -550,7 +601,7 @@
                     }
                 });
                 
-                if (!data.conheceu) {
+                if (!data.conheceu) { 
                     data.conheceu = '';
                 }
 
