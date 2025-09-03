@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos PET - Esquenta Matemático</title>
-    <meta name="description" content="Detalhes sobre o evento Esquenta Matemático e próximos eventos do PET-AME UNESPAR.">
+    <title>Eventos PET - Esquenta Matemático e Amostra de Profissões</title>
+    <meta name="description" content="Detalhes sobre os eventos do PET-AME UNESPAR: Esquenta Matemático e Amostra de Profissões.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -442,6 +442,8 @@
             <section class="section">
                 <div class="container">
                     <h2 class="section-title">Eventos do PET</h2>
+                    
+                    <!-- Evento: Esquenta Matemático -->
                     <div class="event-content-card"> 
                         <h2>Evento Realizado: Esquenta Matemático</h2>
                         
@@ -460,9 +462,10 @@
                             <p>Confira abaixo os melhores momentos deste evento que marcou o início da jornada universitária de muitos alunos!</p>
                         </div>
                         
-                        <div class="carousel-container styled-carousel">
+                        <div class="carousel-container styled-carousel" id="carousel-esquenta">
                             <div class="carousel">
-                                <img src="https://files.fm/thumb_show.php?i=fpw7myb9u4" alt="Participantes atentos durante palestra no Esquenta Matemático" class="active-slide"> <img src="https://files.fm/thumb_show.php?i=qjnw9wqehr" alt="Alunos realizando atividades práticas em grupo">
+                                <img src="https://files.fm/thumb_show.php?i=fpw7myb9u4" alt="Participantes atentos durante palestra no Esquenta Matemático" class="active-slide"> 
+                                <img src="https://files.fm/thumb_show.php?i=qjnw9wqehr" alt="Alunos realizando atividades práticas em grupo">
                                 <img src="https://files.fm/thumb_show.php?i=z57ja6rh57" alt="Momento de interação entre calouros e veteranos">
                                 <img src="https://files.fm/thumb_show.php?i=p562ek2ecf" alt="Professor ministrando oficina de matemática">
                                 <img src="https://files.fm/thumb_show.php?i=cxk6wdde64" alt="Encerramento do evento com participantes reunidos">
@@ -477,6 +480,48 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Evento: Amostra de Profissões -->
+                    <div class="event-content-card"> 
+                        <h2>Evento Realizado: Amostra de Profissões</h2>
+                        
+                        <div class="past-event-details"> 
+                            <h3>Amostra de Profissões</h3>
+                            <p class="event-date">Data do Evento</p>
+                            <p>A Amostra de Profissões foi um evento organizado pelo PET-AME para apresentar diferentes áreas de atuação profissional aos estudantes da UNESPAR.</p>
+                            <p>Durante o evento, os participantes tiveram a oportunidade de:</p>
+                            <ul>
+                                <li>Participar do jogo das 3 portas, onde escolhiam uma porta, abriam uma porta vazia e decidiam se queriam trocar ou não</li>
+                                <li>Experimentar uma simulação de investimentos com 5 ativos diferentes, comparando com o modelo de Markowitz e com a Selic</li>
+                                <li>Conhecer o processo de fabricação da paçoca na sala de EPA (Engenharia de Produção de Alimentos)</li>
+                                <li>Interagir com profissionais de diversas áreas e conhecer mais sobre as possibilidades de carreira</li>
+                                <li>Participar de atividades práticas que ilustravam o dia a dia de diferentes profissões</li>
+                            </ul>
+                            <p>Confira abaixo os melhores momentos deste evento que ampliou horizontes profissionais de muitos alunos!</p>
+                        </div>
+                        
+                        <div class="carousel-container styled-carousel" id="carousel-amostra">
+                            <div class="carousel">
+                                <img src="./amostra/amostra1.jpg" alt="Visão geral do evento Amostra de Profissões" class="active-slide">
+                                <img src="./amostra/amostra2.jpg" alt="Jogo das 3 portas em ação">
+                                <img src="./amostra/amostra3.jpg" alt="Simulação de investimentos com participantes">
+                                <img src="./amostra/amostra4.jpg" alt="Processo de fabricação da paçoca na sala de EPA">
+                                <img src="./amostra/amostra5.jpg" alt="Interação entre estudantes e profissionais">
+                                <img src="./amostra/amostra6.jpg" alt="Atividade prática demonstrando uma profissão">
+                                <img src="./amostra/amostra7.jpg" alt="Momento de perguntas e respostas com os participantes">
+                                <img src="./amostra/amostra8.jpg" alt="Encerramento do evento Amostra de Profissões">
+                            </div>
+
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
+
+                            <div class="carousel-dots">
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="calendar-section-wrapper" id="calendario-pet">
                             <h3 class="calendar-title">Próximos eventos</h3>
                               <p class="calendar-subtitle">Nossos próximos eventos podem ser visualizados no calendário abaixo!</p>
@@ -608,17 +653,25 @@
             });
         });
         
-        const carouselElement = document.querySelector('.carousel-container.styled-carousel .carousel');
-        const carouselImages = carouselElement ? carouselElement.querySelectorAll('img') : [];
-        const prevBtn = document.querySelector('.carousel-container.styled-carousel .prev-btn');
-        const nextBtn = document.querySelector('.carousel-container.styled-carousel .next-btn');
-        const dotsContainer = document.querySelector('.carousel-container.styled-carousel .carousel-dots');
-        
-        if (carouselElement && carouselImages.length > 0 && prevBtn && nextBtn && dotsContainer) {
+        // Função para inicializar um carrossel
+        function initCarousel(carouselId) {
+            const carouselElement = document.querySelector(`#${carouselId} .carousel`);
+            if (!carouselElement) return;
+            
+            const carouselImages = carouselElement.querySelectorAll('img');
+            if (carouselImages.length === 0) return;
+            
+            const prevBtn = document.querySelector(`#${carouselId} .prev-btn`);
+            const nextBtn = document.querySelector(`#${carouselId} .next-btn`);
+            const dotsContainer = document.querySelector(`#${carouselId} .carousel-dots`);
+            
+            if (!prevBtn || !nextBtn || !dotsContainer) return;
+            
             let currentIndex = 0;
             const totalImages = carouselImages.length;
             let autoSlideInterval;
             
+            // Criar dots
             carouselImages.forEach((_, index) => {
                 const dot = document.createElement('div');
                 dot.classList.add('dot');
@@ -672,7 +725,7 @@
                 resetAutoSlide();
             });
             
-            const carouselContainerElement = document.querySelector('.carousel-container.styled-carousel');
+            const carouselContainerElement = document.querySelector(`#${carouselId}`);
             if (carouselContainerElement) {
                  carouselContainerElement.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
                  carouselContainerElement.addEventListener('mouseleave', startAutoSlide);
@@ -702,6 +755,10 @@
             updateCarousel(); 
             startAutoSlide(); 
         }
+        
+        // Inicializar ambos os carrosséis
+        initCarousel('carousel-esquenta');
+        initCarousel('carousel-amostra');
     });
     </script>
 </body>
