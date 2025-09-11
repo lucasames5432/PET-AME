@@ -172,6 +172,7 @@
         input[type="text"],
         input[type="email"],
         input[type="number"],
+        input[type="tel"],
         select,
         textarea {
             width: 100%;
@@ -184,7 +185,7 @@
             font-size: 0.95rem;
             transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
-        input[type="text"], input[type="email"], input[type="number"], select {
+        input[type="text"], input[type="email"], input[type="number"], input[type="tel"], select {
              min-height: 48px; 
         }
         textarea {
@@ -192,11 +193,11 @@
             resize: vertical;
             line-height: 1.6;
         }
-        textarea::placeholder, input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="number"]::placeholder {
+        textarea::placeholder, input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="number"]::placeholder, input[type="tel"]::placeholder {
             color: var(--text-placeholder);
             opacity: 1;
         }
-        textarea:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus {
+        textarea:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="tel"]:focus, select:focus {
             outline: none;
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.25); 
@@ -311,7 +312,7 @@
             .nav-links a { font-size: 0.75rem; padding: 2px 0;} 
             .mobile-menu-button { font-size: 1.4rem; } 
             .form-container-styled { padding: 20px 15px; }
-            .form-container-styled label, input[type="text"], input[type="email"], input[type="number"], select, textarea {font-size: 0.9rem;}
+            .form-container-styled label, input[type="text"], input[type="email"], input[type="number"], input[type="tel"], select, textarea {font-size: 0.9rem;}
              /* padding-top do main será ajustado pelo JS */
         }
          @media (max-width: 480px) { 
@@ -390,6 +391,12 @@
                                 <label for="rg" class="required-field">RG</label>
                                 <input type="text" id="rg" name="rg" required placeholder="Seu RG">
                             </div>
+
+                            <!-- Novo campo WhatsApp adicionado aqui -->
+                            <div class="form-group">
+                                <label for="whatsapp" class="required-field">WhatsApp</label>
+                                <input type="tel" id="whatsapp" name="whatsapp" required placeholder="(XX) XXXXX-XXXX" oninput="formatarWhatsApp(this)">
+                            </div>
                             
                             <div class="form-group">
                                 <label class="required-field">Você é estudante da UNESPAR?</label>
@@ -406,19 +413,18 @@
                             </div>
                             
                             <div class="form-group conditional-field" id="curso-field">
-                                <label for="curso" class="required-field">Qual curso você faz?</label>
-                                <select id="curso" name="curso" required>
-                                    <option value="">Selecione seu curso...</option>
-                                    <option value="Administração">Administração</option>
-                                    <option value="Ciências Contábeis">Ciências Contábeis</option>
-                                    <option value="Ciências Econômicas">Ciências Econômicas</option>
-                                    <option value="Engenharia de Produção Agroindustrial">Engenharia de Produção Agroindustrial</option>
-                                    <option value="Geografia">Geografia</option>
-                                    <option value="Letras Português/Inglês">Letras Português/Inglês</option>
-                                    <option value="Licenciatura em Matemática">Licenciatura em Matemática</option>
-                                    <option value="Pedagogia">Pedagogia</option>
-                                   <option value="Turismo">Turismo</option>
-                               </select>
+                                <label class="required-field">Qual curso você faz?</label>
+                                <div class="radio-group">
+                                    <div class="radio-option"><input type="radio" id="curso_administracao" name="curso" value="Administração" required><label for="curso_administracao">Administração</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_contabeis" name="curso" value="Ciências Contábeis"><label for="curso_contabeis">Ciências Contábeis</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_economicas" name="curso" value="Ciências Econômicas"><label for="curso_economicas">Ciências Econômicas</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_engenharia" name="curso" value="Engenharia de Produção Agroindustrial"><label for="curso_engenharia">Engenharia de Produção Agroindustrial</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_geografia" name="curso" value="Geografia"><label for="curso_geografia">Geografia</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_letras" name="curso" value="Letras Português/Inglês"><label for="curso_letras">Letras Português/Inglês</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_matematica" name="curso" value="Licenciatura em Matemática"><label for="curso_matematica">Licenciatura em Matemática</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_pedagogia" name="curso" value="Pedagogia"><label for="curso_pedagogia">Pedagogia</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_turismo" name="curso" value="Turismo"><label for="curso_turismo">Turismo</label></div>
+                                </div>
                             </div>
                             
                             <div class="form-group">
@@ -556,7 +562,7 @@
                         window.scrollTo({ top: targetElement.offsetTop - offset, behavior: 'smooth' });
                         if (navLinksList && navLinksList.classList.contains('active')) {
                             navLinksList.classList.remove('active');
-                            if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                            if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars'></i>';
                         }
                     }
                 }
@@ -577,21 +583,41 @@
             
             campo.value = cpf;
         }
+
+        // Função para formatar WhatsApp
+        function formatarWhatsApp(campo) {
+            let whatsapp = campo.value.replace(/\D/g, '');
+            
+            if (whatsapp.length > 11) {
+                whatsapp = whatsapp.substring(0, 11);
+            }
+            
+            if (whatsapp.length > 0) {
+                whatsapp = whatsapp.replace(/^(\d{2})(\d)/g, "($1) $2");
+                if (whatsapp.length > 10) {
+                    whatsapp = whatsapp.replace(/(\d{5})(\d)/, "$1-$2");
+                } else if (whatsapp.length > 5) {
+                    whatsapp = whatsapp.replace(/(\d{5})(\d)/, "$1-$2");
+                }
+            }
+            
+            campo.value = whatsapp;
+        }
         
         // Mostrar/ocultar campo de curso baseado na resposta sobre estudar na UNESPAR
         const estudaUnesparRadios = document.querySelectorAll('input[name="estuda_unespar"]');
         const cursoField = document.getElementById('curso-field');
-        const cursoSelect = document.getElementById('curso');
+        const cursoRadios = document.querySelectorAll('input[name="curso"]');
         
         estudaUnesparRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'Sim') {
                     cursoField.style.display = 'block';
-                    cursoSelect.setAttribute('required', 'required');
+                    cursoRadios.forEach(radio => radio.setAttribute('required', 'required'));
                 } else {
                     cursoField.style.display = 'none';
-                    cursoSelect.removeAttribute('required');
-                    cursoSelect.value = '';
+                    cursoRadios.forEach(radio => radio.removeAttribute('required'));
+                    cursoRadios.forEach(radio => radio.checked = false);
                 }
             });
         });
@@ -602,6 +628,15 @@
             inscricaoForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
+                // Validar WhatsApp
+                const whatsappInput = document.getElementById('whatsapp');
+                const whatsappValue = whatsappInput.value.replace(/\D/g, '');
+                if (whatsappValue.length < 10 || whatsappValue.length > 11) {
+                    alert('Por favor, insira um número de WhatsApp válido com DDD (10 ou 11 dígitos).');
+                    whatsappInput.focus();
+                    return;
+                }
+
                 const formData = new FormData(this);
                 const data = {};
                 
