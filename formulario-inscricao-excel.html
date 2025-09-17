@@ -388,14 +388,38 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="rg" class="required-field">RG</label>
-                                <input type="text" id="rg" name="rg" required placeholder="Seu RG">
+                                <label for="cidade" class="required-field">Cidade de Residência</label>
+                                <input type="text" id="cidade" name="cidade" required placeholder="Sua cidade">
                             </div>
 
-                            <!-- Novo campo WhatsApp adicionado aqui -->
                             <div class="form-group">
                                 <label for="whatsapp" class="required-field">WhatsApp</label>
                                 <input type="tel" id="whatsapp" name="whatsapp" required placeholder="(XX) XXXXX-XXXX" oninput="formatarWhatsApp(this)">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required-field">Você é estudante?</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" id="estudante_sim" name="estudante" value="Sim" required>
+                                        <label for="estudante_sim">Sim</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" id="estudante_nao" name="estudante" value="Não">
+                                        <label for="estudante_nao">Não</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group conditional-field" id="detalhes-estudante-field">
+                                <label for="curso" class="required-field">Curso</label>
+                                <input type="text" id="curso" name="curso" placeholder="Nome do seu curso">
+                                
+                                <label for="instituicao" class="required-field">Instituição de Origem</label>
+                                <input type="text" id="instituicao" name="instituicao" placeholder="Nome da sua instituição">
+                                
+                                <label for="ano" class="required-field">Ano/Período</label>
+                                <input type="text" id="ano" name="ano" placeholder="Ex: 2º ano, 3º período">
                             </div>
                             
                             <div class="form-group">
@@ -412,19 +436,41 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group conditional-field" id="curso-field">
-                                <label class="required-field">Qual curso você faz?</label>
+                            <div class="form-group conditional-field" id="curso-unespar-field">
+                                <label class="required-field">Qual curso você faz na UNESPAR?</label>
                                 <div class="radio-group">
-                                    <div class="radio-option"><input type="radio" id="curso_administracao" name="curso" value="Administração" required><label for="curso_administracao">Administração</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_contabeis" name="curso" value="Ciências Contábeis"><label for="curso_contabeis">Ciências Contábeis</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_economicas" name="curso" value="Ciências Econômicas"><label for="curso_economicas">Ciências Econômicas</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_engenharia" name="curso" value="Engenharia de Produção Agroindustrial"><label for="curso_engenharia">Engenharia de Produção Agroindustrial</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_geografia" name="curso" value="Geografia"><label for="curso_geografia">Geografia</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_letras" name="curso" value="Letras Português/Inglês"><label for="curso_letras">Letras Português/Inglês</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_matematica" name="curso" value="Licenciatura em Matemática"><label for="curso_matematica">Licenciatura em Matemática</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_pedagogia" name="curso" value="Pedagogia"><label for="curso_pedagogia">Pedagogia</label></div>
-                                    <div class="radio-option"><input type="radio" id="curso_turismo" name="curso" value="Turismo"><label for="curso_turismo">Turismo</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_administracao" name="curso_unespar" value="Administração"><label for="curso_administracao">Administração</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_contabeis" name="curso_unespar" value="Ciências Contábeis"><label for="curso_contabeis">Ciências Contábeis</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_economicas" name="curso_unespar" value="Ciências Econômicas"><label for="curso_economicas">Ciências Econômicas</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_engenharia" name="curso_unespar" value="Engenharia de Produção Agroindustrial"><label for="curso_engenharia">Engenharia de Produção Agroindustrial</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_geografia" name="curso_unespar" value="Geografia"><label for="curso_geografia">Geografia</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_letras" name="curso_unespar" value="Letras Português/Inglês"><label for="curso_letras">Letras Português/Inglês</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_matematica" name="curso_unespar" value="Licenciatura em Matemática"><label for="curso_matematica">Licenciatura em Matemática</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_pedagogia" name="curso_unespar" value="Pedagogia"><label for="curso_pedagogia">Pedagogia</label></div>
+                                    <div class="radio-option"><input type="radio" id="curso_turismo" name="curso_unespar" value="Turismo"><label for="curso_turismo">Turismo</label></div>
                                 </div>
+                            </div>
+                            
+                            <div class="form-group conditional-field" id="comunidade-externa-field">
+                                <label for="instituicao_externa" class="required-field">Qual sua instituição?</label>
+                                <input type="text" id="instituicao_externa" name="instituicao_externa" placeholder="Nome da instituição">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="como_descobriu" class="required-field">Como você descobriu sobre este minicurso?</label>
+                                <select id="como_descobriu" name="como_descobriu" required>
+                                    <option value="">Selecione uma opção...</option>
+                                    <option value="Redes sociais">Redes sociais (Instagram, Facebook, etc.)</option>
+                                    <option value="Site da UNESPAR">Site da UNESPAR</option>
+                                    <option value="Colegas/Amigos">Colegas/Amigos</option>
+                                    <option value="Professores">Professores</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group conditional-field" id="outro-descobriu-field">
+                                <label for="outro_descobriu" class="required-field">Especifique como descobriu</label>
+                                <input type="text" id="outro_descobriu" name="outro_descobriu" placeholder="Como você descobriu sobre o minicurso?">
                             </div>
                             
                             <div class="form-group">
@@ -604,23 +650,77 @@
             campo.value = whatsapp;
         }
         
-        // Mostrar/ocultar campo de curso baseado na resposta sobre estudar na UNESPAR
+        // Mostrar/ocultar campos condicionais
+        const estudanteRadios = document.querySelectorAll('input[name="estudante"]');
+        const detalhesEstudanteField = document.getElementById('detalhes-estudante-field');
         const estudaUnesparRadios = document.querySelectorAll('input[name="estuda_unespar"]');
-        const cursoField = document.getElementById('curso-field');
-        const cursoRadios = document.querySelectorAll('input[name="curso"]');
+        const cursoUnesparField = document.getElementById('curso-unespar-field');
+        const comunidadeExternaField = document.getElementById('comunidade-externa-field');
+        const comoDescobriuSelect = document.getElementById('como_descobriu');
+        const outroDescobriuField = document.getElementById('outro-descobriu-field');
         
-        estudaUnesparRadios.forEach(radio => {
+        // Controle para estudante
+        estudanteRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'Sim') {
-                    cursoField.style.display = 'block';
-                    cursoRadios.forEach(radio => radio.setAttribute('required', 'required'));
+                    detalhesEstudanteField.style.display = 'block';
+                    document.querySelectorAll('#detalhes-estudante-field input').forEach(input => {
+                        input.setAttribute('required', 'required');
+                    });
                 } else {
-                    cursoField.style.display = 'none';
-                    cursoRadios.forEach(radio => radio.removeAttribute('required'));
-                    cursoRadios.forEach(radio => radio.checked = false);
+                    detalhesEstudanteField.style.display = 'none';
+                    document.querySelectorAll('#detalhes-estudante-field input').forEach(input => {
+                        input.removeAttribute('required');
+                        input.value = '';
+                    });
                 }
             });
         });
+        
+        // Controle para estudante da UNESPAR
+        estudaUnesparRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'Sim') {
+                    cursoUnesparField.style.display = 'block';
+                    document.querySelectorAll('#curso-unespar-field input').forEach(input => {
+                        input.setAttribute('required', 'required');
+                    });
+                    comunidadeExternaField.style.display = 'none';
+                    document.querySelectorAll('#comunidade-externa-field input').forEach(input => {
+                        input.removeAttribute('required');
+                        input.value = '';
+                    });
+                } else {
+                    cursoUnesparField.style.display = 'none';
+                    document.querySelectorAll('#curso-unespar-field input').forEach(input => {
+                        input.removeAttribute('required');
+                        input.checked = false;
+                    });
+                    // Mostrar campo de comunidade externa apenas se for estudante mas não da UNESPAR
+                    const estudanteValue = document.querySelector('input[name="estudante"]:checked');
+                    if (estudanteValue && estudanteValue.value === 'Sim') {
+                        comunidadeExternaField.style.display = 'block';
+                        document.querySelectorAll('#comunidade-externa-field input').forEach(input => {
+                            input.setAttribute('required', 'required');
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Controle para como descobriu o minicurso
+        if (comoDescobriuSelect) {
+            comoDescobriuSelect.addEventListener('change', function() {
+                if (this.value === 'Outro') {
+                    outroDescobriuField.style.display = 'block';
+                    document.getElementById('outro_descobriu').setAttribute('required', 'required');
+                } else {
+                    outroDescobriuField.style.display = 'none';
+                    document.getElementById('outro_descobriu').removeAttribute('required');
+                    document.getElementById('outro_descobriu').value = '';
+                }
+            });
+        }
         
         // Processar formulário de inscrição
         const inscricaoForm = document.getElementById('inscricaoForm');
@@ -654,9 +754,25 @@
                     data[key] = value;
                 });
                 
-                // Se não estuda na UNESPAR, garantir que o campo curso esteja vazio
-                if (data.estuda_unespar === 'Não') {
+                // Limpar campos não utilizados baseado nas seleções
+                const estudanteValue = document.querySelector('input[name="estudante"]:checked');
+                if (estudanteValue && estudanteValue.value === 'Não') {
                     data.curso = '';
+                    data.instituicao = '';
+                    data.ano = '';
+                }
+                
+                const estudaUnesparValue = document.querySelector('input[name="estuda_unespar"]:checked');
+                if (estudaUnesparValue && estudaUnesparValue.value === 'Sim') {
+                    data.instituicao_externa = '';
+                } else if (estudanteValue && estudanteValue.value === 'Sim') {
+                    // Se é estudante mas não da UNESPAR, manter instituicao_externa
+                } else {
+                    data.instituicao_externa = '';
+                }
+                
+                if (data.como_descobriu !== 'Outro') {
+                    data.outro_descobriu = '';
                 }
                 
                 const btn = this.querySelector('button[type="submit"]'); 
@@ -677,8 +793,11 @@
                     if (response.ok) {
                         if(successMsg) successMsg.style.display = 'block';
                         this.reset();
-                        // Esconder campo de curso após reset
-                        cursoField.style.display = 'none';
+                        // Esconder campos condicionais após reset
+                        detalhesEstudanteField.style.display = 'none';
+                        cursoUnesparField.style.display = 'none';
+                        comunidadeExternaField.style.display = 'none';
+                        outroDescobriuField.style.display = 'none';
                         setTimeout(() => { if(successMsg) successMsg.style.display = 'none'; }, 6000);
                     } else {
                         const errorResult = await response.json().catch(() => ({ error: 'Erro desconhecido no servidor.' }));
