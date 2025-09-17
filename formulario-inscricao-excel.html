@@ -411,6 +411,20 @@
                                 </div>
                             </div>
                             
+                            <div class="form-group conditional-field" id="estuda-unespar-field">
+                                <label class="required-field">Você é estudante da UNESPAR?</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" id="unespar_sim" name="estuda_unespar" value="Sim">
+                                        <label for="unespar_sim">Sim</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" id="unespar_nao" name="estuda_unespar" value="Não">
+                                        <label for="unespar_nao">Não</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="form-group conditional-field" id="detalhes-estudante-field">
                                 <label for="curso" class="required-field">Curso</label>
                                 <input type="text" id="curso" name="curso" placeholder="Nome do seu curso">
@@ -420,20 +434,6 @@
                                 
                                 <label for="ano" class="required-field">Ano/Período</label>
                                 <input type="text" id="ano" name="ano" placeholder="Ex: 2º ano, 3º período">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="required-field">Você é estudante da UNESPAR?</label>
-                                <div class="radio-group">
-                                    <div class="radio-option">
-                                        <input type="radio" id="unespar_sim" name="estuda_unespar" value="Sim" required>
-                                        <label for="unespar_sim">Sim</label>
-                                    </div>
-                                    <div class="radio-option">
-                                        <input type="radio" id="unespar_nao" name="estuda_unespar" value="Não">
-                                        <label for="unespar_nao">Não</label>
-                                    </div>
-                                </div>
                             </div>
                             
                             <div class="form-group conditional-field" id="curso-unespar-field">
@@ -451,11 +451,6 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group conditional-field" id="comunidade-externa-field">
-                                <label for="instituicao_externa" class="required-field">Qual sua instituição?</label>
-                                <input type="text" id="instituicao_externa" name="instituicao_externa" placeholder="Nome da instituição">
-                            </div>
-                            
                             <div class="form-group">
                                 <label for="como_descobriu" class="required-field">Como você descobriu sobre este minicurso?</label>
                                 <select id="como_descobriu" name="como_descobriu" required>
@@ -464,7 +459,6 @@
                                     <option value="Site da UNESPAR">Site da UNESPAR</option>
                                     <option value="Colegas/Amigos">Colegas/Amigos</option>
                                     <option value="Professores">Professores</option>
-                                    <option value="Professores">Cartazes</option>
                                     <option value="Outro">Outro</option>
                                 </select>
                             </div>
@@ -475,7 +469,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="nivel_conhecimento" class="required-field">Nível de conhecimento em Google Sheets/Excel</label>
+                                <label for="nivel_conhecimento" class="required-field">Nível de conhecimento em Google Sheets</label>
                                 <select id="nivel_conhecimento" name="nivel_conhecimento" required>
                                     <option value="">Selecione seu nível...</option>
                                     <option value="Baixo">Baixo (nunca usei/pouca experiência)</option>
@@ -653,10 +647,10 @@
         
         // Mostrar/ocultar campos condicionais
         const estudanteRadios = document.querySelectorAll('input[name="estudante"]');
+        const estudaUnesparField = document.getElementById('estuda-unespar-field');
         const detalhesEstudanteField = document.getElementById('detalhes-estudante-field');
         const estudaUnesparRadios = document.querySelectorAll('input[name="estuda_unespar"]');
         const cursoUnesparField = document.getElementById('curso-unespar-field');
-        const comunidadeExternaField = document.getElementById('comunidade-externa-field');
         const comoDescobriuSelect = document.getElementById('como_descobriu');
         const outroDescobriuField = document.getElementById('outro-descobriu-field');
         
@@ -664,15 +658,22 @@
         estudanteRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'Sim') {
+                    estudaUnesparField.style.display = 'block';
                     detalhesEstudanteField.style.display = 'block';
                     document.querySelectorAll('#detalhes-estudante-field input').forEach(input => {
                         input.setAttribute('required', 'required');
                     });
                 } else {
+                    estudaUnesparField.style.display = 'none';
                     detalhesEstudanteField.style.display = 'none';
+                    cursoUnesparField.style.display = 'none';
                     document.querySelectorAll('#detalhes-estudante-field input').forEach(input => {
                         input.removeAttribute('required');
                         input.value = '';
+                    });
+                    document.querySelectorAll('#curso-unespar-field input').forEach(input => {
+                        input.removeAttribute('required');
+                        input.checked = false;
                     });
                 }
             });
@@ -686,25 +687,12 @@
                     document.querySelectorAll('#curso-unespar-field input').forEach(input => {
                         input.setAttribute('required', 'required');
                     });
-                    comunidadeExternaField.style.display = 'none';
-                    document.querySelectorAll('#comunidade-externa-field input').forEach(input => {
-                        input.removeAttribute('required');
-                        input.value = '';
-                    });
                 } else {
                     cursoUnesparField.style.display = 'none';
                     document.querySelectorAll('#curso-unespar-field input').forEach(input => {
                         input.removeAttribute('required');
                         input.checked = false;
                     });
-                    // Mostrar campo de comunidade externa apenas se for estudante mas não da UNESPAR
-                    const estudanteValue = document.querySelector('input[name="estudante"]:checked');
-                    if (estudanteValue && estudanteValue.value === 'Sim') {
-                        comunidadeExternaField.style.display = 'block';
-                        document.querySelectorAll('#comunidade-externa-field input').forEach(input => {
-                            input.setAttribute('required', 'required');
-                        });
-                    }
                 }
             });
         });
@@ -758,18 +746,16 @@
                 // Limpar campos não utilizados baseado nas seleções
                 const estudanteValue = document.querySelector('input[name="estudante"]:checked');
                 if (estudanteValue && estudanteValue.value === 'Não') {
+                    data.estuda_unespar = '';
                     data.curso = '';
                     data.instituicao = '';
                     data.ano = '';
-                }
-                
-                const estudaUnesparValue = document.querySelector('input[name="estuda_unespar"]:checked');
-                if (estudaUnesparValue && estudaUnesparValue.value === 'Sim') {
-                    data.instituicao_externa = '';
-                } else if (estudanteValue && estudanteValue.value === 'Sim') {
-                    // Se é estudante mas não da UNESPAR, manter instituicao_externa
+                    data.curso_unespar = '';
                 } else {
-                    data.instituicao_externa = '';
+                    const estudaUnesparValue = document.querySelector('input[name="estuda_unespar"]:checked');
+                    if (estudaUnesparValue && estudaUnesparValue.value === 'Não') {
+                        data.curso_unespar = '';
+                    }
                 }
                 
                 if (data.como_descobriu !== 'Outro') {
@@ -795,9 +781,9 @@
                         if(successMsg) successMsg.style.display = 'block';
                         this.reset();
                         // Esconder campos condicionais após reset
+                        estudaUnesparField.style.display = 'none';
                         detalhesEstudanteField.style.display = 'none';
                         cursoUnesparField.style.display = 'none';
-                        comunidadeExternaField.style.display = 'none';
                         outroDescobriuField.style.display = 'none';
                         setTimeout(() => { if(successMsg) successMsg.style.display = 'none'; }, 6000);
                     } else {
