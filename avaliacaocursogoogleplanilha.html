@@ -656,6 +656,24 @@
             avaliacaoForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
+                // Validar se todos os campos obrigatórios estão preenchidos
+                const requiredFields = this.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = 'var(--cor-obrigatorio)';
+                    } else {
+                        field.style.borderColor = '#b0bec5';
+                    }
+                });
+                
+                if (!isValid) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+                
                 const formData = new FormData(this);
                 const data = {};
                 
@@ -677,36 +695,70 @@
                 const successMsg = document.getElementById('success-message');
                 const errorMsg = document.getElementById('error-message');
                 
-                if(btn) { btn.disabled = true; btn.textContent = "Enviando..."; }
+                if(btn) { 
+                    btn.disabled = true; 
+                    btn.textContent = "Enviando..."; 
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                }
                 if(successMsg) successMsg.style.display = 'none';
                 if(errorMsg) errorMsg.style.display = 'none';
                 
                 try {
-                    // URL do Google Apps Script (você precisa criar este script)
+                    // URL do Google Apps Script - USE A SUA URL AQUI
                     const scriptUrl = "https://script.google.com/macros/s/AKfycbx3XerAfIDeMMuATW7ok1LCgbJmYywHUKi4aO4M43j4ge52RKIydH6lz56k4ZJUHzPikQ/exec";
+                    
+                    console.log('Enviando dados:', data);
                     
                     const response = await fetch(scriptUrl, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
                         body: JSON.stringify(data)
                     });
                     
+                    console.log('Resposta recebida:', response);
+                    
                     if (response.ok) {
-                        if(successMsg) successMsg.style.display = 'block';
+                        const result = await response.json();
+                        console.log('Resultado:', result);
+                        
+                        if(successMsg) {
+                            successMsg.style.display = 'block';
+                            successMsg.textContent = "Obrigado pela sua avaliação! Sua opinião é muito importante para nós.";
+                        }
                         this.reset();
-                        setTimeout(() => { if(successMsg) successMsg.style.display = 'none'; }, 6000);
+                        
+                        // Rolagem suave para a mensagem de sucesso
+                        successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        setTimeout(() => { 
+                            if(successMsg) successMsg.style.display = 'none'; 
+                        }, 8000);
                     } else {
-                        throw new Error('Erro no servidor');
+                        const errorText = await response.text();
+                        console.error('Erro na resposta:', errorText);
+                        throw new Error(`Erro no servidor: ${response.status} ${response.statusText}`);
                     }
                 } catch (error) {
-                    console.error("Erro:", error);
+                    console.error("Erro completo:", error);
                     if(errorMsg) {
-                         errorMsg.textContent = "Erro ao enviar: " + error.message + " Verifique sua conexão e tente novamente.";
-                         errorMsg.style.display = 'block';
+                        errorMsg.textContent = "Erro ao enviar avaliação. Por favor, tente novamente mais tarde. (" + error.message + ")";
+                        errorMsg.style.display = 'block';
+                        
+                        // Rolagem suave para a mensagem de erro
+                        errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-                    setTimeout(() => { if(errorMsg) errorMsg.style.display = 'none'; }, 8000);
+                    setTimeout(() => { 
+                        if(errorMsg) errorMsg.style.display = 'none'; 
+                    }, 10000);
                 } finally {
-                    if(btn) { btn.disabled = false; btn.textContent = "Enviar Avaliação"; }
+                    if(btn) { 
+                        btn.disabled = false; 
+                        btn.textContent = "Enviar Avaliação";
+                        btn.innerHTML = "Enviar Avaliação";
+                    }
                 }
             });
         }
