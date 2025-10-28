@@ -277,6 +277,21 @@
         }
         .hidden-visually { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
 
+        /* Melhorias nas perguntas */
+        .question-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .question-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            font-style: italic;
+        }
 
         @media (max-width: 992px) {
             h2.section-title { font-size: 2rem; margin-bottom: 1.5rem; }
@@ -378,6 +393,7 @@
                     <div class="form-container-styled">
                         <form id="avaliacaoForm">
                             <div class="form-group">
+                                <div class="question-title">Informações Pessoais</div>
                                 <label for="nome" class="required-field">Nome Completo</label>
                                 <input type="text" id="nome" name="nome" required placeholder="Seu nome completo">
                             </div>
@@ -388,148 +404,166 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="required-field">Como você avalia o conteúdo do minicurso?</label>
+                                <div class="question-title">Avaliação do Conteúdo</div>
+                                <div class="question-description">Como você avalia o conteúdo apresentado durante o minicurso?</div>
+                                <label class="required-field">Qualidade do Conteúdo</label>
                                 <div class="rating-group">
                                     <div class="rating-option">
-                                        <input type="radio" id="conteudo_1" name="conteudo" value="1" required>
-                                        <label for="conteudo_1" class="rating-label">1 - Muito Ruim</label>
+                                        <input type="radio" id="conteudo_1" name="conteudo" value="1 - Muito Ruim" required>
+                                        <label for="conteudo_1" class="rating-label">1<br>Muito Ruim</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="conteudo_2" name="conteudo" value="2">
-                                        <label for="conteudo_2" class="rating-label">2 - Ruim</label>
+                                        <input type="radio" id="conteudo_2" name="conteudo" value="2 - Ruim">
+                                        <label for="conteudo_2" class="rating-label">2<br>Ruim</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="conteudo_3" name="conteudo" value="3">
-                                        <label for="conteudo_3" class="rating-label">3 - Regular</label>
+                                        <input type="radio" id="conteudo_3" name="conteudo" value="3 - Regular">
+                                        <label for="conteudo_3" class="rating-label">3<br>Regular</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="conteudo_4" name="conteudo" value="4">
-                                        <label for="conteudo_4" class="rating-label">4 - Bom</label>
+                                        <input type="radio" id="conteudo_4" name="conteudo" value="4 - Bom">
+                                        <label for="conteudo_4" class="rating-label">4<br>Bom</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="conteudo_5" name="conteudo" value="5">
-                                        <label for="conteudo_5" class="rating-label">5 - Excelente</label>
+                                        <input type="radio" id="conteudo_5" name="conteudo" value="5 - Excelente">
+                                        <label for="conteudo_5" class="rating-label">5<br>Excelente</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="required-field">Como você avalia a didática dos instrutores?</label>
+                                <div class="question-title">Avaliação da Didática</div>
+                                <div class="question-description">Como você avalia a forma como o conteúdo foi ministrado?</div>
+                                <label class="required-field">Didática dos Instrutores</label>
                                 <div class="rating-group">
                                     <div class="rating-option">
-                                        <input type="radio" id="didatica_1" name="didatica" value="1" required>
-                                        <label for="didatica_1" class="rating-label">1 - Muito Ruim</label>
+                                        <input type="radio" id="didatica_1" name="didatica" value="1 - Muito Ruim" required>
+                                        <label for="didatica_1" class="rating-label">1<br>Muito Ruim</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="didatica_2" name="didatica" value="2">
-                                        <label for="didatica_2" class="rating-label">2 - Ruim</label>
+                                        <input type="radio" id="didatica_2" name="didatica" value="2 - Ruim">
+                                        <label for="didatica_2" class="rating-label">2<br>Ruim</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="didatica_3" name="didatica" value="3">
-                                        <label for="didatica_3" class="rating-label">3 - Regular</label>
+                                        <input type="radio" id="didatica_3" name="didatica" value="3 - Regular">
+                                        <label for="didatica_3" class="rating-label">3<br>Regular</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="didatica_4" name="didatica" value="4">
-                                        <label for="didatica_4" class="rating-label">4 - Bom</label>
+                                        <input type="radio" id="didatica_4" name="didatica" value="4 - Bom">
+                                        <label for="didatica_4" class="rating-label">4<br>Bom</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="didatica_5" name="didatica" value="5">
-                                        <label for="didatica_5" class="rating-label">5 - Excelente</label>
+                                        <input type="radio" id="didatica_5" name="didatica" value="5 - Excelente">
+                                        <label for="didatica_5" class="rating-label">5<br>Excelente</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="required-field">Como você avalia o material disponibilizado?</label>
+                                <div class="question-title">Avaliação do Material</div>
+                                <div class="question-description">Como você avalia os materiais e recursos disponibilizados?</div>
+                                <label class="required-field">Qualidade do Material</label>
                                 <div class="rating-group">
                                     <div class="rating-option">
-                                        <input type="radio" id="material_1" name="material" value="1" required>
-                                        <label for="material_1" class="rating-label">1 - Muito Ruim</label>
+                                        <input type="radio" id="material_1" name="material" value="1 - Muito Ruim" required>
+                                        <label for="material_1" class="rating-label">1<br>Muito Ruim</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="material_2" name="material" value="2">
-                                        <label for="material_2" class="rating-label">2 - Ruim</label>
+                                        <input type="radio" id="material_2" name="material" value="2 - Ruim">
+                                        <label for="material_2" class="rating-label">2<br>Ruim</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="material_3" name="material" value="3">
-                                        <label for="material_3" class="rating-label">3 - Regular</label>
+                                        <input type="radio" id="material_3" name="material" value="3 - Regular">
+                                        <label for="material_3" class="rating-label">3<br>Regular</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="material_4" name="material" value="4">
-                                        <label for="material_4" class="rating-label">4 - Bom</label>
+                                        <input type="radio" id="material_4" name="material" value="4 - Bom">
+                                        <label for="material_4" class="rating-label">4<br>Bom</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="material_5" name="material" value="5">
-                                        <label for="material_5" class="rating-label">5 - Excelente</label>
+                                        <input type="radio" id="material_5" name="material" value="5 - Excelente">
+                                        <label for="material_5" class="rating-label">5<br>Excelente</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="required-field">Como você avalia a duração do minicurso?</label>
+                                <div class="question-title">Avaliação da Duração</div>
+                                <div class="question-description">Como você avalia o tempo dedicado ao minicurso?</div>
+                                <label class="required-field">Duração do Minicurso</label>
                                 <div class="rating-group">
                                     <div class="rating-option">
-                                        <input type="radio" id="duracao_1" name="duracao" value="1" required>
-                                        <label for="duracao_1" class="rating-label">1 - Muito Curta</label>
+                                        <input type="radio" id="duracao_1" name="duracao" value="1 - Muito Curta" required>
+                                        <label for="duracao_1" class="rating-label">1<br>Muito Curta</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="duracao_2" name="duracao" value="2">
-                                        <label for="duracao_2" class="rating-label">2 - Curta</label>
+                                        <input type="radio" id="duracao_2" name="duracao" value="2 - Curta">
+                                        <label for="duracao_2" class="rating-label">2<br>Curta</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="duracao_3" name="duracao" value="3">
-                                        <label for="duracao_3" class="rating-label">3 - Adequada</label>
+                                        <input type="radio" id="duracao_3" name="duracao" value="3 - Adequada">
+                                        <label for="duracao_3" class="rating-label">3<br>Adequada</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="duracao_4" name="duracao" value="4">
-                                        <label for="duracao_4" class="rating-label">4 - Longa</label>
+                                        <input type="radio" id="duracao_4" name="duracao" value="4 - Longa">
+                                        <label for="duracao_4" class="rating-label">4<br>Longa</label>
                                     </div>
                                     <div class="rating-option">
-                                        <input type="radio" id="duracao_5" name="duracao" value="5">
-                                        <label for="duracao_5" class="rating-label">5 - Muito Longa</label>
+                                        <input type="radio" id="duracao_5" name="duracao" value="5 - Muito Longa">
+                                        <label for="duracao_5" class="rating-label">5<br>Muito Longa</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="required-field">Você recomendaria este minicurso para outras pessoas?</label>
+                                <div class="question-title">Recomendação</div>
+                                <div class="question-description">Você indicaria este minicurso para colegas ou amigos?</div>
+                                <label class="required-field">Recomendação do Curso</label>
                                 <div class="radio-group">
                                     <div class="radio-option">
                                         <input type="radio" id="recomendaria_sim" name="recomendaria" value="Sim" required>
-                                        <label for="recomendaria_sim">Sim</label>
+                                        <label for="recomendaria_sim">Sim, com certeza</label>
                                     </div>
                                     <div class="radio-option">
                                         <input type="radio" id="recomendaria_nao" name="recomendaria" value="Não">
-                                        <label for="recomendaria_nao">Não</label>
+                                        <label for="recomendaria_nao">Não recomendaria</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
+                                <div class="question-title">Pontos Positivos</div>
+                                <div class="question-description">Compartilhe o que mais gostou no minicurso</div>
                                 <label for="pontos_positivos">Quais foram os pontos mais positivos do minicurso?</label>
-                                <textarea id="pontos_positivos" name="pontos_positivos" placeholder="Descreva os aspectos que você mais gostou..."></textarea>
+                                <textarea id="pontos_positivos" name="pontos_positivos" placeholder="Descreva os aspectos que você mais gostou, o que funcionou bem, o que agregou valor ao seu aprendizado..."></textarea>
                             </div>
                             
                             <div class="form-group">
+                                <div class="question-title">Sugestões de Melhoria</div>
+                                <div class="question-description">Ajude-nos a melhorar para as próximas edições</div>
                                 <label for="pontos_melhorar">O que poderia ser melhorado no minicurso?</label>
-                                <textarea id="pontos_melhorar" name="pontos_melhorar" placeholder="Descreva sugestões de melhorias..."></textarea>
+                                <textarea id="pontos_melhorar" name="pontos_melhorar" placeholder="Descreva sugestões de melhorias, o que poderia ser diferente, aspectos que poderiam ser aprimorados..."></textarea>
                             </div>
                             
                             <div class="form-group">
+                                <div class="question-title">Interesses Futuros</div>
+                                <div class="question-description">Conte-nos sobre seus interesses em futuros cursos</div>
                                 <label for="outros_cursos">Quais outros cursos você gostaria que fossem oferecidos?</label>
-                                <textarea id="outros_cursos" name="outros_cursos" placeholder="Sugira temas para futuros cursos..."></textarea>
+                                <textarea id="outros_cursos" name="outros_cursos" placeholder="Sugira temas para futuros cursos, áreas de interesse, habilidades que gostaria de desenvolver..."></textarea>
                             </div>
                             
                             <div class="button-wrapper">
-                                <button type="submit" class="btn btn-primario">Enviar Avaliação</button>
+                                <button type="submit" class="btn btn-primario">
+                                    <i class="fas fa-paper-plane"></i> Enviar Avaliação
+                                </button>
                             </div>
                             
                             <div id="success-message">
-                                Obrigado pela sua avaliação! Sua opinião é muito importante para nós.
+                                <i class="fas fa-check-circle"></i> Obrigado pela sua avaliação! Sua opinião é muito importante para nós.
                             </div>
                             
                             <div id="error-message">
-                                Ocorreu um erro ao processar sua avaliação. Por favor, tente novamente mais tarde.
+                                <i class="fas fa-exclamation-triangle"></i> Ocorreu um erro ao processar sua avaliação. Por favor, tente novamente mais tarde.
                             </div>
                         </form>
                     </div>
@@ -650,7 +684,7 @@
             });
         });
         
-        // Processar formulário de avaliação
+        // Processar formulário de avaliação com Sheet Monkey
         const avaliacaoForm = document.getElementById('avaliacaoForm');
         if (avaliacaoForm) {
             avaliacaoForm.addEventListener('submit', async function(e) {
@@ -697,19 +731,18 @@
                 
                 if(btn) { 
                     btn.disabled = true; 
-                    btn.textContent = "Enviando..."; 
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
                 }
                 if(successMsg) successMsg.style.display = 'none';
                 if(errorMsg) errorMsg.style.display = 'none';
                 
                 try {
-                    // URL do Google Apps Script - USE A SUA URL AQUI
-                    const scriptUrl = "https://script.google.com/macros/s/AKfycbx3XerAfIDeMMuATW7ok1LCgbJmYywHUKi4aO4M43j4ge52RKIydH6lz56k4ZJUHzPikQ/exec";
+                    // URL do Sheet Monkey
+                    const sheetMonkeyUrl = "https://api.sheetmonkey.io/form/9fhirLyDShbb1exBvi6k5v";
                     
-                    console.log('Enviando dados:', data);
+                    console.log('Enviando dados para Sheet Monkey:', data);
                     
-                    const response = await fetch(scriptUrl, {
+                    const response = await fetch(sheetMonkeyUrl, {
                         method: "POST",
                         headers: { 
                             "Content-Type": "application/json",
@@ -718,15 +751,12 @@
                         body: JSON.stringify(data)
                     });
                     
-                    console.log('Resposta recebida:', response);
+                    console.log('Resposta do Sheet Monkey:', response);
                     
                     if (response.ok) {
-                        const result = await response.json();
-                        console.log('Resultado:', result);
-                        
                         if(successMsg) {
                             successMsg.style.display = 'block';
-                            successMsg.textContent = "Obrigado pela sua avaliação! Sua opinião é muito importante para nós.";
+                            successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Obrigado pela sua avaliação! Sua opinião é muito importante para nós.';
                         }
                         this.reset();
                         
@@ -737,14 +767,12 @@
                             if(successMsg) successMsg.style.display = 'none'; 
                         }, 8000);
                     } else {
-                        const errorText = await response.text();
-                        console.error('Erro na resposta:', errorText);
                         throw new Error(`Erro no servidor: ${response.status} ${response.statusText}`);
                     }
                 } catch (error) {
                     console.error("Erro completo:", error);
                     if(errorMsg) {
-                        errorMsg.textContent = "Erro ao enviar avaliação. Por favor, tente novamente mais tarde. (" + error.message + ")";
+                        errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro ao enviar avaliação. Por favor, tente novamente mais tarde. (' + error.message + ')';
                         errorMsg.style.display = 'block';
                         
                         // Rolagem suave para a mensagem de erro
@@ -756,8 +784,7 @@
                 } finally {
                     if(btn) { 
                         btn.disabled = false; 
-                        btn.textContent = "Enviar Avaliação";
-                        btn.innerHTML = "Enviar Avaliação";
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Avaliação';
                     }
                 }
             });
