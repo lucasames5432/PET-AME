@@ -290,7 +290,11 @@
         margin-top: 80px; /* empurra o conteúdo para baixo */
         }
 
-        .hidden-visually { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+        .hidden-visually { 
+        opacity: 0; 
+        transform: translateY(20px); 
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
 
         /* Estilos para o container do calendário */
         .calendar-section-wrapper {
@@ -463,7 +467,43 @@
             <section class="section">
                 <div class="container">
                     <h2 class="section-title">Eventos do PET</h2>
-                    
+                    <div class="event-content-card hidden-visually"> 
+                        <h2>Inscrições abertas: Esquenta Matemático 2026</h2>
+                        <div class="event-details-box"> 
+                            <h3>Segunda Edição</h3>
+                            <p class="event-date"><i class="fa-regular fa-calendar"></i> 23 e 24 de fevereiro de 2026 | <i class="fa-regular fa-clock"></i> 19h30 às 22h</p>
+                            
+                            <p>O PET-AME, em parceria com professores do Colegiado de Matemática, promoverá a segunda edição do Esquenta Matemático. A iniciativa tem como objetivo contribuir para a adaptação dos novos estudantes à vida universitária, bem como fortalecer sua base nos conteúdos fundamentais de Matemática.</p>
+                            
+                            <p>A programação contempla a revisão de conteúdos essenciais por meio da resolução orientada de problemas, promovendo a aproximação entre estudantes e professores. Aberto também para veteranos e comunidade externa.</p>
+                            
+                            <p><strong>Local:</strong> Laboratório de Tecnologia Agroindustrial (LTA)</p>
+
+                            <div style="margin-top: 25px;">
+                                <a href="https://forms.gle/67QH3a4N3WSDNWzn7" target="_blank" class="btn btn-primario">
+                                    <i class="fa-solid fa-pen-to-square"></i> Realizar Inscrição Gratuita
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="carousel-container styled-carousel" id="carousel-esquenta-2026">
+                            <div class="carousel">
+                                <img src="./esquenta2026/01.jpeg" alt="Divulgação 1" class="active-slide">
+                                <img src="./esquenta2026/02.jpeg" alt="Divulgação 2">
+                                <img src="./esquenta2026/03.jpeg" alt="Divulgação 3">
+                                <img src="./esquenta2026/04.jpeg" alt="Divulgação 4">
+                                <img src="./esquenta2026/05.jpeg" alt="Divulgação 5">
+                                <img src="./esquenta2026/06.jpeg" alt="Divulgação 6">
+                                <img src="./esquenta2026/07.jpeg" alt="Divulgação 7">
+                            </div>
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
+                            <div class="carousel-dots"></div>
+                        </div>
+                    </div>
+
                     <!-- NOVO EVENTO: Minicurso Google Sheets -->
                     <div class="event-content-card"> 
                         <h2>Evento Realizado: Minicurso Google Planilhas</h2>
@@ -932,6 +972,7 @@
 }
         
         // Inicializar todos os carrosséis
+        initCarousel('carousel-esquenta-2026');
         initCarousel('carousel-esquenta');
         initCarousel('carousel-amostra');
         initCarousel('carousel-empreende');
