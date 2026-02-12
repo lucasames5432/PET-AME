@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editais - PET-AME UNESPAR</title>
-    <meta name="description" content="Editais de seleção e atos oficiais do PET-AME UNESPAR.">
+    <title>Eventos PET - Minicurso Google Planilhas, Empreende Week, Esquenta Matemático e Amostra de Profissões</title>
+    <meta name="description" content="Detalhes sobre os eventos do PET-AME UNESPAR: Empreende Week, Esquenta Matemático e Amostra de Profissões.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="./logopet.png" type="image/x-icon">
     <style>
         :root {
             --bg-main: #e8f5e9; 
@@ -26,135 +27,401 @@
             --fonte-secundaria: 'Roboto Mono', monospace;
             --transicao-suave: all 0.3s ease-in-out;
             --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --cor-obrigatorio: #e53935;
+            --cor-sucesso-texto: #1b5e20;
+            --cor-sucesso-fundo: #c8e6c9;
+            --cor-sucesso-borda: #a5d6a7;
+            --cor-erro-texto: #b71c1c;
+            --cor-erro-fundo: #ffcdd2;
+            --cor-erro-borda: #ef9a9a;
             --bg-question-enunciado: rgba(255, 255, 255, 0.8);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
             font-family: var(--fonte-principal); line-height: 1.7; color: var(--text-secondary);
             background-color: var(--bg-main); scroll-behavior: smooth; overflow-x: hidden; cursor: default; 
         }
-
         #blob-background { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; 
         }
-
         .page-content-wrapper {
             position: relative; z-index: 1; width: 100%; background-color: transparent; 
             display: flex; flex-direction: column; min-height: 100vh;
         }
-
-        .page-content-wrapper > main { padding-top: 100px; flex-grow: 1; }
-
+        .page-content-wrapper > main { 
+            flex-grow: 1; 
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--fonte-secundaria); font-weight: 600; line-height: 1.3;
+            margin-bottom: 1.2rem; color: var(--text-primary);
+        }
         h2.section-title {
             color: var(--text-primary); font-size: 2.6rem; margin-bottom: 2rem; 
             text-transform: uppercase; letter-spacing: 0.07em; text-align: center; position: relative;
         }
-
         h2.section-title::after {
             content: ''; display: block; width: 70px; height: 4px; background: var(--gradiente-primario);
             margin: 15px auto 30px auto; border-radius: 3px;
         }
+        p { margin-bottom: 1.5rem; font-size: 1rem; text-align: justify;}
+        section p:first-of-type {font-size: 1.05rem;}
 
+        a { text-decoration: none; color: var(--accent-primary); font-weight: 500; transition: var(--transicao-suave); }
+        a:hover { color: var(--accent-secondary); }
+        img { max-width: 100%; height: auto; display: block; border-radius: 8px; }
         .container { width: 90%; max-width: 1080px; margin: 0 auto; }
+        
         .section { padding: 40px 20px; position: relative; }
-
+        
         .navbar { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
             background: var(--bg-navbar); backdrop-filter: blur(8px); 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04); padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04); 
+            padding: 15px 0; 
         }
-
-        .navbar.scrolled { padding: 10px 0; background: rgba(212, 237, 218, 0.97); box-shadow: 0 3px 6px rgba(0,0,0,0.06); }
-        
+        .navbar.scrolled { 
+            padding: 10px 0; 
+            background: rgba(212, 237, 218, 0.97); box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
+        }
         .navbar .container.navbar-container { 
-            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center;
         }
-
         .navbar-logo {
             display: flex; align-items: center; justify-content: center;
-            width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--text-secondary); 
+            width: 100px; height: 100px; 
+            border-radius: 50%; border: 3px solid var(--text-secondary); 
             overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; transition: var(--transicao-suave);
+            margin: 0 5px; 
         }
-
-        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .nav-links-wrapper { display: flex; align-items: center; }
+        .navbar-logo:hover { transform: scale(1.05); box-shadow: var(--sombra); }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        
+        .nav-links-wrapper { 
+            display: flex; align-items: center; 
+            flex-grow: 1; 
+            justify-content: center;
+            margin: 0 10px; 
+        }
         .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
-        .nav-links li { margin-left: 22px; }
-        .nav-links a { color: var(--text-primary); font-weight: 500; position: relative; padding: 6px 0; font-size: 0.85rem; text-decoration: none; transition: var(--transicao-suave); }
-        .nav-links a::before { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background-color: var(--accent-primary); transition: width 0.3s ease; }
+        .nav-links li { margin-left: 10px; } 
+        .nav-links li:first-child { margin-left: 0; }
+        .nav-links a { 
+            color: var(--text-primary); font-weight: 500; position: relative; 
+            padding: 6px 0; font-size: 0.82rem; 
+        }
+        .nav-links a::before { 
+            content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); 
+            width: 0; height: 2px; background-color: var(--accent-primary); transition: width 0.3s ease; 
+        }
         .nav-links a:hover::before { width: 100%; }
         .nav-links a:hover { color: var(--accent-primary); }
+        .mobile-menu-button { 
+            display: none; background: none; border: none; font-size: 1.7rem; 
+            color: var(--text-primary); cursor: pointer; margin-left: 15px; 
+        }
+        .footer { 
+            background-color: #dceae0; color: var(--text-secondary); 
+            padding: 40px 0 20px; text-align: center; margin-top: auto;
+        }
+        .footer .container { padding: 0 20px; }
+        .footer p { margin-bottom: 0.3rem; font-size: 0.8rem; }
+        .footer a { color: var(--accent-primary); }
+        .footer a:hover { color: var(--accent-secondary); }
+        .footer i {color: var(--accent-primary) !important; }
+        #scroll-progress { 
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            width: 0%; z-index: 10002; transition: width 0.05s linear; 
+        }
 
-        .mobile-menu-button { display: none; background: none; border: none; font-size: 1.7rem; color: var(--text-primary); cursor: pointer; }
-
-        /* Estilos do Card de Edital */
-        .edital-card {
-            background: var(--bg-card-formulario);
+        .event-content-card {
+            background: var(--bg-card-formulario); 
             padding: 30px 40px;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
             margin-top: 2rem;
         }
+        .event-content-card > h2 { 
+            color: var(--text-primary);
+            font-family: var(--fonte-secundaria);
+            font-size: 2rem; 
+            text-align: center;
+            margin-bottom: 1rem; 
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--accent-primary);
+        }
+        .past-event-details {
+            background-color: var(--bg-main); 
+            border-left: 5px solid var(--accent-primary); 
+            padding: 25px; 
+            margin: 2.5rem 0; 
+            border-radius: 8px; 
+        }
+        .past-event-details h3 { 
+            color: var(--accent-primary); 
+            font-size: 1.6rem; 
+            text-align: left;
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+        }
+        .event-date { 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            margin-bottom: 15px;
+            font-size: 1rem;
+            display: block; 
+        }
+        .past-event-details ul {
+            list-style: none; 
+            padding-left: 0; 
+            margin-bottom: 1.5rem;
+        }
+        .past-event-details li {
+            margin-bottom: 0.8rem; 
+            padding-left: 1.6em; 
+            position: relative;
+            font-size: 1rem; 
+            color: var(--text-secondary);
+        }
+        .past-event-details li::before {
+            content: '\f138'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900; 
+            color: var(--accent-primary); 
+            position: absolute;
+            left: 0;
+            top: 1px; 
+            font-size: 0.9em; 
+        }
 
-        .edital-item {
-            background-color: var(--bg-main);
-            border-left: 5px solid var(--accent-primary);
-            padding: 25px;
-            margin-bottom: 2rem;
-            border-radius: 0 8px 8px 0;
+        .carousel-container.styled-carousel { 
+            position: relative;
+            max-width: 100%; 
+            margin: 2.5rem auto; 
+            overflow: hidden; 
+            border-radius: 10px; 
+            box-shadow: var(--shadow-lg);
+            background-color: var(--bg-main); 
+            height: 450px; 
+        }
+        .carousel {
+            display: block; 
+            position: relative; 
+            width: 100%;
+            height: 100%; 
+        }
+        .carousel img {
+            width: 100%;
+            height: 100%; 
+            object-fit: contain; 
+            background-color: transparent; 
+            border-radius: 0; 
+            
+            position: absolute; 
+            top: 0;
+            left: 0;
+            opacity: 0; 
+            transition: opacity 0.8s ease-in-out, transform 0.2s ease-out; 
+            will-change: opacity, transform;
+        }
+        .carousel img.active-slide { 
+            opacity: 1;
+            z-index: 1; 
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10; 
+        }
+        .carousel-nav button { 
+            background-color: rgba(255, 255, 255, 0.7) !important; 
+            color: var(--text-primary) !important;
+            border: 1px solid rgba(0,0,0,0.1) !important; 
+            width: 42px; 
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.3rem; 
+            transition: var(--transicao-suave);
+            margin: 0 15px; 
+            opacity: 0.85;
+            cursor: pointer;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-nav button:hover {
+            background-color: var(--accent-primary) !important;
+            color: #fff !important;
+            opacity: 1;
+        }
+        .carousel-nav button.prev-btn { transform: translateY(-50%); } 
+        .carousel-nav button.next-btn { transform: translateY(-50%); }
+        .carousel-nav button.prev-btn:hover { transform: scale(1.1) translateY(-50%); }
+        .carousel-nav button.next-btn:hover { transform: scale(1.1) translateY(-50%); }
+
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px; 
+            padding-bottom: 15px; 
+        }
+        .dot {
+            width: 10px; 
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.2); 
+            margin: 0 5px;
+            cursor: pointer;
             transition: var(--transicao-suave);
         }
+        .dot.active {
+            background-color: var(--accent-primary); 
+            transform: scale(1.2);
+        }
+        .event-content-card {
+        margin-top: 80px; /* empurra o conteúdo para baixo */
+        }
 
-        .edital-item:hover { transform: translateX(5px); }
+        .hidden-visually { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
 
-        .edital-header {
-            background-color: var(--bg-question-enunciado);
-            padding: 12px 18px;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+        /* Estilos para o container do calendário */
+        .calendar-section-wrapper {
+            background: var(--bg-card-formulario);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem; 
+        }
+        .calendar-title {
             font-family: var(--fonte-secundaria);
-            font-weight: 600;
             color: var(--text-primary);
-            font-size: 1.2rem;
+            font-size: 1.8rem; 
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .calendar-subtitle {
+            font-family: var(--fonte-principal);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem; 
+        }
+        .calendar-container {
+            display: flex; 
+            justify-content: center; 
+        }
+        .calendar-container iframe {
+            border: none; /* Removido, pois o iframe já tem style="border: 0" */
+            border-radius: 8px;
+            max-width: 100%; 
+            /* A largura e altura serão definidas pelo iframe do Google, mas max-width garante responsividade */
+        }
+        .carousel video {
+            width: 100%;
+            height: 100%; 
+            object-fit: contain; 
+            background-color: transparent; 
+            border-radius: 0; 
+            position: absolute; 
+            top: 0;
+            left: 0;
+            opacity: 0; 
+            transition: opacity 0.8s ease-in-out, transform 0.2s ease-out; 
+            will-change: opacity, transform;
         }
 
-        .edital-item p { margin-bottom: 1rem; text-align: justify; color: var(--text-primary); }
-        
-        .vagas-list { list-style: none; margin: 15px 0; padding-left: 20px; }
-        .vagas-list li { position: relative; padding-left: 1.5rem; margin-bottom: 0.5rem; }
-        .vagas-list li::before { content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: var(--accent-primary); }
-
-        .btn-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-        
-        .btn { 
-            display: inline-flex; align-items: center; gap: 8px; padding: 12px 25px; border-radius: 25px; 
-            font-weight: 600; text-align: center; transition: var(--transicao-suave); border: none; 
-            font-size: 0.9rem; text-transform: uppercase; cursor: pointer; text-decoration: none;
+       .carousel video.active-slide { 
+            opacity: 1;
+            z-index: 1; 
         }
-        .btn-primario { background: var(--accent-primary); color: #fff; box-shadow: var(--sombra); }
-        .btn-primario:hover { background: var(--accent-secondary); color: var(--text-primary); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        
-        .btn-outline { background: transparent; border: 2px solid var(--accent-primary); color: var(--accent-primary); }
-        .btn-outline:hover { background: var(--accent-primary); color: #fff; }
-
-        .footer { background-color: #dceae0; color: var(--text-secondary); padding: 40px 0 20px; text-align: center; margin-top: auto; }
-        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary)); width: 0%; z-index: 10002; }
-
-        .hidden-visually { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
 
         @media (max-width: 992px) {
-            .navbar-logo { width: 50px; height: 50px; }
-            .mobile-menu-button { display: block; }
+            h2.section-title { font-size: 2rem; margin-bottom: 1.5rem; }
+            h2.section-title::after { margin: 10px auto 25px auto; }
+            .navbar .container.navbar-container { justify-content: space-between; flex-wrap: nowrap; }
+            
+            .navbar-logo { width: 60px; height: 60px; border-width: 2px; margin: 0 3px;} 
+            .navbar-logo.logo-seti { order: 1; }      
+            .navbar-logo.logo-petame { order: 2; }   
+            .nav-links-wrapper { 
+                order: 3; 
+                flex-grow: 1; 
+                justify-content: center; 
+                margin: 0 5px; 
+            }
+            .navbar-logo.logo-unespar { order: 4; }  
+            .navbar-logo.logo-araucaria { order: 5; }
+
+            .nav-links li { margin-left: 8px; }  
+            .nav-links a { font-size: 0.78rem; padding: 3px 0; } 
+
             .nav-links { 
-                display: none; flex-direction: column; width: 100%; background: var(--bg-navbar); padding: 15px 0; 
-                position: absolute; top: 100%; left: 0; z-index: 999; border-top: 1px solid rgba(0,0,0,0.05);
+                display: none; flex-direction: column; width: 100%; 
+                background: var(--bg-navbar); padding: 15px 0; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05); align-items: center; 
+                position: absolute; top: 100%; left: 0; right: 0;
+                z-index: 999; border-top: 1px solid rgba(0,0,0,0.05);
             }
             .nav-links.active { display: flex; }
-            .nav-links li { margin: 0; text-align: center; }
-            .nav-links a { display: block; padding: 12px; font-size: 1rem; }
-            .edital-card { padding: 20px; }
+            .nav-links li { margin-left: 0; margin-bottom: 8px; width: 100%; text-align: center; }
+            .nav-links li a { padding: 10px 0; display: block; width:100%; font-size: 0.9rem;}
+            .mobile-menu-button { display: block; margin-left: 0; font-size: 1.5rem; } 
+            
+            .event-content-card { padding: 20px; }
+            .event-content-card > h2 { font-size: 1.8rem; }
+            .past-event-details h3 { font-size: 1.4rem; }
+            
+            .carousel-container.styled-carousel { height: 350px; } 
+
+            .calendar-title { font-size: 1.6rem; }
+            .calendar-subtitle { font-size: 0.95rem; }
+        }
+        @media (max-width: 768px) {
+            h2.section-title { font-size: 1.7rem; }
+            .navbar-logo { width: 50px; height: 50px; border-width: 2px; margin: 0 2px;} 
+             .nav-links-wrapper { margin: 0 3px; } 
+            .nav-links li { margin-left: 5px; } 
+            .nav-links a { font-size: 0.75rem; padding: 2px 0;} 
+            .mobile-menu-button { font-size: 1.4rem; } 
+            
+            .event-content-card { padding: 20px 15px; }
+            .event-content-card > h2 { font-size: 1.6rem; }
+            .past-event-details { padding: 15px; margin: 1.5rem 0; }
+            .past-event-details h3 { font-size: 1.3rem; }
+            .event-date { font-size: 0.9rem; }
+            .past-event-details li { font-size: 0.95rem; }
+
+            .carousel-container.styled-carousel { height: 280px; } 
+            .carousel-nav button { width: 36px; height: 36px; font-size: 1.1rem; margin: 0 10px; }
+            .dot { width: 8px; height: 8px; }
+
+            .calendar-section-wrapper { padding: 15px; }
+            .calendar-title { font-size: 1.4rem; }
+            .calendar-subtitle { font-size: 0.9rem; }
+            .calendar-container iframe { height: 500px; } 
+        }
+         @media (max-width: 480px) { 
+            .navbar-logo { 
+                width: 40px; 
+                height: 40px;
+                border-width: 2px; 
+                margin: 0 1px;
+            }
+            .nav-links-wrapper { margin: 0 2px; } 
+            .nav-links li { margin-left: 4px; } 
+            .nav-links a { font-size: 0.7rem; padding: 1px 0;}
+             .mobile-menu-button { 
+                font-size: 1.3rem; 
+            }
+            .calendar-container iframe { height: 400px; } 
         }
     </style>
 </head>
@@ -165,13 +432,16 @@
     <div class="page-content-wrapper">
         <nav class="navbar">
             <div class="container navbar-container">
-                <a href="index.html" class="navbar-logo">
-                    <img src="logopet.png" alt="Logo PET-AME">
+                <a href="https://www.seti.pr.gov.br/" class="navbar-logo logo-seti" target="_blank" rel="noopener noreferrer" title="SETI - Secretaria da Ciência, Tecnologia and Ensino Superior do Paraná">
+                    <img src="./logoseti.png" alt="Logo SETI">
+                </a>
+                <a href="index.html" class="navbar-logo logo-petame" title="PET-AME UNESPAR">
+                    <img src="./logopet.png" alt="Logo PET-AME UNESPAR"> 
                 </a>
                 <div class="nav-links-wrapper"> 
                     <ul class="nav-links" id="navLinksGlobal">
                         <li><a href="index.html">Início</a></li>
-                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="eventos.html">Eventos </a></li>
                         <li><a href="formulario-apoio.html">Apoio Acadêmico</a></li>
                         <li><a href="formulario-duvidas.html">Dúvidas/Sugestões</a></li>
                         <li><a href="editais.html">Editais</a></li>
@@ -180,8 +450,11 @@
                         <i class="fa-solid fa-bars"></i>
                     </button>
                 </div>
-                <a href="https://www.unespar.edu.br/" class="navbar-logo">
-                    <img src="logounespar.png" alt="Logo UNESPAR">
+                <a href="https://www.unespar.edu.br/" class="navbar-logo logo-unespar" target="_blank" rel="noopener noreferrer" title="UNESPAR">
+                    <img src="./logounespar.png" alt="Logo UNESPAR"> 
+                </a>
+                <a href="https://www.fappr.pr.gov.br/" class="navbar-logo logo-araucaria" target="_blank" rel="noopener noreferrer" title="Fundação Araucária">
+                    <img src="./logoaraucaria.png" alt="Logo Fundação Araucária">
                 </a>
             </div>
         </nav>
@@ -189,38 +462,238 @@
         <main>
             <section class="section">
                 <div class="container">
-                    <h2 class="section-title">Editais e Seleções</h2>
+                    <h2 class="section-title">Eventos do PET</h2>
                     
-                    <div class="edital-card">
-                        <div class="edital-item hidden-visually">
-                            <div class="edital-header">
-                                <i class="fa-solid fa-file-signature"></i> Edital 001/2026 - Seleção de Novos Bolsistas
-                            </div>
-                            <p>O Grupo de Educação Tutorial Interdisciplinar (PET-AME) da Unespar, campus de Campo Mourão, está com inscrições abertas para a seleção de novos membros bolsistas. Oportunidade para desenvolver atividades de ensino, pesquisa e extensão com bolsa mensal de <strong>R$ 700,00</strong>.</p>
+                    <!-- NOVO EVENTO: Minicurso Google Sheets -->
+                    <div class="event-content-card"> 
+                        <h2>Evento Realizado: Minicurso Google Planilhas</h2>
+                        
+                        <div class="past-event-details"> 
+                            <h3>Minicurso Google Planilhas</h3>
+                            <p class="event-date">Realizado em Outubro de 2025</p>
                             
-                            <p><strong>Distribuição de Vagas:</strong></p>
-                            <ul class="vagas-list">
-                                <li>Administração: 01 vaga</li>
-                                <li>Matemática: 03 vagas</li>
-                                <li>Engenharia de Produção Agroindustrial: 03 vagas</li>
+                            <p>O Minicurso de Google Planilhas foi uma iniciativa do PET-AME UNESPAR com o objetivo de capacitar estudantes e membros da comunidade no uso eficiente do Google Planilhas, uma ferramenta essencial para organização, análise de dados e produtividade tanto no ambiente acadêmico quanto profissional.</p>
+                            
+                            <p>O curso foi cuidadosamente estruturado para atender desde iniciantes até usuários que desejavam aprofundar seus conhecimentos nas funcionalidades mais avançadas da plataforma.</p>
+                            
+                            <p>Os participantes tiveram a oportunidade de aprender:</p>
+                            <ul>
+                                <li>Interface e fundamentos do Google Planilhas</li>
+                                <li>Formatação de dados e células</li>
+                                <li>Fórmulas básicas e funções essenciais</li>
+                                <li>Trabalho com intervalos e referências</li>
+                                <li>Criação e formatação de gráficos</li>
+                                <li>Ferramentas de análise de dados</li>
+                                <li>Colaboração em tempo real</li>
                             </ul>
+                            
+                            <p>O curso foi ministrado por membros do PET-AME com experiência prática no uso do Google Planilhas para projetos acadêmicos e de pesquisa, garantindo que o conteúdo fosse não apenas teórico, mas também aplicável às necessidades reais dos participantes.</p>
+                            
+                            <p>Ao final do curso, os participantes estavam aptos a criar planilhas funcionais, realizar análises básicas de dados, colaborar eficientemente em projetos compartilhados e aplicar essas habilidades em seus estudos e atividades profissionais.</p>
+                        </div>
+                        
+                        <div class="carousel-container styled-carousel" id="carousel-sheets">
+                            <div class="carousel">
+                                <img src="./sheets/sheets-01.jpg" alt="" class="active-slide">
+                                <img src="./sheets/sheets-02.jpg" alt="">
+                                <img src="./sheets/sheets-03.jpg" alt="">
+                                <img src="./sheets/sheets-04.jpg" alt="">
+                                <img src="./sheets/sheets-05.jpg" alt="">
+                                <img src="./sheets/sheets-06.jpg" alt="">
+                                <img src="./sheets/sheets-07.jpg" alt="">
+                                <img src="./sheets/sheets-08.jpg" alt="">
+                                <img src="./sheets/sheets-09.jpg" alt="">
+                                <img src="./sheets/sheets-10.jpg" alt="">
+                                <img src="./sheets/sheets-11.jpg" alt="">
+                                <img src="./sheets/sheets-12.jpg" alt="">
+                                <img src="./sheets/sheets-13.jpg" alt="">
+                                <img src="./sheets/sheets-14.jpg" alt="">
+                                <img src="./sheets/sheets-15.jpg" alt="">
+                                <img src="./sheets/sheets-16.jpg" alt="">
+                                <img src="./sheets/sheets-17.jpg" alt="">
+                                 <video autoplay muted controls>
+                                    <source src="./sheets/sheets-video-01.mp4" type="video/mp4">
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                                 <video autoplay muted controls>
+                                    <source src="./sheets/sheets-video-02.mp4" type="video/mp4">
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                            </div>
 
-                            <p><i class="fa-solid fa-calendar-days"></i> <strong>Inscrições:</strong> Até 14 de fevereiro de 2026.</p>
-                            <p><i class="fa-solid fa-circle-info"></i> <strong>Requisitos:</strong> Estar matriculado em um dos cursos citados e não possuir vínculo empregatício ou outra bolsa (exceto assistencial).</p>
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
 
-                            <div class="btn-group">
-                                <a href="https://campomourao.unespar.edu.br/menu-principal/atos-oficiais/conselho-do-centro-de-ciencias-humanas-e-da-educacao/editais-pet-unespar-cm/edital-n-o-01-2026-2013-pet-ame-unespar" target="_blank" class="btn btn-primario">
-                                    <i class="fa-solid fa-file-pdf"></i> Acessar Edital Completo
-                                </a>
-                                <a href="https://forms.gle/NMyPCQWL2CmMBjkh8" target="_blank" class="btn btn-outline">
-                                    <i class="fa-solid fa-pen-to-square"></i> Realizar Inscrição
-                                </a>
+                            <div class="carousel-dots">
                             </div>
                         </div>
+                    </div>
 
-                        <p style="text-align: center; font-size: 0.9rem; opacity: 0.7; margin-top: 20px;">
-                            Acompanhe esta página para futuras publicações e resultados.
-                        </p>
+                    <!-- Evento: Empreende Week 2025 -->
+                    <div class="event-content-card"> 
+                        <h2>Evento Realizado: Empreende Week 2025</h2>
+                        
+                        <div class="past-event-details"> 
+                            <h3>Empreende Week 2025</h3>
+                            <p class="event-date">6 a 9 de Outubro de 2025</p>
+                            
+                            <p>O Empreende Week 2025 é um dos maiores eventos de Ciência, Tecnologia, Inovação, Empreendedorismo e Negócios do Paraná, realizado em Campo Mourão. O evento reúne palestras de renome nacional, fóruns setoriais, hackathons, exposições de universidades, empresas e startups, além de diversas atrações interativas.</p>
+                            
+                            <p>Durante o evento, o grupo PET-AME apresentou atividades interativas com base em métodos de otimização e pesquisa operacional, demonstrando de maneira prática como conceitos matemáticos e de engenharia podem ser aplicados para solucionar problemas reais.</p>
+                            
+                            <p>As principais atividades desenvolvidas pelo PET-AME incluíram:</p>
+                            <ul>
+                                <li>Exercícios de otimização demonstrando aplicações práticas de conceitos matemáticos</li>
+                                <li>Problema de maximização de lucro resolvido com auxílio do software GeoGebra</li>
+                                <li>Explicações sobre pesquisa operacional e sua importância na tomada de decisões</li>
+                                <li>Simulação de uma caixa que variava seu volume de acordo com os pontos plotados na função matemática</li>
+                                <li>Divulgação do curso de Google Planilhas oferecido pelo grupo</li>
+                                <li>Interação direta com visitantes para esclarecimento de dúvidas</li>
+                            </ul>
+                            
+                            <p>A participação no Empreende Week proporcionou ao grupo PET-AME uma valiosa experiência de integração entre teoria e prática, permitindo aos participantes aplicar conhecimentos técnicos de matemática, engenharia e pesquisa operacional em uma situação real de interação com o público.</p>
+                        </div>
+                        
+                        <div class="carousel-container styled-carousel" id="carousel-empreende">
+                            <div class="carousel">
+                                <img src="./Ew/ew-01.jpg" alt="" class="active-slide">
+                                <img src="./Ew/ew02.jpg" alt="">
+                                <img src="./Ew/ew03.jpg" alt="">
+                                <img src="./Ew/ew04.jpg" alt="">
+                                <img src="./Ew/ew05.jpg" alt="">
+                                <img src="./Ew/ew06.jpg" alt="">
+                                <img src="./Ew/ew07.jpg" alt="">
+                                <img src="./Ew/ew-08.jpeg" alt="">
+                                <img src="./Ew/ew-09.jpeg" alt="">
+                                <img src="./Ew/ew-10.jpeg" alt="">
+                                <video autoplay muted controls>
+                                    <source src="./Ew/ew-video-01.mp4" type="video/mp4">
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                                 <video autoplay muted controls>
+                                    <source src="./Ew/ew-video-02.mp4" type="video/mp4">
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                                 <video autoplay muted controls>
+                                    <source src="./Ew/ew-video-03.mp4" type="video/mp4">
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                            </div>
+
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
+
+                            <div class="carousel-dots">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evento: Mostra de Profissões -->
+                    <div class="event-content-card"> 
+                        <h2>Evento Realizado: Mostra de Profissões</h2>
+                        
+                        <div class="past-event-details"> 
+                            <h3>Mostra de Profissões</h3>
+                            <p class="event-date">Ocorreu nos dias 27 e 28 de agosto de 2025</p>
+                            
+                            <p>A Mostra de Profissões da UNESPAR em Campo Mourão é um evento gratuito com o objetivo de orientar estudantes do ensino médio e outras pessoas interessadas sobre os cursos de graduação, bem como sobre as possibilidades de atuação profissional, oferecidas pela universidade. 
+                            Durante a mostra, os visitantes têm a chance de conhecer a estrutura da universidade – laboratórios, projetos de ensino, pesquisa e extensão – além de interagir com professores, alunos e representantes de cada curso para esclarecer dúvidas.</p>
+                            
+                            <p>Durante o evento, os participantes tiveram a oportunidade de vivenciar uma série de experiências diversificadas, que uniam aspectos práticos, acadêmicos e profissionais, promovendo tanto o aprendizado quanto a integração entre os presentes.</p>
+                            
+                            <p>Em primeiro lugar, destacou-se a atividade conhecida como "jogo das três portas", desenvolvida e conduzida pelos alunos do curso de Matemática. Essa dinâmica, baseada em conceitos de probabilidade e tomada de decisão, consistia na escolha de uma entre três portas. Em seguida, uma das portas não escolhidas, revelada como vazia, era aberta, e os jogadores precisavam decidir se mantinham sua escolha inicial ou se optavam por trocar de porta. Mais do que uma atividade lúdica, o jogo permitiu refletir sobre raciocínio lógico, estratégias probabilísticas e vieses cognitivos que influenciam a tomada de decisão em situações de incerteza.</p>
+                            
+                            <p>Ainda sob a responsabilidade dos alunos de Matemática, os participantes puderam experimentar uma simulação de investimentos envolvendo cinco ativos distintos. Essa atividade permitiu analisar portfólios e comparar os resultados à luz do modelo de Markowitz, além de estabelecer paralelos com a taxa Selic. Dessa forma, foi possível compreender na prática conceitos fundamentais de risco, retorno and diversificação, tornando mais acessíveis temas tradicionalmente abordados na teoria financeira.</p>
+                            
+                            <p>Outro momento de destaque foi a oportunidade de conhecer o processo de fabricação da paçoca, atividade desenvolvida na sala de Engenharia de Produção de Agroindustrial (EPA). Os visitantes acompanharam as etapas produtivas, desde a seleção da matéria-prima até a finalização do produto, aprendendo também sobre profissões reais inseridas nesse setor, suas atribuições práticas e até mesmo os salários médios associados a essas carreiras. Essa experiência aproximou os participantes da realidade do mercado alimentício, permitindo visualizar de forma concreta os desafios e as possibilidades desse segmento.</p>
+                            
+                            <p>Além disso foi dado destaque às vantagens e oportunidades proporcionadas pelo curso de Engenharia de Produção agroindustrial da UNESPAR. Os presentes puderam conhecer melhor as áreas de atuação do engenheiro de produção, as múltiplas possibilidades de carreira e o diferencial que a formação oferecida pela instituição representa no mercado de trabalho.</p>
+                            
+                            <p>Por fim, o evento foi enriquecido com atividades práticas que ilustravam o cotidiano de diferentes profissões, oferecendo aos participantes uma visão mais clara sobre habilidades, responsabilidades e desafios profissionais. Esse conjunto de experiências, ao integrar teoria, prática e contato com realidades de mercado, contribuiu de maneira significativa para a formação acadêmica e profissional dos estudantes.</p>
+                        </div>
+                                        
+                        <div class="carousel-container styled-carousel" id="carousel-amostra">
+                            <div class="carousel">
+                                <img src="./amostra/amostra1.jpg" class="active-slide">
+                                <img src="./amostra/amostra2.jpg" >
+                                <img src="./amostra/amostra3.jpg" >
+                                <img src="./amostra/amostra4.jpg" >
+                                <img src="./amostra/amostra5.jpg" >
+                                <img src="./amostra/amostra6.jpg" >
+                                <img src="./amostra/amostra7.jpg" >
+                                <img src="./amostra/amostra8.jpg" >
+                                <img src="./amostra/amostra9.jpg" >
+                                <img src="./amostra/amostra10.jpg" >
+                                <img src="./amostra/amostra11.jpg" >
+                                <img src="./amostra/amostra12.jpg" >
+                                <img src="./amostra/amostra13.jpg" >
+                                <img src="./amostra/amostra14.jpg" >
+                                <img src="./amostra/amostra15.jpg" >
+                                <img src="./amostra/amostra16.jpg" >
+                                <img src="./amostra/amostra17.jpg" >
+                                <img src="./amostra/amostra18.jpg" >
+                                <img src="./amostra/amostra19.jpg" >
+                                <img src="./amostra/amostra20.jpg" >
+                            </div>
+
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
+
+                            <div class="carousel-dots">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Evento: Esquenta Matemático -->
+                    <div class="event-content-card"> 
+                        <h2>Evento Realizado: Esquenta Matemático</h2>
+                        
+                        <div class="past-event-details"> 
+                            <h3>Esquenta Matemático</h3>
+                            <p class="event-date">25 a 27 de Fevereiro de 2025</p>
+                            <p>O Esquenta Matemático foi um evento especial organizado para os alunos que iriam ingressar na UNESPAR, com o objetivo de prepará-los para os desafios acadêmicos que encontrariam em seus cursos.</p>
+                            <p>During os três dias de evento, os participantes tiveram a oportunidade de:</p>
+                            <ul>
+                                <li>Conhecer os fundamentos matemáticos essenciais para o ingresso na universidade</li>
+                                <li>Participar de oficinas práticas de resolução de problemas</li>
+                                <li>Interagir com veteranos e professores dos cursos</li>
+                                <li>Conhecer a estrutura e oportunidades da UNESPAR</li>
+                                <li>Desenvolver habilidades importantes para o sucesso acadêmico</li>
+                            </ul>
+                            <p>Confira abaixo os melhores momentos deste evento que marcou o início da jornada universitária de muitos alunos!</p>
+                        </div>
+                        
+                        <div class="carousel-container styled-carousel" id="carousel-esquenta">
+                            <div class="carousel">
+                                <img src="https://files.fm/thumb_show.php?i=fpw7myb9u4" alt="Participantes atentos durante palestra no Esquenta Matemático" class="active-slide"> 
+                                <img src="https://files.fm/thumb_show.php?i=qjnw9wqehr" alt="Alunos realizando atividades práticas em grupo">
+                                <img src="https://files.fm/thumb_show.php?i=z57ja6rh57" alt="Momento de interação entre calouros e veteranos">
+                                <img src="https://files.fm/thumb_show.php?i=p562ek2ecf" alt="Professor ministrando oficina de matemática">
+                                <img src="https://files.fm/thumb_show.php?i=cxk6wdde64" alt="Encerramento do evento com participantes reunidos">
+                            </div>
+
+                            <div class="carousel-nav">
+                                <button class="prev-btn">&#10094;</button>
+                                <button class="next-btn">&#10095;</button>
+                            </div>
+
+                            <div class="carousel-dots">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-section-wrapper" id="calendario-pet">
+                            <h3 class="calendar-title">Próximos eventos</h3>
+                              <p class="calendar-subtitle">Nossos próximos eventos podem ser visualizados no calendário abaixo!</p>
+                            <div class="calendar-container">
+                            <iframe src="https://calendar.google.com/calendar/embed?src=petame.unespar%40gmail.com&ctz=America%2FSao_Paulo" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -228,59 +701,244 @@
 
         <footer class="footer">
             <div class="container">
-                <p>&copy; <span id="currentYear"></span> PET-AME UNESPAR - Campus Campo Mourão.</p>
-                <p><a href="https://www.unespar.edu.br/" target="_blank">UNESPAR - Universidade Estadual do Paraná</a></p>
+                <p>&copy; <span id="currentYear"></span> PET-AME UNESPAR - Campus Campo Mourão. Todos os direitos reservados.</p>
+                <p>Design adaptado com <i class="fa-solid fa-palette"></i>.</p>
+                <p><a href="https://www.unespar.edu.br/" target="_blank" rel="noopener noreferrer">UNESPAR - Universidade Estadual do Paraná</a></p>
             </div>
         </footer>
-    </div> 
-
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/blobz.js@latest/dist/blobz.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        const currentYearEl = document.getElementById('currentYear');
+        if (currentYearEl) {
+            currentYearEl.textContent = new Date().getFullYear();
+        }
 
-        // Blob Background
         try {
             const blobContainer = document.getElementById('blob-background');
             if (blobContainer && typeof blobz !== 'undefined') {
                 new blobz.Renderer(blobContainer, {
                     num_blobs: 5, blob_color: ['#c8e6c9', '#b2dfdb', '#dcedc8', 'rgba(77, 182, 172, 0.6)'],
-                    speed: 0.12, blob_radius_factor: 0.8, animation_smoothness: 0.07
+                    speed: 0.12, blob_radius_factor: 0.8, animation_smoothness: 0.07, show_blob_borders: false
                 });
             }
-        } catch (e) { console.error(e); }
+        } catch (error) { console.error('Erro no blobz.js:', error); }
 
-        // Mobile Menu
         const mobileMenuBtn = document.getElementById('mobileMenuBtnGlobal');
-        const navLinks = document.getElementById('navLinksGlobal');
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
-        });
-
-        // Scroll Progress & Navbar Effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            navbar.classList.toggle('scrolled', window.scrollY > 30);
-            
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const progress = (window.scrollY / scrollHeight) * 100;
-            document.getElementById('scroll-progress').style.width = progress + '%';
-        });
-
-        // Reveal Animation
-        const elements = document.querySelectorAll('.hidden-visually');
-        const reveal = () => {
-            elements.forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight / 1.1) {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
+        const navLinksList = document.getElementById('navLinksGlobal');
+        const navbar = document.querySelector('.navbar');
+        const scrollProgress = document.getElementById('scroll-progress');
+        
+        const elementsToReveal = document.querySelectorAll('.event-content-card, h2.section-title, .calendar-section-wrapper');
+        if (elementsToReveal.length > 0) {
+            elementsToReveal.forEach(el => {
+                if (el) {
+                    el.classList.add('hidden-visually'); 
+                    el.style.opacity = 0; 
+                    el.style.transform = 'translateY(20px)'; 
+                    el.style.transition = 'opacity 0.6s ease-out 0.2s, transform 0.6s ease-out 0.2s';
                 }
             });
-        };
-        window.addEventListener('scroll', reveal);
-        reveal();
+            function revealElementsOnScroll() {
+                elementsToReveal.forEach(element => {
+                    if (element && element.classList.contains('hidden-visually')) { 
+                        const elementPosition = element.getBoundingClientRect().top;
+                        if (elementPosition < window.innerHeight / 1.1) {
+                            element.classList.remove('hidden-visually');
+                            element.style.opacity = 1; 
+                            element.style.transform = 'translateY(0)';
+                        }
+                    }
+                });
+            }
+            window.addEventListener('scroll', revealElementsOnScroll);
+            revealElementsOnScroll();
+        }
+
+        if (mobileMenuBtn && navLinksList) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinksList.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navLinksList.classList.contains('active')
+                    ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+            });
+        }
+
+        function updateNavbarHeightAndPadding() {
+            const mainElement = document.querySelector('.page-content-wrapper > main');
+            if (navbar && mainElement) {
+                const navbarHeight = navbar.offsetHeight;
+                mainElement.style.paddingTop = (navbarHeight + 20) + 'px'; 
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            if (navbar) {
+                navbar.classList.toggle('scrolled', window.scrollY > 30);
+            }
+            if (scrollProgress) {
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                scrollProgress.style.width = (scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0) + '%';
+            }
+        });
+        
+        updateNavbarHeightAndPadding(); 
+        window.addEventListener('resize', updateNavbarHeightAndPadding);
+
+
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || !href.startsWith('#') || href === "#" || (href.startsWith('#') && !document.getElementById(href.substring(1)))) {
+                     if (navLinksList && navLinksList.classList.contains('active')) { 
+                        navLinksList.classList.remove('active');
+                        if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                    }
+                    return; 
+                }
+                
+                const targetElement = document.querySelector(href);
+                if (targetElement) {
+                    e.preventDefault();
+                    let offset = navbar ? navbar.offsetHeight : 70;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - offset - 10; 
+    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+
+                if (navLinksList && navLinksList.classList.contains('active')) {
+                    navLinksList.classList.remove('active');
+                    if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                }
+            });
+        });
+        
+        // Função para inicializar um carrossel
+        function initCarousel(carouselId) {
+    const carouselElement = document.querySelector(`#${carouselId} .carousel`);
+    if (!carouselElement) return;
+    
+    const carouselSlides = carouselElement.querySelectorAll('img, video');
+    if (carouselSlides.length === 0) return;
+    
+    const prevBtn = document.querySelector(`#${carouselId} .prev-btn`);
+    const nextBtn = document.querySelector(`#${carouselId} .next-btn`);
+    const dotsContainer = document.querySelector(`#${carouselId} .carousel-dots`);
+    
+    if (!prevBtn || !nextBtn || !dotsContainer) return;
+    
+    let currentIndex = 0;
+    const totalSlides = carouselSlides.length;
+    let autoSlideInterval;
+    
+    // Criar dots
+    carouselSlides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dot.addEventListener('click', () => {
+            goToSlide(index);
+            resetAutoSlide();
+        });
+        dotsContainer.appendChild(dot);
+    });
+    
+    const dots = dotsContainer.querySelectorAll('.dot');
+    
+    function goToSlide(index) {
+        currentIndex = index;
+        updateCarousel();
+    }
+    
+    function updateCarousel() {
+        carouselSlides.forEach((slide, idx) => {
+            slide.classList.toggle('active-slide', idx === currentIndex);
+            
+            // Pausar vídeos que não estão ativos
+            if (slide.tagName === 'VIDEO' && idx !== currentIndex) {
+                slide.pause();
+            }
+        });
+        
+        if (dots && dots.length > 0) {
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentIndex);
+            });
+        }
+    }
+    
+    function startAutoSlide() {
+        clearInterval(autoSlideInterval); 
+        autoSlideInterval = setInterval(() => {
+            currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
+            updateCarousel();
+        }, 5000); 
+    }
+    
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+    }
+
+    prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalSlides - 1;
+        updateCarousel();
+        resetAutoSlide();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
+        updateCarousel();
+        resetAutoSlide();
+    });
+    
+    const carouselContainerElement = document.querySelector(`#${carouselId}`);
+    if (carouselContainerElement) {
+         carouselContainerElement.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+         carouselContainerElement.addEventListener('mouseleave', startAutoSlide);
+    }
+    
+    const tiltEffectStrength = 12; 
+    carouselSlides.forEach(slide => {
+        // Aplicar efeito tilt apenas em imagens, não em vídeos
+        if (slide.tagName === 'IMG') {
+            slide.addEventListener('mousemove', (e) => {
+                const rect = slide.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;  
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const deltaX = x - centerX;
+                const deltaY = y - centerY;
+                const rotateX = (deltaY / centerY) * tiltEffectStrength * -1; 
+                const rotateY = (deltaX / centerX) * tiltEffectStrength;
+                if (slide.classList.contains('active-slide')) {
+                    slide.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                }
+            });
+            slide.addEventListener('mouseleave', () => {
+                slide.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            });
+        }
+    });
+
+    updateCarousel(); 
+    startAutoSlide(); 
+}
+        
+        // Inicializar todos os carrosséis
+        initCarousel('carousel-esquenta');
+        initCarousel('carousel-amostra');
+        initCarousel('carousel-empreende');
+        initCarousel('carousel-sheets');
     });
     </script>
 </body>
 </html>
+
+
