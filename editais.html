@@ -44,7 +44,6 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* Aumentado para evitar que o menu tampe o título inicialmente */
         .page-content-wrapper > main { padding-top: 140px; flex-grow: 1; }
 
         h2.section-title {
@@ -118,6 +117,14 @@
             color: var(--text-primary);
         }
 
+        .vagas-list {
+            list-style: none;
+            margin: 15px 0;
+            padding-left: 45px; /* Ajuste solicitado aqui */
+        }
+        .vagas-list li { position: relative; padding-left: 1.5rem; margin-bottom: 0.5rem; }
+        .vagas-list li::before { content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: var(--accent-primary); }
+
         .btn-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
         
         .btn { 
@@ -133,11 +140,6 @@
         #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradiente-primario); width: 0%; z-index: 1100; }
 
         .hidden-visually { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
-
-        @media (max-width: 1024px) {
-            .navbar-logo { width: 60px; height: 60px; }
-            .nav-links a { font-size: 0.7rem; }
-        }
 
         @media (max-width: 900px) {
             .mobile-menu-button { display: block; }
@@ -201,11 +203,12 @@
                             <p>O PET-AME está com inscrições abertas para novos bolsistas dos cursos de Administração, Matemática e Engenharia de Produção Agroindustrial. O processo oferta sete vagas no total, com bolsa mensal de <strong>R$ 700,00</strong>.</p>
                             
                             <p><strong>Vagas:</strong></p>
-                                   <ul class="vagas-list">
-                                      <li>Administração: 01 vaga</li>
-                                      <li>Matemática: 03 vagas</li>
-                                      <li>Engenharia de Produção Agroindustrial: 03 vagas</li>
-                                   </ul>
+                            <ul class="vagas-list">
+                                <li>Administração: 01 vaga</li>
+                                <li>Matemática: 03 vagas</li>
+                                <li>Engenharia de Produção Agroindustrial: 03 vagas</li>
+                            </ul>
+                            
                             <p><i class="fa-regular fa-calendar-check"></i> <strong>Inscrições:</strong> Até 14 de fevereiro de 2026.</p>
 
                             <div class="btn-group">
@@ -213,7 +216,7 @@
                                     <i class="fa-solid fa-file-pdf"></i> Edital Completo
                                 </a>
                                 <a href="https://forms.gle/NMyPCQWL2CmMBjkh8" target="_blank" class="btn btn-outline">
-                                    <i class="fa-solid fa-pen-to-square"></i> Formulário de Inscrição
+                                    <i class="fa-solid fa-pen-to-square"></i> Inscrição
                                 </a>
                             </div>
                         </div>
@@ -241,7 +244,6 @@
         const navbar = document.querySelector('.navbar');
         const mainElement = document.querySelector('.page-content-wrapper > main');
 
-        // Função para ajustar padding dinamicamente baseado na altura real do menu
         function adjustMainPadding() {
             if (navbar && mainElement) {
                 const navbarHeight = navbar.offsetHeight;
@@ -249,7 +251,6 @@
             }
         }
 
-        // Executa o ajuste e blobs
         adjustMainPadding();
         window.addEventListener('resize', adjustMainPadding);
 
@@ -263,7 +264,6 @@
             }
         } catch (e) { console.error(e); }
 
-        // Mobile Menu
         const mobileMenuBtn = document.getElementById('mobileMenuBtnGlobal');
         const navLinks = document.getElementById('navLinksGlobal');
         mobileMenuBtn.onclick = () => {
@@ -271,7 +271,6 @@
             mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
         };
 
-        // Scroll Effects
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 30);
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -279,7 +278,6 @@
             document.getElementById('scroll-progress').style.width = progress + '%';
         });
 
-        // Reveal Animation
         const reveal = () => {
             document.querySelectorAll('.hidden-visually').forEach(el => {
                 if (el.getBoundingClientRect().top < window.innerHeight / 1.1) {
