@@ -44,7 +44,8 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        .page-content-wrapper > main { flex-grow: 1; }
+        /* Aumentado para evitar que o menu tampe o título inicialmente */
+        .page-content-wrapper > main { padding-top: 140px; flex-grow: 1; }
 
         h2.section-title {
             color: var(--text-primary); font-size: 2.6rem; margin-bottom: 2rem; 
@@ -59,7 +60,6 @@
         .container { width: 95%; max-width: 1100px; margin: 0 auto; }
         .section { padding: 40px 20px; position: relative; }
 
-        /* Navbar com 4 logos padronizada */
         .navbar { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             transition: padding 0.3s ease, background-color 0.3s ease; 
@@ -75,7 +75,7 @@
 
         .navbar-logo {
             display: flex; align-items: center; justify-content: center;
-            width: 75px; height: 75px; border-radius: 50%; border: 2px solid var(--text-secondary); 
+            width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--text-secondary); 
             overflow: hidden; background-color: #fff; flex-shrink: 0; transition: var(--transicao-suave);
         }
         .navbar-logo:hover { transform: scale(1.05); }
@@ -92,13 +92,12 @@
 
         .mobile-menu-button { display: none; background: none; border: none; font-size: 1.5rem; color: var(--text-primary); cursor: pointer; }
 
-        /* Card do Edital */
         .edital-content-card {
             background: var(--bg-card-formulario); 
             padding: 30px 40px;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
-            margin-top: 80px; 
+            margin-top: 20px; 
         }
 
         .edital-item {
@@ -136,7 +135,7 @@
         .hidden-visually { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
 
         @media (max-width: 1024px) {
-            .navbar-logo { width: 55px; height: 55px; }
+            .navbar-logo { width: 60px; height: 60px; }
             .nav-links a { font-size: 0.7rem; }
         }
 
@@ -147,7 +146,8 @@
                 position: absolute; top: 100%; left: 0; border-top: 1px solid #ddd;
             }
             .nav-links.active { display: flex; }
-            .navbar-logo.logo-seti, .navbar-logo.logo-araucaria { display: none; } /* Esconde logos extras no mobile */
+            .navbar-logo.logo-seti, .navbar-logo.logo-araucaria { display: none; }
+            .page-content-wrapper > main { padding-top: 100px; }
         }
     </style>
 </head>
@@ -200,14 +200,13 @@
                             </div>
                             <p>O PET-AME está com inscrições abertas para novos bolsistas dos cursos de Administração, Matemática e Engenharia de Produção Agroindustrial. O processo oferta sete vagas no total, com bolsa mensal de <strong>R$ 700,00</strong>.</p>
                             
-                            <p><strong>Vagas disponíveis:</strong> 01 para Administração, 03 para Matemática e 03 para Engenharia de Produção Agroindustrial.</p>
+                            <p><strong>Vagas:</strong> 01 para Administração, 03 para Matemática e 03 para Engenharia de Produção Agroindustrial.</p>
                             
                             <p><i class="fa-regular fa-calendar-check"></i> <strong>Inscrições:</strong> Até 14 de fevereiro de 2026.</p>
-                            <p><i class="fa-solid fa-circle-exclamation"></i> <strong>Atenção:</strong> É necessário anexar os documentos solicitados em um único arquivo PDF no ato da inscrição.</p>
 
                             <div class="btn-group">
                                 <a href="https://campomourao.unespar.edu.br/menu-principal/atos-oficiais/conselho-do-centro-de-ciencias-humanas-e-da-educacao/editais-pet-unespar-cm/edital-n-o-01-2026-2013-pet-ame-unespar" target="_blank" class="btn btn-primario">
-                                    <i class="fa-solid fa-file-pdf"></i> Ver Edital Completo
+                                    <i class="fa-solid fa-file-pdf"></i> Edital Completo
                                 </a>
                                 <a href="https://forms.gle/NMyPCQWL2CmMBjkh8" target="_blank" class="btn btn-outline">
                                     <i class="fa-solid fa-pen-to-square"></i> Formulário de Inscrição
@@ -216,7 +215,7 @@
                         </div>
 
                         <p style="text-align: center; font-size: 0.85rem; margin-top: 30px; opacity: 0.7;">
-                            Dúvidas? Entre em contato com a coordenação: gislaine.pericaro@ies.unespar.edu.br
+                            Dúvidas? gislaine.pericaro@ies.unespar.edu.br
                         </p>
                     </div>
                 </div>
@@ -226,7 +225,6 @@
         <footer class="footer">
             <div class="container">
                 <p>&copy; <span id="currentYear"></span> PET-AME UNESPAR - Campus Campo Mourão.</p>
-                <p><a href="https://www.unespar.edu.br/" target="_blank">UNESPAR - Universidade Estadual do Paraná</a></p>
             </div>
         </footer>
     </div> 
@@ -236,7 +234,21 @@
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Blob Background
+        const navbar = document.querySelector('.navbar');
+        const mainElement = document.querySelector('.page-content-wrapper > main');
+
+        // Função para ajustar padding dinamicamente baseado na altura real do menu
+        function adjustMainPadding() {
+            if (navbar && mainElement) {
+                const navbarHeight = navbar.offsetHeight;
+                mainElement.style.paddingTop = (navbarHeight + 30) + 'px';
+            }
+        }
+
+        // Executa o ajuste e blobs
+        adjustMainPadding();
+        window.addEventListener('resize', adjustMainPadding);
+
         try {
             const blobContainer = document.getElementById('blob-background');
             if (blobContainer && typeof blobz !== 'undefined') {
@@ -257,9 +269,7 @@
 
         // Scroll Effects
         window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
             navbar.classList.toggle('scrolled', window.scrollY > 30);
-            
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const progress = (window.scrollY / scrollHeight) * 100;
             document.getElementById('scroll-progress').style.width = progress + '%';
