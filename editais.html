@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editais - PET-AME UNESPAR</title>
+    <meta name="description" content="Editais de seleção e atos oficiais do PET-AME UNESPAR.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --bg-main: #e8f5e9; 
+            --bg-card-formulario: #dcedc8; 
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+            --text-primary: #37474f; 
+            --text-secondary: #38703b; 
+            --text-placeholder: #757575;
+            --accent-primary: #4db6ac; 
+            --accent-secondary: #4fc3f7; 
+            --sombra: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 7px 14px rgba(0, 0, 0, 0.1);
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --transicao-suave: all 0.3s ease-in-out;
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --bg-question-enunciado: rgba(255, 255, 255, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            font-family: var(--fonte-principal); line-height: 1.7; color: var(--text-secondary);
+            background-color: var(--bg-main); scroll-behavior: smooth; overflow-x: hidden; cursor: default; 
+        }
+
+        #blob-background { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; 
+        }
+
+        .page-content-wrapper {
+            position: relative; z-index: 1; width: 100%; background-color: transparent; 
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        .page-content-wrapper > main { padding-top: 100px; flex-grow: 1; }
+
+        h2.section-title {
+            color: var(--text-primary); font-size: 2.6rem; margin-bottom: 2rem; 
+            text-transform: uppercase; letter-spacing: 0.07em; text-align: center; position: relative;
+        }
+
+        h2.section-title::after {
+            content: ''; display: block; width: 70px; height: 4px; background: var(--gradiente-primario);
+            margin: 15px auto 30px auto; border-radius: 3px;
+        }
+
+        .container { width: 90%; max-width: 1080px; margin: 0 auto; }
+        .section { padding: 40px 20px; position: relative; }
+
+        .navbar { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
+            transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
+            background: var(--bg-navbar); backdrop-filter: blur(8px); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04); padding: 15px 0;
+        }
+
+        .navbar.scrolled { padding: 10px 0; background: rgba(212, 237, 218, 0.97); box-shadow: 0 3px 6px rgba(0,0,0,0.06); }
+        
+        .navbar .container.navbar-container { 
+            padding: 0 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .navbar-logo {
+            display: flex; align-items: center; justify-content: center;
+            width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--text-secondary); 
+            overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; transition: var(--transicao-suave);
+        }
+
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .nav-links-wrapper { display: flex; align-items: center; }
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0;} 
+        .nav-links li { margin-left: 22px; }
+        .nav-links a { color: var(--text-primary); font-weight: 500; position: relative; padding: 6px 0; font-size: 0.85rem; text-decoration: none; transition: var(--transicao-suave); }
+        .nav-links a::before { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background-color: var(--accent-primary); transition: width 0.3s ease; }
+        .nav-links a:hover::before { width: 100%; }
+        .nav-links a:hover { color: var(--accent-primary); }
+
+        .mobile-menu-button { display: none; background: none; border: none; font-size: 1.7rem; color: var(--text-primary); cursor: pointer; }
+
+        /* Estilos do Card de Edital */
+        .edital-card {
+            background: var(--bg-card-formulario);
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            margin-top: 2rem;
+        }
+
+        .edital-item {
+            background-color: var(--bg-main);
+            border-left: 5px solid var(--accent-primary);
+            padding: 25px;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+            transition: var(--transicao-suave);
+        }
+
+        .edital-item:hover { transform: translateX(5px); }
+
+        .edital-header {
+            background-color: var(--bg-question-enunciado);
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-family: var(--fonte-secundaria);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+
+        .edital-item p { margin-bottom: 1rem; text-align: justify; color: var(--text-primary); }
+        
+        .vagas-list { list-style: none; margin: 15px 0; padding-left: 20px; }
+        .vagas-list li { position: relative; padding-left: 1.5rem; margin-bottom: 0.5rem; }
+        .vagas-list li::before { content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: var(--accent-primary); }
+
+        .btn-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        
+        .btn { 
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 25px; border-radius: 25px; 
+            font-weight: 600; text-align: center; transition: var(--transicao-suave); border: none; 
+            font-size: 0.9rem; text-transform: uppercase; cursor: pointer; text-decoration: none;
+        }
+        .btn-primario { background: var(--accent-primary); color: #fff; box-shadow: var(--sombra); }
+        .btn-primario:hover { background: var(--accent-secondary); color: var(--text-primary); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        
+        .btn-outline { background: transparent; border: 2px solid var(--accent-primary); color: var(--accent-primary); }
+        .btn-outline:hover { background: var(--accent-primary); color: #fff; }
+
+        .footer { background-color: #dceae0; color: var(--text-secondary); padding: 40px 0 20px; text-align: center; margin-top: auto; }
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary)); width: 0%; z-index: 10002; }
+
+        .hidden-visually { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+
+        @media (max-width: 992px) {
+            .navbar-logo { width: 50px; height: 50px; }
+            .mobile-menu-button { display: block; }
+            .nav-links { 
+                display: none; flex-direction: column; width: 100%; background: var(--bg-navbar); padding: 15px 0; 
+                position: absolute; top: 100%; left: 0; z-index: 999; border-top: 1px solid rgba(0,0,0,0.05);
+            }
+            .nav-links.active { display: flex; }
+            .nav-links li { margin: 0; text-align: center; }
+            .nav-links a { display: block; padding: 12px; font-size: 1rem; }
+            .edital-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="blob-background"></div> 
+    <div id="scroll-progress"></div>
+
+    <div class="page-content-wrapper">
+        <nav class="navbar">
+            <div class="container navbar-container">
+                <a href="index.html" class="navbar-logo">
+                    <img src="logopet.png" alt="Logo PET-AME">
+                </a>
+                <div class="nav-links-wrapper"> 
+                    <ul class="nav-links" id="navLinksGlobal">
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="formulario-apoio.html">Apoio Acadêmico</a></li>
+                        <li><a href="formulario-duvidas.html">Dúvidas/Sugestões</a></li>
+                        <li><a href="editais.html">Editais</a></li>
+                    </ul>
+                    <button class="mobile-menu-button" id="mobileMenuBtnGlobal">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+                <a href="https://www.unespar.edu.br/" class="navbar-logo">
+                    <img src="logounespar.png" alt="Logo UNESPAR">
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title">Editais e Seleções</h2>
+                    
+                    <div class="edital-card">
+                        <div class="edital-item hidden-visually">
+                            <div class="edital-header">
+                                <i class="fa-solid fa-file-signature"></i> Edital 001/2026 - Seleção de Novos Bolsistas
+                            </div>
+                            <p>O Grupo de Educação Tutorial Interdisciplinar (PET-AME) da Unespar, campus de Campo Mourão, está com inscrições abertas para a seleção de novos membros bolsistas. Oportunidade para desenvolver atividades de ensino, pesquisa e extensão com bolsa mensal de <strong>R$ 700,00</strong>.</p>
+                            
+                            <p><strong>Distribuição de Vagas:</strong></p>
+                            <ul class="vagas-list">
+                                <li>Administração: 01 vaga</li>
+                                <li>Matemática: 03 vagas</li>
+                                <li>Engenharia de Produção Agroindustrial: 03 vagas</li>
+                            </ul>
+
+                            <p><i class="fa-solid fa-calendar-days"></i> <strong>Inscrições:</strong> Até 14 de fevereiro de 2026.</p>
+                            <p><i class="fa-solid fa-circle-info"></i> <strong>Requisitos:</strong> Estar matriculado em um dos cursos citados e não possuir vínculo empregatício ou outra bolsa (exceto assistencial).</p>
+
+                            <div class="btn-group">
+                                <a href="https://campomourao.unespar.edu.br/menu-principal/atos-oficiais/conselho-do-centro-de-ciencias-humanas-e-da-educacao/editais-pet-unespar-cm/edital-n-o-01-2026-2013-pet-ame-unespar" target="_blank" class="btn btn-primario">
+                                    <i class="fa-solid fa-file-pdf"></i> Acessar Edital Completo
+                                </a>
+                                <a href="https://forms.gle/NMyPCQWL2CmMBjkh8" target="_blank" class="btn btn-outline">
+                                    <i class="fa-solid fa-pen-to-square"></i> Realizar Inscrição
+                                </a>
+                            </div>
+                        </div>
+
+                        <p style="text-align: center; font-size: 0.9rem; opacity: 0.7; margin-top: 20px;">
+                            Acompanhe esta página para futuras publicações e resultados.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; <span id="currentYear"></span> PET-AME UNESPAR - Campus Campo Mourão.</p>
+                <p><a href="https://www.unespar.edu.br/" target="_blank">UNESPAR - Universidade Estadual do Paraná</a></p>
+            </div>
+        </footer>
+    </div> 
+
+    <script src="https://cdn.jsdelivr.net/npm/blobz.js@latest/dist/blobz.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Blob Background
+        try {
+            const blobContainer = document.getElementById('blob-background');
+            if (blobContainer && typeof blobz !== 'undefined') {
+                new blobz.Renderer(blobContainer, {
+                    num_blobs: 5, blob_color: ['#c8e6c9', '#b2dfdb', '#dcedc8', 'rgba(77, 182, 172, 0.6)'],
+                    speed: 0.12, blob_radius_factor: 0.8, animation_smoothness: 0.07
+                });
+            }
+        } catch (e) { console.error(e); }
+
+        // Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtnGlobal');
+        const navLinks = document.getElementById('navLinksGlobal');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        // Scroll Progress & Navbar Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            navbar.classList.toggle('scrolled', window.scrollY > 30);
+            
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (window.scrollY / scrollHeight) * 100;
+            document.getElementById('scroll-progress').style.width = progress + '%';
+        });
+
+        // Reveal Animation
+        const elements = document.querySelectorAll('.hidden-visually');
+        const reveal = () => {
+            elements.forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight / 1.1) {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        window.addEventListener('scroll', reveal);
+        reveal();
+    });
+    </script>
+</body>
+</html>
