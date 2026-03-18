@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratório Matemático - PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="./logopet.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        /* Mantendo seus Root e Estilos Base */
+        :root {
+            --bg-main: #e8f5e9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+            --text-primary: #37474f;
+            --text-secondary: #38703b;
+            --accent-primary: #4db6ac;
+            --accent-secondary: #4fc3f7;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        /* Estilos da sua Index */
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; }
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1080px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.88rem; }
+        
+        main { padding-top: 130px; }
+        .section { padding: 40px 20px; max-width: 1080px; margin: 0 auto; }
+        .section-title { text-align: center; font-family: var(--fonte-secundaria); font-size: 2.2rem; color: var(--text-primary); margin-bottom: 2rem; position: relative; }
+        .section-title::after { content: ''; display: block; width: 70px; height: 4px; background: var(--gradiente-primario); margin: 15px auto; border-radius: 3px; }
+
+        /* Estilo Específico para o Container do Jogo */
+        .game-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 7px 14px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #output_grafico { margin-top: 20px; border-radius: 10px; overflow: hidden; min-height: 300px; background: #fff; }
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; margin: 10px;
+        }
+        .game-btn:hover { background: var(--accent-secondary); transform: translateY(-2px); }
+        .pergunta-box { font-size: 1.1rem; margin: 20px 0; color: var(--text-primary); font-weight: 600; }
+        
+        .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="eventos.html">Eventos</a></li>
+                <li><a href="jogos.html" style="color: var(--accent-primary)">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <h2 class="section-title">Relações Métricas</h2>
+            <p style="text-align: center;">Explore a geometria de forma interativa. Clique no botão para gerar um novo desafio matemático.</p>
+            
+            <div class="game-container">
+                <div id="pergunta" class="pergunta-box">Clique no botão para iniciar o exercício...</div>
+                
+                <button id="btn-gerar" class="game-btn" py-click="gerar_novo_exercicio">Gerar Novo Exercício</button>
+                <button id="btn-resposta" class="game-btn" style="background: #90a4ae;" py-click="mostrar_resposta">Ver Resposta</button>
+
+                <div id="output_grafico"></div>
+                <div id="explicacao" style="margin-top: 15px; font-style: italic; color: #555;"></div>
+            </div>
+        </section>
+    </main>
+
+    <py-config>
+        packages = ["matplotlib", "numpy"]
+    </py-config>
+
+    <py-script>
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+import random
+from pyscript import display, window
+from js import document
+
+# Variável global para armazenar o exercício atual
+current_ex = {}
+
+def criar_figura(m, n):
+    h = math.sqrt(m * n)
+    fig, ax = plt.subplots(figsize=(8, 4))
+    
+    # Coordenadas: A (topo), B (esquerda), C (direita)
+    # Colocamos o pé da altura no (0,0)
+    A = [0, h]
+    B = [-n, 0]
+    C = [m, 0]
+    
+    # Desenha o triângulo
+    ax.plot([A[0], B[0], C[0], A[0]], [A[1], B[1], C[1], A[1]], color='#38703b', lw=3)
+    # Desenha a altura tracejada
+    ax.plot([0, 0], [0, h], color='red', linestyle='--', lw=2, label=f'h')
+    
+    # Ajustes visuais para combinar com o site
+    ax.set_aspect('equal')
+    ax.axis('off')
+    ax.set_title("Triângulo Retângulo", color='#37474f', fontfamily='sans-serif')
+    
+    return fig
+
+def gerar_novo_exercicio(event=None):
+    global current_ex
+    m = random.randint(2, 9)
+    n = random.randint(2, 9)
+    h = math.sqrt(m * n)
+    
+    current_ex = {
+        'pergunta': f"As projeções dos catetos sobre a hipotenusa medem m = {m} cm e n = {n} cm. Calcule a altura (h).",
+        'resposta': f"A altura é {h:.2f} cm.",
+        'explicacao': f"Fórmula: h² = m * n \n h² = {m} * {n} = {m*n} \n h = √{m*n} ≈ {h:.2f}",
+        'fig': criar_figura(m, n)
+    }
+    
+    # Atualiza o texto da pergunta
+    document.getElementById("pergunta").innerText = current_ex['pergunta']
+    document.getElementById("explicacao").innerText = ""
+    
+    # Limpa o gráfico antigo e desenha o novo
+    target = document.getElementById("output_grafico")
+    target.innerHTML = ""
+    display(current_ex['fig'], target="#output_grafico")
+
+def mostrar_resposta(event=None):
+    if 'resposta' in current_ex:
+        msg = f"{current_ex['resposta']} \n {current_ex['explicacao']}"
+        document.getElementById("explicacao").innerText = msg
+
+# Inicializa o primeiro exercício automaticamente ao carregar
+gerar_novo_exercicio()
+</py-script>
+
+    <footer style="text-align: center; padding: 20px; background: #dceae0; margin-top: 50px;">
+        <p>&copy; 2026 PET-AME UNESPAR</p>
+    </footer>
+
+</body>
+</html>
