@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otimização de Volume | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        main { padding-top: 110px; padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
+        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
+
+        .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        #output_grafico { min-height: 450px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+
+        .controls-box { background: #fdfdfd; padding: 25px; border-radius: 12px; margin: 20px 0; border: 2px solid #e0e0e0; }
+        .slider-ui { width: 100%; height: 12px; border-radius: 10px; background: #dcedc8; outline: none; cursor: pointer; appearance: none; }
+        .slider-ui::-webkit-slider-thumb { appearance: none; width: 25px; height: 25px; border-radius: 50%; background: var(--text-secondary); cursor: pointer; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee; transition: 0.3s; }
+        .stat-card span { font-size: 0.75rem; color: #999; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .stat-card strong { font-size: 1.2rem; font-family: var(--fonte-secundaria); color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-box-open"></i> Otimização de Embalagens</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Uma indústria em <b>Campo Mourão</b> utiliza chapas de <b>12cm x 8cm</b> para criar caixas. O desafio é encontrar o corte exato <b>x</b> que gera o maior volume interno. Este é um problema clássico de <b>Cálculo Diferencial</b> aplicado à Engenharia de Produção.
+                <br><br>
+                <b>Instrução:</b> Mova o *slider* para simular o tamanho do corte <b>x</b>. O diagrama à esquerda mostra a folha sendo cortada (vermelho) e dobrada (tracejado). O gráfico à direita mostra o volume resultante. Encontre o ponto mais alto da curva!
+            </p>
+
+            <button class="btn-resolucao" onclick="toggleResolucao()">
+                <i class="fas fa-square-root-variable"></i> Abrir Resolução Detalhada
+            </button>
+
+            <div id="resolucao-conteudo">
+                <h4><b>1. Entendendo o Problema (Modelagem)</b></h4>
+                <p>Imagine que você tem uma folha de metal de \(12\text{ cm} \times 8\text{ cm}\). Para transformá-la em uma caixa, você precisa cortar quatro quadrados iguais de lado \(x\) nos cantos e dobrar as abas para cima.</p>
+                <ul>
+                    <li><b>Comprimento final:</b> era \(12\), mas tiramos \(x\) de cada lado \(\rightarrow (12 - 2x)\)</li>
+                    <li><b>Largura final:</b> era \(8\), mas tiramos \(x\) de cada lado \(\rightarrow (8 - 2x)\)</li>
+                    <li><b>Altura da caixa:</b> é exatamente o tamanho do corte \(x\).</li>
+                </ul>
+                <p>O <b>Volume (\(V\))</b> é a multiplicação dessas três dimensões:</p>
+                \[V(x) = (12 - 2x) \cdot (8 - 2x) \cdot x = \mathbf{4x^3 - 40x^2 + 96x}\]
+                
+                <hr>
+
+                <h4><b>2. Encontrando o Ponto Mais Alto (Primeira Derivada)</b></h4>
+                <p>Na matemática, a <b>Derivada (\(V'\))</b> nos diz a inclinação da subida ou descida do gráfico. O ponto máximo de volume ocorre exatamente onde a curva para de subir e começa a descer — ou seja, onde a inclinação é <b>zero</b>.</p>
+                <p>\[V'(x) = 12x^2 - 80x + 96\]</p>
+                <p>Igualamos a zero e simplificamos (dividindo tudo por 4):</p>
+                <p>\[3x^2 - 20x + 24 = 0\]</p>
+
+                <h4><b>3. Resolvendo a Equação (Bhaskara)</b></h4>
+                <p>Usando a fórmula de Bhaskara, encontramos as raízes para \(x\):</p>
+                <p>\[x = \frac{20 \pm \sqrt{112}}{6} \rightarrow \sqrt{112} \approx 10,58\]</p>
+                <ul>
+                    <li>\(x_1 \approx 5,10\text{ cm}\): (Impossível! Não podemos cortar 5cm de cada lado se a largura total é apenas 8cm).</li>
+                    <li>\(\mathbf{x_2 \approx 1,57\text{ cm}}\): <b>Este é o nosso candidato a campeão!</b></li>
+                </ul>
+
+                <hr>
+
+                <h4><b>4. Por que esse é o máximo? (Segunda Derivada)</b></h4>
+                <p>A <b>Segunda Derivada (\(V''\))</b> nos diz a <b>curvatura</b> (concavidade) do gráfico:</p>
+                <ul>
+                    <li>Se \(V''\) for <b>positivo</b>, a curva tem formato de "vale" (o ponto é um <b>mínimo</b>).</li>
+                    <li>Se \(V''\) for <b>negativo</b>, a curva tem formato de "montanha" (o ponto é um <b>máximo</b>).</li>
+                </ul>
+                <p>Derivando novamente: \(V''(x) = 24x - 80\).<br>
+                Substituindo nosso valor: \(V''(1,57) = 24(1,57) - 80 = \mathbf{-42,32}\)</p>
+                <p>Como o resultado é <b>negativo</b>, confirmamos fisicamente que este corte de \(1,57\text{ cm}\) produz o <b>maior volume possível</b> para esta chapa!</p>
+            </div>
+        </section>
+
+        <div class="game-area">
+            <div id="output_grafico">
+                <div style="text-align: center;"><i class="fas fa-sync fa-spin fa-3x"></i><p>Calculando Dimensões...</p></div>
+            </div>
+
+            <div class="controls-box">
+                <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 15px;">
+                    DESLIZE PARA CORTAR A FOLHA (x):
+                </label>
+                <input type="range" class="slider-ui" id="corte_slider" min="0.1" max="3.9" step="0.01" value="2.0" py-input="atualizar">
+                
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Lado do Corte (x)</span><strong id="val-x">0.00 cm</strong></div>
+                    <div class="stat-card"><span>Volume (V)</span><strong id="val-v">0.00 cm³</strong></div>
+                    <div class="stat-card" id="card-status"><span>Situação</span><strong id="val-status">---</strong></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleResolucao() {
+            var div = document.getElementById("resolucao-conteudo");
+            div.style.display = (div.style.display === "block") ? "none" : "block";
+            if (div.style.display === "block") MathJax.typeset();
+        }
+    </script>
+
+    <py-config>
+        packages = ["matplotlib", "numpy"]
+    </py-config>
+
+    <py-script>
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import numpy as np
+from pyscript import display
+from js import document
+
+def atualizar(event=None):
+    # Limpa a div para evitar que os gráficos se acumulem
+    document.getElementById("output_grafico").innerHTML = ""
+    
+    plt.close('all')
+    x = float(document.getElementById("corte_slider").value)
+    a, b = 12.0, 8.0
+    vol = (a - 2*x) * (b - 2*x) * x
+
+    # Criando a figura
+    fig = plt.figure(figsize=(12, 5), facecolor='white')
+    ax1 = fig.add_subplot(1, 2, 1) 
+    ax2 = fig.add_subplot(1, 2, 2)
+
+    # --- ESQUERDA: Diagrama 2D ---
+    ax1.add_patch(patches.Rectangle((0, 0), a, b, facecolor="#fff9c4", edgecolor="k"))
+    for p in [(0,0), (a-x,0), (0,b-x), (a-x,b-x)]:
+        ax1.add_patch(patches.Rectangle(p, x, x, facecolor="#ef9a9a", edgecolor="#b71c1c", ls="--"))
+    ax1.add_patch(patches.Rectangle((x, x), a-2*x, b-2*x, facecolor="#b2dfdb", alpha=0.5, ls="--", edgecolor="k"))
+    ax1.set_xlim(-1, a+1), ax1.set_ylim(-1, b+1)
+    ax1.set_aspect('equal')
+    ax1.axis('off')
+    ax1.set_title("Plano de Corte", fontsize=10, fontweight='bold')
+
+    # --- DIREITA: Gráfico Volume ---
+    x_range = np.linspace(0, 4, 150)
+    y_range = (a - 2*x_range) * (b - 2*x_range) * x_range
+    ax2.plot(x_range, y_range, color="#00796b", lw=2, label="Curva de Volume")
+    
+    # Ponto Vermelho que se move com o slider
+    ax2.scatter(x, vol, color="#b71c1c", s=80, zorder=10)
+    
+    # Barra Laranja do Ótimo (Fixa em 1.57)
+    ax2.axvline(1.57, color='#f57f17', ls='--', lw=2, alpha=0.8, label="Máximo Teórico (1.57)")
+    
+    ax2.set_title("Curva de Volume", fontsize=10, fontweight='bold')
+    ax2.set_xlabel("x (cm)"), ax2.set_ylabel("V (cm³)")
+    ax2.legend(fontsize=8)
+    ax2.grid(True, alpha=0.1)
+
+    # Status e UI
+    target_x = 1.57
+    document.getElementById("val-x").innerText = f"{x:.2f} cm"
+    document.getElementById("val-v").innerText = f"{vol:.2f} cm³"
+    
+    status_el = document.getElementById("val-status")
+    if abs(x - target_x) <= 0.05:
+        status_el.innerText = "🏅 VOLUME ÓTIMO!"
+        status_el.style.color = "#1b5e20"
+    elif x < target_x:
+        status_el.innerText = "➡️ Aumente o corte"
+        status_el.style.color = "#f57f17"
+    else:
+        status_el.innerText = "⬇️ Volume caindo..."
+        status_el.style.color = "#b71c1c"
+
+    display(fig, target="#output_grafico")
+
+# Inicialização
+atualizar()
+    </py-script>
+
+</body>
+</html>
