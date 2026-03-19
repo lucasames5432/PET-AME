@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relações Métricas - PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="./logopet.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #e8f5e9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+            --text-primary: #37474f;
+            --text-secondary: #38703b;
+            --accent-primary: #4db6ac;
+            --accent-secondary: #4fc3f7;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; }
+        
+        /* Navbar Idêntica à sua Index */
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1080px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.88rem; }
+        .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        main { padding-top: 130px; }
+        .section { padding: 40px 20px; max-width: 1080px; margin: 0 auto; }
+        
+        .game-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 7px 14px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        #output_grafico { 
+            margin-top: 20px; 
+            border-radius: 10px; 
+            min-height: 350px; 
+            background: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; margin: 10px; font-weight: 600;
+        }
+        .game-btn:hover { background: var(--accent-secondary); transform: translateY(-2px); }
+        .pergunta-box { font-size: 1.1rem; margin: 20px 0; color: var(--text-primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="eventos.html">Eventos</a></li>
+                <li><a href="jogos.html" style="color: var(--accent-primary)">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="game-container">
+                <h2 style="font-family: var(--fonte-secundaria); color: var(--text-primary);">Relações Métricas</h2>
+                <div id="pergunta" class="pergunta-box">Aguardando o Python...</div>
+                
+                <button id="btn-gerar" class="game-btn" py-click="gerar_novo_exercicio">Gerar Novo Exercício</button>
+                <button id="btn-resposta" class="game-btn" style="background: #90a4ae;" py-click="mostrar_resposta">Ver Resposta</button>
+
+                <div id="output_grafico">
+                    <div id="loader"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Montando laboratório...</p></div>
+                </div>
+                <div id="explicacao" style="margin-top: 15px; font-weight: 600; color: #38703b;"></div>
+            </div>
+        </section>
+    </main>
+
+    <py-config>
+        packages = ["matplotlib", "numpy"]
+    </py-config>
+
+    <py-script>
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+import random
+from pyscript import display
+from js import document
+
+current_ex = {}
+
+def criar_figura(m, n):
+    # CORREÇÃO DO ERRO: Fecha figuras anteriores para não pesar o navegador
+    plt.close('all') 
+    
+    h = math.sqrt(m * n)
+    fig, ax = plt.subplots(figsize=(7, 4))
+    
+    # Coordenadas do triângulo
+    A, B, C = [0, h], [-n, 0], [m, 0]
+    
+    ax.plot([A[0], B[0], C[0], A[0]], [A[1], B[1], C[1], A[1]], color='#38703b', lw=3)
+    ax.plot([0, 0], [0, h], color='red', linestyle='--', lw=2)
+    
+    # Etiquetas (Labels) das medidas
+    ax.text(-n/2, -0.5, f"n={n}", ha='center')
+    ax.text(m/2, -0.5, f"m={m}", ha='center')
+    ax.text(0.2, h/2, "h=?", color='red', fontweight='bold')
+    
+    ax.set_aspect('equal')
+    ax.axis('off')
+    return fig
+
+def gerar_novo_exercicio(event=None):
+    global current_ex
+    m, n = random.randint(2, 9), random.randint(2, 9)
+    h = math.sqrt(m * n)
+    
+    current_ex = {
+        'pergunta': f"As projeções sobre a hipotenusa medem {m} e {n}. Qual a altura (h)?",
+        'resposta': f"h ≈ {h:.2f}",
+        'explicacao': f"Fórmula: h² = m * n -> h² = {m*n} -> h = √{m*n}",
+        'fig': criar_figura(m, n)
+    }
+    
+    document.getElementById("pergunta").innerText = current_ex['pergunta']
+    document.getElementById("explicacao").innerText = ""
+    
+    target = document.getElementById("output_grafico")
+    target.innerHTML = ""
+    display(current_ex['fig'], target="#output_grafico")
+
+def mostrar_resposta(event=None):
+    if 'resposta' in current_ex:
+        document.getElementById("explicacao").innerText = f"Resposta: {current_ex['resposta']} | {current_ex['explicacao']}"
+
+# Inicia automático
+gerar_novo_exercicio()
+    </py-script>
+
+</body>
+</html>

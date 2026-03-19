@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratório Matemático - PET-AME</title>
+    <title>Laboratório de Jogos - PET-AME</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,11 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="./logopet.png" type="image/x-icon">
 
-    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-
     <style>
-        /* Mantendo seus Root e Estilos Base */
         :root {
             --bg-main: #e8f5e9;
             --bg-card: rgba(255, 255, 255, 0.95);
@@ -27,141 +23,214 @@
             --fonte-principal: 'Poppins', sans-serif;
             --fonte-secundaria: 'Roboto Mono', monospace;
             --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --transicao-suave: all 0.3s ease-in-out;
         }
 
-        /* Estilos da sua Index */
-        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; }
-        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1080px; margin: 0 auto; }
-        .nav-links { display: flex; list-style: none; gap: 20px; }
-        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.88rem; }
-        
-        main { padding-top: 130px; }
-        .section { padding: 40px 20px; max-width: 1080px; margin: 0 auto; }
-        .section-title { text-align: center; font-family: var(--fonte-secundaria); font-size: 2.2rem; color: var(--text-primary); margin-bottom: 2rem; position: relative; }
-        .section-title::after { content: ''; display: block; width: 70px; height: 4px; background: var(--gradiente-primario); margin: 15px auto; border-radius: 3px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Estilo Específico para o Container do Jogo */
-        .game-container {
-            background: var(--bg-card);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 7px 14px rgba(0,0,0,0.1);
-            text-align: center;
+        body {
+            font-family: var(--fonte-principal);
+            background-color: var(--bg-main);
+            color: var(--text-secondary);
+            overflow-x: hidden;
         }
-        #output_grafico { margin-top: 20px; border-radius: 10px; overflow: hidden; min-height: 300px; background: #fff; }
-        .game-btn { 
-            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
-            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
-            transition: 0.3s; margin: 10px;
+
+        /* Navbar Padrão */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            background: var(--bg-navbar);
+            backdrop-filter: blur(8px);
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
-        .game-btn:hover { background: var(--accent-secondary); transform: translateY(-2px); }
-        .pergunta-box { font-size: 1.1rem; margin: 20px 0; color: var(--text-primary); font-weight: 600; }
-        
-        .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+
+        .navbar-container {
+            width: 90%;
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--text-secondary);
+            overflow: hidden;
+            transition: var(--transicao-suave);
+        }
+        .navbar-logo:hover { transform: scale(1.05); }
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .nav-links { display: flex; list-style: none; gap: 25px; }
+        .nav-links a { 
+            color: var(--text-primary); 
+            text-decoration: none; 
+            font-weight: 500; 
+            font-size: 0.9rem;
+            transition: var(--transicao-suave);
+        }
+        .nav-links a:hover { color: var(--accent-primary); }
+
+        /* Conteúdo Principal */
+        main {
+            padding-top: 150px;
+            min-height: 80vh;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: var(--fonte-secundaria);
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .section-title::after {
+            content: ''; display: block; width: 80px; height: 4px;
+            background: var(--gradiente-primario);
+            margin: 15px auto; border-radius: 3px;
+        }
+
+        .subtitle {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Lista de Jogos (Botões) */
+        .games-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 50px;
+        }
+
+        .game-card {
+            width: 90%;
+            max-width: 500px;
+            background: var(--bg-card);
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--accent-primary);
+            transition: var(--transicao-suave);
+        }
+
+        .game-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+
+        .game-info h3 {
+            font-family: var(--fonte-secundaria);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .game-info p {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .game-icon {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #dceae0;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .footer p { font-size: 0.8rem; color: var(--text-secondary); }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Simplificado para o exemplo */
+            .section-title { font-size: 1.8rem; }
+            main { padding-top: 120px; }
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <a href="index.html" class="navbar-logo" title="Início">
+                <img src="./logopet.png" alt="Logo PET-AME">
+            </a>
+            
             <ul class="nav-links">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="eventos.html">Eventos</a></li>
-                <li><a href="jogos.html" style="color: var(--accent-primary)">Laboratório</a></li>
+                <li><a href="jogos.html" style="font-weight: 700; color: var(--accent-primary);">Jogos</a></li>
+                <li><a href="editais.html">Editais</a></li>
             </ul>
         </div>
     </nav>
 
     <main>
-        <section class="section">
-            <h2 class="section-title">Relações Métricas</h2>
-            <p style="text-align: center;">Explore a geometria de forma interativa. Clique no botão para gerar um novo desafio matemático.</p>
-            
-            <div class="game-container">
-                <div id="pergunta" class="pergunta-box">Clique no botão para iniciar o exercício...</div>
-                
-                <button id="btn-gerar" class="game-btn" py-click="gerar_novo_exercicio">Gerar Novo Exercício</button>
-                <button id="btn-resposta" class="game-btn" style="background: #90a4ae;" py-click="mostrar_resposta">Ver Resposta</button>
+        <div class="container">
+            <h2 class="section-title">Laboratório Matemático</h2>
+            <p class="subtitle">Selecione uma das simulações abaixo para explorar conceitos de Administração, Matemática e Engenharia.</p>
 
-                <div id="output_grafico"></div>
-                <div id="explicacao" style="margin-top: 15px; font-style: italic; color: #555;"></div>
+            <div class="games-grid">
+                
+                <a href="jogodahipotenusa.html" class="game-card">
+                    <div class="game-info">
+                        <h3>Relações Métricas</h3>
+                        <p>Desafios sobre triângulos retângulos e altura.</p>
+                    </div>
+                    <div class="game-icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                </a>
+
+                <a href="jogodasoja.html" class="game-card">
+                    <div class="game-info">
+                        <h3>Otimização de Safra</h3>
+                        <p>Maximize o lucro entre Soja e Milho (3D).</p>
+                    </div>
+                    <div class="game-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                </a>
+
+                <a href="jogo-caixa.html" class="game-card">
+                    <div class="game-info">
+                        <h3>Otimização de Volume</h3>
+                        <p>Cálculo de máximos e mínimos na construção de caixas.</p>
+                    </div>
+                    <div class="game-icon">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                </a>
+
+                <div style="margin-top: 20px; opacity: 0.5; font-style: italic; font-size: 0.9rem;">
+                    Novos jogos serão adicionados em breve...
+                </div>
+
             </div>
-        </section>
+        </div>
     </main>
 
-    <py-config>
-        packages = ["matplotlib", "numpy"]
-    </py-config>
-
-    <py-script>
-import matplotlib.pyplot as plt
-import numpy as np
-import math
-import random
-from pyscript import display, window
-from js import document
-
-# Variável global para armazenar o exercício atual
-current_ex = {}
-
-def criar_figura(m, n):
-    h = math.sqrt(m * n)
-    fig, ax = plt.subplots(figsize=(8, 4))
-    
-    # Coordenadas: A (topo), B (esquerda), C (direita)
-    # Colocamos o pé da altura no (0,0)
-    A = [0, h]
-    B = [-n, 0]
-    C = [m, 0]
-    
-    # Desenha o triângulo
-    ax.plot([A[0], B[0], C[0], A[0]], [A[1], B[1], C[1], A[1]], color='#38703b', lw=3)
-    # Desenha a altura tracejada
-    ax.plot([0, 0], [0, h], color='red', linestyle='--', lw=2, label=f'h')
-    
-    # Ajustes visuais para combinar com o site
-    ax.set_aspect('equal')
-    ax.axis('off')
-    ax.set_title("Triângulo Retângulo", color='#37474f', fontfamily='sans-serif')
-    
-    return fig
-
-def gerar_novo_exercicio(event=None):
-    global current_ex
-    m = random.randint(2, 9)
-    n = random.randint(2, 9)
-    h = math.sqrt(m * n)
-    
-    current_ex = {
-        'pergunta': f"As projeções dos catetos sobre a hipotenusa medem m = {m} cm e n = {n} cm. Calcule a altura (h).",
-        'resposta': f"A altura é {h:.2f} cm.",
-        'explicacao': f"Fórmula: h² = m * n \n h² = {m} * {n} = {m*n} \n h = √{m*n} ≈ {h:.2f}",
-        'fig': criar_figura(m, n)
-    }
-    
-    # Atualiza o texto da pergunta
-    document.getElementById("pergunta").innerText = current_ex['pergunta']
-    document.getElementById("explicacao").innerText = ""
-    
-    # Limpa o gráfico antigo e desenha o novo
-    target = document.getElementById("output_grafico")
-    target.innerHTML = ""
-    display(current_ex['fig'], target="#output_grafico")
-
-def mostrar_resposta(event=None):
-    if 'resposta' in current_ex:
-        msg = f"{current_ex['resposta']} \n {current_ex['explicacao']}"
-        document.getElementById("explicacao").innerText = msg
-
-# Inicializa o primeiro exercício automaticamente ao carregar
-gerar_novo_exercicio()
-</py-script>
-
-    <footer style="text-align: center; padding: 20px; background: #dceae0; margin-top: 50px;">
-        <p>&copy; 2026 PET-AME UNESPAR</p>
+    <footer class="footer">
+        <p>&copy; 2026 PET-AME UNESPAR - Campus Campo Mourão. <br> Desenvolvido para fins educacionais.</p>
     </footer>
 
 </body>

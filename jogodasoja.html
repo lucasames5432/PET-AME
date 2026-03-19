@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otimização de Safra | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; }
+        
+        /* Navbar Original */
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        main { padding-top: 110px; padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Resolução Oculta */
+        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 20px; border-radius: 5px; margin-top: 15px; }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        #output_grafico { min-height: 400px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; }
+
+        .controls-box { background: #fdfdfd; padding: 25px; border-radius: 12px; margin: 20px 0; border: 2px solid #e0e0e0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .slider-ui { width: 100%; height: 12px; border-radius: 10px; background: #dcedc8; outline: none; cursor: pointer; appearance: none; }
+        .slider-ui::-webkit-slider-thumb { appearance: none; width: 25px; height: 25px; border-radius: 50%; background: var(--text-secondary); cursor: pointer; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee; transition: 0.3s; }
+        .stat-card span { font-size: 0.75rem; color: #999; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .stat-card strong { font-size: 1.2rem; font-family: var(--fonte-secundaria); }
+
+        .tech-legend { text-align: left; margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .equation-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; color: white; font-weight: bold; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-tractor"></i> Desafio de Gestão Rural</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Um produtor rural de <b>Campo Mourão</b> detém uma propriedade de <b>100 hectares</b> e deseja realizar o plantio de <b>Soja (x)</b> e <b>Milho (y)</b>. Sua meta é maximizar o lucro total (\(Z\)), sabendo que a soja rende <b>R$ 500/ha</b> e o milho <b>R$ 400/ha</b>.
+                <br><br>
+                Ele deve respeitar limites severos de recursos:
+                <ul style="margin-left: 20px;">
+                    <li><b>Horas de Trator:</b> 3h para soja e 2h para milho (Total: 240h).</li>
+                    <li><b>Fertilizante:</b> 2kg para soja e 4kg para milho (Estoque: 320kg).</li>
+                    <li><b>Área Física:</b> Máximo de 100 hectares no total.</li>
+                </ul>
+                <strong>Instrução:</strong> Use o slider abaixo para encontrar a <b>Reta de Nível</b> que atinge o lucro máximo sem sair da zona verde.
+            </p>
+
+            <button class="btn-resolucao" onclick="toggleResolucao()">
+                <i class="fas fa-brain"></i> Ver Resolução Matemática
+            </button>
+
+           <div id="resolucao-conteudo">
+    <h4><b>Passo a Passo Matemático (Método dos Vértices)</b></h4>
+    
+    <p><b>1. Definir o Sistema:</b><br>
+    Identificamos as equações das restrições como igualdades para achar os pontos de cruzamento.</p>
+
+    <p><b>2. Resolver o Sistema Crítico:</b><br>
+    Cruzamento entre Trator (\(3x + 2y = 240\)) e Insumos (\(2x + 4y = 320\)):
+    <br>
+    \[
+    \begin{cases} 
+    3x + 2y = 240 \\ 
+    2x + 4y = 320 
+    \end{cases}
+    \]
+    Multiplicando a 1ª por -2, temos \(-6x - 4y = -480\). Somando com a 2ª, obtemos \(-4x = -160\), logo <b>x = 40</b>.
+    <br>
+    Substituindo x, encontramos <b>y = 60</b>.</p>
+
+    <p><b>3. Teste de Lucro nos Vértices:</b><br>
+    Calculamos o valor de \( Z = 500x + 400y \) nos pontos extremos da área verde:</p>
+    <ul style="list-style: none; padding-left: 20px;">
+        <li>🔹 Ponto (0, 80): \( Z = 32.000 \)</li>
+        <li>🔹 Ponto (80, 0): \( Z = 40.000 \)</li>
+        <li>✅ <b>Ponto (40, 60): \( Z = 44.000 \)</b></li>
+    </ul>
+    
+    <p><b>Conclusão:</b> A combinação que maximiza o lucro respeitando todos os limites é o plantio de <b>40ha de Soja</b> e <b>60ha de Milho</b>.</p>
+</div>
+        </section>
+
+        <div class="game-area">
+            <div id="output_grafico">
+                <div style="text-align: center;"><i class="fas fa-sync fa-spin fa-3x"></i><p>Renderizando Gráficos 3D...</p></div>
+            </div>
+
+            <div class="controls-box">
+                <label style="font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 15px;">
+                    BUSCAR PONTO ÓTIMO: Arraste o Slider do Lucro (Z)
+                </label>
+                <input type="range" class="slider-ui" id="lucro_slider" min="0" max="60000" step="1000" value="0" py-input="atualizar">
+                
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Meta de Lucro</span><strong id="val-z">R$ 0,00</strong></div>
+                    <div class="stat-card" id="card-status"><span>Situação da Meta</span><strong id="val-status">---</strong></div>
+                </div>
+            </div>
+
+            <div class="tech-legend">
+                <div>
+                    <span class="equation-badge" style="background: #ef6c00;">Trator</span>
+                    <p style="font-size: 0.85rem;">\( 3x + 2y = 240 \): Determina o limite de horas operacionais.</p>
+                </div>
+                <div>
+                    <span class="equation-badge" style="background: #1565c0;">Insumos</span>
+                    <p style="font-size: 0.85rem;">\( 2x + 4y = 320 \): Limita a quantidade de fertilizante em estoque.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Pesquisa Operacional Aplicada
+    </footer>
+
+    <script>
+        function toggleResolucao() {
+            var div = document.getElementById("resolucao-conteudo");
+            div.style.display = (div.style.display === "block") ? "none" : "block";
+            if (div.style.display === "block") MathJax.typeset();
+        }
+    </script>
+
+    <py-config>
+        packages = ["matplotlib", "numpy"]
+    </py-config>
+
+    <py-script>
+import matplotlib.pyplot as plt
+import numpy as np
+from pyscript import display
+from js import document
+
+def atualizar(event=None):
+    plt.close('all')
+    z_alvo = float(document.getElementById("lucro_slider").value)
+    
+    # Criando a figura compacta
+    fig = plt.figure(figsize=(11, 4.5), facecolor='white')
+    x_range = np.linspace(0, 110, 80)
+    X, Y = np.meshgrid(x_range, x_range)
+    Z_surf = 500*X + 400*Y
+    mask = (3*X + 2*Y <= 240) & (2*X + 4*Y <= 320) & (X + Y <= 100) & (X >= 0) & (Y >= 0)
+
+    # --- GRÁFICO 2D ---
+    ax1 = fig.add_subplot(1, 2, 1)
+    ax1.plot(x_range, (240 - 3*x_range)/2, color='#fb8c00', lw=2)
+    ax1.text(78, 2, "3x+2y=240", color='#ef6c00', fontsize=7, fontweight='bold')
+    ax1.plot(x_range, (320 - 2*x_range)/4, color='#1e88e5', lw=2)
+    ax1.text(2, 78, "2x+4y=320", color='#1565c0', fontsize=7, fontweight='bold')
+    
+    ax1.contourf(X, Y, mask, levels=[0.5, 1], colors=['#e8f5e9'], alpha=0.9)
+    
+    y_lucro = (z_alvo - 500*x_range) / 400
+    ax1.plot(x_range, y_lucro, color='#d32f2f', lw=4)
+    
+    ax1.set_xlim(0, 100), ax1.set_ylim(0, 100)
+    ax1.set_title("Busca Gráfica (2D)", fontsize=9, fontweight='bold')
+    ax1.grid(True, alpha=0.1)
+
+    # --- GRÁFICO 3D ---
+    ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+    ax2.plot_surface(X, Y, Z_surf, cmap='viridis', alpha=0.3)
+    
+    # Plano dinâmico que se move com o slider
+    cor_plano = 'green' if z_alvo <= 44000 else 'red'
+    plano_z = np.full_like(X, z_alvo)
+    ax2.plot_surface(X, Y, plano_z, color=cor_plano, alpha=0.3)
+    
+    # Ponto Ótimo como referência
+    ax2.scatter(40, 60, 44000, color='gold', s=80, edgecolors='black', label="Ótimo")
+    ax2.view_init(elev=20, azim=45)
+    ax2.set_zticks([])
+
+    # Lógica de Status Educativa
+    status_el = document.getElementById("val-status")
+    if z_alvo == 44000:
+        txt, cor = "🏆 META ÓTIMA!", "#1b5e20"
+    elif z_alvo < 44000:
+        txt, cor = "⚠️ SUB-ÓTIMO (Aumente o lucro)", "#f57f17"
+    else:
+        txt, cor = "❌ IMPOSSÍVEL (Recurso insuficiente)", "#b71c1c"
+
+    document.getElementById("val-z").innerText = f"R$ {z_alvo:,.2f}"
+    status_el.innerText = txt
+    status_el.style.color = cor
+
+    target = document.getElementById("output_grafico")
+    target.innerHTML = ""
+    display(fig, target="#output_grafico")
+
+atualizar()
+    </py-script>
+
+</body>
+</html>
