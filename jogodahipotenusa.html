@@ -28,7 +28,7 @@
             --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
         }
 
-        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; }
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; padding: 0; }
         
         /* Navbar Idêntica à sua Index */
         .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
@@ -38,7 +38,13 @@
         .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-        main { padding-top: 130px; }
+        /* Espaçador para compensar o menu fixo */
+        .spacer {
+            width: 100%;
+            height: 80px;
+        }
+
+        main { padding-bottom: 50px; }
         .section { padding: 40px 20px; max-width: 1080px; margin: 0 auto; }
         
         .game-container {
@@ -57,6 +63,13 @@
             display: flex; 
             justify-content: center; 
             align-items: center;
+            width: 100%;
+            overflow: hidden;
+        }
+        #output_grafico img, #output_grafico svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
 
         .game-btn { 
@@ -66,6 +79,25 @@
         }
         .game-btn:hover { background: var(--accent-secondary); transform: translateY(-2px); }
         .pergunta-box { font-size: 1.1rem; margin: 20px 0; color: var(--text-primary); font-weight: 600; }
+        
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .section { padding: 20px 15px; }
+            .game-container { padding: 20px; }
+            #output_grafico { min-height: 280px; }
+            .pergunta-box { font-size: 1rem; }
+            .game-btn { padding: 10px 20px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .spacer { height: 160px; }
+            #output_grafico { min-height: 250px; }
+            .section { padding: 15px 12px; }
+            .game-container { padding: 15px; }
+            .pergunta-box { font-size: 0.95rem; }
+        }
     </style>
 </head>
 <body>
@@ -80,6 +112,9 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Espaçador invisível para empurrar o conteúdo para baixo -->
+    <div class="spacer"></div>
 
     <main>
         <section class="section">
@@ -117,21 +152,45 @@ def criar_figura(m, n):
     plt.close('all') 
     
     h = math.sqrt(m * n)
-    fig, ax = plt.subplots(figsize=(7, 4))
+    
+    # Criando figura com tamanho responsivo
+    fig, ax = plt.subplots(figsize=(7, 5), facecolor='white', dpi=100)
     
     # Coordenadas do triângulo
     A, B, C = [0, h], [-n, 0], [m, 0]
     
+    # Desenhando o triângulo
     ax.plot([A[0], B[0], C[0], A[0]], [A[1], B[1], C[1], A[1]], color='#38703b', lw=3)
+    
+    # Desenhando a altura
     ax.plot([0, 0], [0, h], color='red', linestyle='--', lw=2)
     
     # Etiquetas (Labels) das medidas
-    ax.text(-n/2, -0.5, f"n={n}", ha='center')
-    ax.text(m/2, -0.5, f"m={m}", ha='center')
-    ax.text(0.2, h/2, "h=?", color='red', fontweight='bold')
+    ax.text(B[0]/2, -0.5, f"n = {n}", ha='center', fontsize=10, fontweight='bold')
+    ax.text(C[0]/2, -0.5, f"m = {m}", ha='center', fontsize=10, fontweight='bold')
+    ax.text(0.2, h/2, "h = ?", color='red', fontweight='bold', fontsize=10)
+    
+    # Marcando os ângulos
+    ax.scatter([0], [0], color='black', s=30, zorder=5)
+    ax.scatter([-n], [0], color='black', s=30, zorder=5)
+    ax.scatter([m], [0], color='black', s=30, zorder=5)
+    ax.scatter([0], [h], color='red', s=30, zorder=5)
+    
+    # Adicionando letras nos vértices
+    ax.text(0, -0.3, 'Pé da altura', ha='center', fontsize=8, color='gray')
+    ax.text(-n-0.3, -0.2, 'A', ha='center', fontsize=12, fontweight='bold')
+    ax.text(m+0.3, -0.2, 'B', ha='center', fontsize=12, fontweight='bold')
+    ax.text(0.2, h+0.2, 'C', ha='center', fontsize=12, fontweight='bold')
     
     ax.set_aspect('equal')
     ax.axis('off')
+    
+    # Ajustando os limites para centralizar
+    ax.set_xlim(-n-1, m+1)
+    ax.set_ylim(-1, h+1)
+    
+    # Ajustando layout
+    plt.tight_layout()
     return fig
 
 def gerar_novo_exercicio(event=None):
@@ -142,12 +201,12 @@ def gerar_novo_exercicio(event=None):
     current_ex = {
         'pergunta': f"As projeções sobre a hipotenusa medem {m} e {n}. Qual a altura (h)?",
         'resposta': f"h ≈ {h:.2f}",
-        'explicacao': f"Fórmula: h² = m * n -> h² = {m*n} -> h = √{m*n}",
+        'explicacao': f"Fórmula: h² = m * n → h² = {m*n} → h = √{m*n} ≈ {h:.2f}",
         'fig': criar_figura(m, n)
     }
     
     document.getElementById("pergunta").innerText = current_ex['pergunta']
-    document.getElementById("explicacao").innerText = ""
+    document.getElementById("explicacao").innerHTML = ""
     
     target = document.getElementById("output_grafico")
     target.innerHTML = ""
@@ -155,7 +214,9 @@ def gerar_novo_exercicio(event=None):
 
 def mostrar_resposta(event=None):
     if 'resposta' in current_ex:
-        document.getElementById("explicacao").innerText = f"Resposta: {current_ex['resposta']} | {current_ex['explicacao']}"
+        # Corrigido: usando aspas simples para evitar conflito com aspas duplas do HTML
+        explicacao_html = '<i class="fas fa-lightbulb"></i> Resposta: ' + current_ex['resposta'] + '<br><i class="fas fa-calculator"></i> ' + current_ex['explicacao']
+        document.getElementById("explicacao").innerHTML = explicacao_html
 
 # Inicia automático
 gerar_novo_exercicio()

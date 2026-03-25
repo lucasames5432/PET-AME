@@ -27,7 +27,7 @@
             --fonte-secundaria: 'Roboto Mono', monospace;
         }
 
-        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; }
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
         
         /* Navbar Original */
         .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -37,7 +37,13 @@
         .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-        main { padding-top: 110px; padding-bottom: 50px; }
+        /* Espaçador para compensar o menu fixo */
+        .spacer {
+            width: 100%;
+            height: 80px;
+        }
+
+        main { padding-bottom: 50px; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         
         .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -49,7 +55,21 @@
 
         /* Área do Jogo */
         .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-        #output_grafico { min-height: 400px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; }
+        #output_grafico { 
+            min-height: 400px; 
+            background: #fff; 
+            border-radius: 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: 100%;
+            overflow: hidden;
+        }
+        #output_grafico img, #output_grafico svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
 
         .controls-box { background: #fdfdfd; padding: 25px; border-radius: 12px; margin: 20px 0; border: 2px solid #e0e0e0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
         .slider-ui { width: 100%; height: 12px; border-radius: 10px; background: #dcedc8; outline: none; cursor: pointer; appearance: none; }
@@ -62,6 +82,33 @@
 
         .tech-legend { text-align: left; margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; border-top: 1px solid #eee; padding-top: 20px; }
         .equation-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; color: white; font-weight: bold; margin-bottom: 5px; }
+        
+        /* Estilo para a explicação do gráfico */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        .explicacao-grafico .destaque { background: white; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px solid #d4e0d4; }
+        .explicacao-grafico .cor-referencia { display: inline-block; width: 20px; height: 20px; border-radius: 3px; margin-right: 8px; vertical-align: middle; }
+        
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .card { padding: 20px; }
+            .tech-legend { grid-template-columns: 1fr; gap: 15px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.2rem; }
+            #output_grafico { min-height: 300px; }
+            .explicacao-grafico { padding: 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .spacer { height: 160px; }
+            #output_grafico { min-height: 250px; }
+        }
     </style>
 </head>
 <body>
@@ -75,6 +122,9 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Espaçador invisível para empurrar o conteúdo para baixo -->
+    <div class="spacer"></div>
 
     <main class="container">
         <section class="card">
@@ -128,7 +178,7 @@
 
         <div class="game-area">
             <div id="output_grafico">
-                <div style="text-align: center;"><i class="fas fa-sync fa-spin fa-3x"></i><p>Renderizando Gráficos 3D...</p></div>
+                <div style="text-align: center;"><i class="fas fa-sync fa-spin fa-3x"></i><p>Renderizando Gráfico...</p></div>
             </div>
 
             <div class="controls-box">
@@ -152,6 +202,59 @@
                     <span class="equation-badge" style="background: #1565c0;">Insumos</span>
                     <p style="font-size: 0.85rem;">\( 2x + 4y = 320 \): Limita a quantidade de fertilizante em estoque.</p>
                 </div>
+            </div>
+
+            <!-- Nova seção de explicação do gráfico -->
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-chart-line"></i> Entendendo o Gráfico - Guia Completo</h3>
+                
+                <p><strong>O gráfico acima representa visualmente o problema de otimização da produção rural.</strong> Nele, você pode explorar como diferentes combinações de plantio de Soja (eixo X) e Milho (eixo Y) afetam o lucro total, respeitando as limitações de recursos. Abaixo, explicamos detalhadamente cada elemento presente no gráfico:</p>
+                
+                <h4><i class="fas fa-chart-area"></i> 1. Área Viável (Região Verde)</h4>
+                <p>A área destacada em <strong style="color: #2e7d32;">verde</strong> representa todas as combinações possíveis de hectares de Soja (x) e Milho (y) que respeitam <strong>todas as restrições simultaneamente</strong>. Qualquer ponto dentro desta região verde é uma solução viável para o produtor. Os pontos fora dela violam pelo menos uma das restrições e não são possíveis de serem implementados na prática.</p>
+                
+                <h4><i class="fas fa-chart-line"></i> 2. Retas de Restrição (Linhas de Demarcação)</h4>
+                <p>Cada linha colorida representa um limite de recurso. As combinações de produção devem ficar abaixo ou acima destas linhas, dependendo da restrição:</p>
+                <ul>
+                    <li><strong><span style="color: #ef6c00;">🔶 Linha Laranja (3x + 2y = 240):</span></strong> Representa o limite de <strong>Horas de Trator</strong>. A região viável está abaixo desta linha, pois o total de horas utilizadas não pode ultrapassar 240 horas.</li>
+                    <li><strong><span style="color: #1565c0;">🔷 Linha Azul (2x + 4y = 320):</span></strong> Representa o limite de <strong>Fertilizante</strong>. A região viável está abaixo desta linha, já que o consumo de fertilizante não pode exceder 320 kg.</li>
+                    <li><strong><span style="color: #5d4037;">⛁ Linha Marrom (x + y = 100):</span></strong> Representa o limite de <strong>Área Total</strong> da propriedade. A região viável está abaixo desta linha, pois o produtor não pode plantar mais do que os 100 hectares disponíveis.</li>
+                </ul>
+                
+                <h4><i class="fas fa-bullseye"></i> 3. Pontos Vértices (Círculos Dourados)</h4>
+                <p>Os <strong style="color: #ffb74d;">pontos dourados</strong> indicam os <strong>vértices da região viável</strong>. Estes pontos são extremamente importantes porque, de acordo com o Teorema Fundamental da Programação Linear, a solução ótima (lucro máximo) sempre estará em um desses vértices. Os vértices identificados são:</p>
+                <ul>
+                    <li><strong>(0,0):</strong> Plantar nada (lucro zero)</li>
+                    <li><strong>(0,80):</strong> Plantar apenas Milho (80 hectares)</li>
+                    <li><strong>(40,60):</strong> Plantar 40 hectares de Soja e 60 de Milho</li>
+                    <li><strong>(80,0):</strong> Plantar apenas Soja (80 hectares)</li>
+                    <li><strong>(100,0):</strong> Plantar apenas Soja (100 hectares)</li>
+                </ul>
+                
+                <h4><i class="fas fa-star-of-life"></i> 4. Ponto Ótimo (Estrela Verde)</h4>
+                <p>A <strong style="color: #2e7d32;">★ estrela verde</strong> marca o <strong>ponto de lucro máximo</strong> encontrado: <strong>(40 hectares de Soja, 60 hectares de Milho)</strong>, gerando um lucro total de <strong>R$ 44.000,00</strong>. Este é o ponto que você deve buscar alcançar movendo o slider da meta de lucro.</p>
+                
+                <h4><i class="fas fa-chart-line"></i> 5. Reta de Nível (Linha Vermelha)</h4>
+                <p>A <strong style="color: #d32f2f;">linha vermelha</strong> representa a <strong>Reta de Nível do Lucro (Z)</strong> para o valor selecionado no slider. Conforme você arrasta o slider, esta linha se move:</p>
+                <ul>
+                    <li><strong>Z = R$ 44.000 (ótimo):</strong> A linha vermelha toca exatamente o ponto ótimo (estrela verde).</li>
+                    <li><strong>Z < R$ 44.000:</strong> A linha vermelha está completamente dentro da região verde - significa que você pode aumentar o lucro.</li>
+                    <li><strong>Z > R$ 44.000:</strong> A linha vermelha está fora da região verde - significa que esta meta de lucro é impossível de alcançar com os recursos disponíveis.</li>
+                </ul>
+                
+                <div class="destaque">
+                    <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> Para encontrar a solução ótima, mova o slider até que a linha vermelha esteja o mais distante possível da origem (ponto 0,0), mas ainda tocando a região verde. Você saberá que encontrou o máximo quando a linha vermelha tocar exatamente o vértice (40,60) - o ponto da estrela verde!
+                </div>
+                
+                <h4><i class="fas fa-calculator"></i> 6. Interpretação dos Valores</h4>
+                <p>Os números nos eixos representam <strong>hectares plantados</strong>:</p>
+                <ul>
+                    <li><strong>Eixo X (horizontal):</strong> Quantidade de hectares plantados com Soja</li>
+                    <li><strong>Eixo Y (vertical):</strong> Quantidade de hectares plantados com Milho</li>
+                </ul>
+                <p>O <strong>painel de status</strong> abaixo do slider mostra se a meta de lucro atual é atingível (SUB-ÓTIMO), ótima (META ÓTIMA!) ou impossível (RECURSO INSUFICIENTE), ajudando você a entender visualmente o comportamento da função objetivo.</p>
+                
+                <p style="margin-top: 15px; font-style: italic; color: #555;"><i class="fas fa-graduation-cap"></i> Este gráfico é uma aplicação prática da Programação Linear, uma ferramenta matemática utilizada para tomada de decisões em gestão rural, permitindo otimizar recursos escassos para maximizar resultados financeiros.</p>
             </div>
         </div>
     </main>
@@ -182,46 +285,58 @@ def atualizar(event=None):
     plt.close('all')
     z_alvo = float(document.getElementById("lucro_slider").value)
     
-    # Criando a figura compacta
-    fig = plt.figure(figsize=(11, 4.5), facecolor='white')
+    # Criando a figura com tamanho responsivo
+    fig = plt.figure(figsize=(8, 6), facecolor='white', dpi=100)
     x_range = np.linspace(0, 110, 80)
     X, Y = np.meshgrid(x_range, x_range)
-    Z_surf = 500*X + 400*Y
     mask = (3*X + 2*Y <= 240) & (2*X + 4*Y <= 320) & (X + Y <= 100) & (X >= 0) & (Y >= 0)
 
     # --- GRÁFICO 2D ---
-    ax1 = fig.add_subplot(1, 2, 1)
-    ax1.plot(x_range, (240 - 3*x_range)/2, color='#fb8c00', lw=2)
-    ax1.text(78, 2, "3x+2y=240", color='#ef6c00', fontsize=7, fontweight='bold')
-    ax1.plot(x_range, (320 - 2*x_range)/4, color='#1e88e5', lw=2)
-    ax1.text(2, 78, "2x+4y=320", color='#1565c0', fontsize=7, fontweight='bold')
+    ax = fig.add_subplot(1, 1, 1)
     
-    ax1.contourf(X, Y, mask, levels=[0.5, 1], colors=['#e8f5e9'], alpha=0.9)
+    # Plotando as restrições
+    ax.plot(x_range, (240 - 3*x_range)/2, color='#fb8c00', lw=2)
+    ax.text(78, 2, "3x+2y=240", color='#ef6c00', fontsize=8, fontweight='bold')
+    ax.plot(x_range, (320 - 2*x_range)/4, color='#1e88e5', lw=2)
+    ax.text(2, 78, "2x+4y=320", color='#1565c0', fontsize=8, fontweight='bold')
     
+    # Plotando a restrição de área
+    ax.plot(x_range, 100 - x_range, color='#795548', lw=2, linestyle='--')
+    ax.text(80, 15, "x+y=100", color='#5d4037', fontsize=8, fontweight='bold')
+    
+    # Área viável
+    ax.contourf(X, Y, mask, levels=[0.5, 1], colors=['#e8f5e9'], alpha=0.9)
+    
+    # Reta de nível do lucro
     y_lucro = (z_alvo - 500*x_range) / 400
-    ax1.plot(x_range, y_lucro, color='#d32f2f', lw=4)
+    ax.plot(x_range, y_lucro, color='#d32f2f', lw=3, label=f'Z = R$ {z_alvo:,.0f}')
     
-    ax1.set_xlim(0, 100), ax1.set_ylim(0, 100)
-    ax1.set_title("Busca Gráfica (2D)", fontsize=9, fontweight='bold')
-    ax1.grid(True, alpha=0.1)
-
-    # --- GRÁFICO 3D ---
-    ax2 = fig.add_subplot(1, 2, 2, projection='3d')
-    ax2.plot_surface(X, Y, Z_surf, cmap='viridis', alpha=0.3)
+    # Marcando os vértices
+    vertices = [(0, 0), (0, 80), (40, 60), (80, 0), (100, 0)]
+    for x, y in vertices:
+        if x >= 0 and y >= 0 and x <= 100 and y <= 100:
+            ax.scatter(x, y, color='gold', s=100, edgecolors='black', zorder=5)
+            ax.annotate(f'({x},{y})', (x, y), xytext=(5, 5), textcoords='offset points', fontsize=8)
     
-    # Plano dinâmico que se move com o slider
-    cor_plano = 'green' if z_alvo <= 44000 else 'red'
-    plano_z = np.full_like(X, z_alvo)
-    ax2.plot_surface(X, Y, plano_z, color=cor_plano, alpha=0.3)
+    # Destacando o ponto ótimo
+    ax.scatter(40, 60, color='green', s=150, edgecolors='black', zorder=5, marker='*')
+    ax.annotate('ÓTIMO\n(40,60)', (40, 60), xytext=(10, 10), textcoords='offset points', 
+                fontsize=9, fontweight='bold', color='green')
     
-    # Ponto Ótimo como referência
-    ax2.scatter(40, 60, 44000, color='gold', s=80, edgecolors='black', label="Ótimo")
-    ax2.view_init(elev=20, azim=45)
-    ax2.set_zticks([])
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 100)
+    ax.set_xlabel('Soja (hectares)', fontsize=10, fontweight='bold')
+    ax.set_ylabel('Milho (hectares)', fontsize=10, fontweight='bold')
+    ax.set_title(f'Análise Gráfica - Reta de Nível Z = R$ {z_alvo:,.0f}', fontsize=12, fontweight='bold', pad=15)
+    ax.grid(True, alpha=0.3)
+    ax.legend(loc='upper right', fontsize=9)
+    
+    # Ajustando layout para melhor visualização
+    plt.tight_layout()
 
     # Lógica de Status Educativa
     status_el = document.getElementById("val-status")
-    if z_alvo == 44000:
+    if abs(z_alvo - 44000) < 100:
         txt, cor = "🏆 META ÓTIMA!", "#1b5e20"
     elif z_alvo < 44000:
         txt, cor = "⚠️ SUB-ÓTIMO (Aumente o lucro)", "#f57f17"

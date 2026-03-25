@@ -27,7 +27,7 @@
             --fonte-secundaria: 'Roboto Mono', monospace;
         }
 
-        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; }
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
         
         .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
@@ -36,7 +36,13 @@
         .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-        main { padding-top: 110px; padding-bottom: 50px; }
+        /* Espaçador para compensar o menu fixo */
+        .spacer {
+            width: 100%;
+            height: 80px;
+        }
+
+        main { padding-bottom: 50px; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         
         .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -46,7 +52,21 @@
         #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
 
         .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-        #output_grafico { min-height: 450px; background: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        #output_grafico { 
+            min-height: 450px; 
+            background: #fff; 
+            border-radius: 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: 100%;
+            overflow: hidden;
+        }
+        #output_grafico img, #output_grafico svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
 
         .controls-box { background: #fdfdfd; padding: 25px; border-radius: 12px; margin: 20px 0; border: 2px solid #e0e0e0; }
         .slider-ui { width: 100%; height: 12px; border-radius: 10px; background: #dcedc8; outline: none; cursor: pointer; appearance: none; }
@@ -56,6 +76,32 @@
         .stat-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee; transition: 0.3s; }
         .stat-card span { font-size: 0.75rem; color: #999; text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-card strong { font-size: 1.2rem; font-family: var(--fonte-secundaria); color: var(--text-secondary); }
+        
+        /* Estilo para a explicação do gráfico */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        .explicacao-grafico .destaque { background: white; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px solid #d4e0d4; }
+        .explicacao-grafico .cor-referencia { display: inline-block; width: 20px; height: 20px; border-radius: 3px; margin-right: 8px; vertical-align: middle; }
+        
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .card { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.2rem; }
+            #output_grafico { min-height: 600px; }
+            .explicacao-grafico { padding: 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .spacer { height: 160px; }
+            #output_grafico { min-height: 550px; }
+        }
     </style>
 </head>
 <body>
@@ -69,6 +115,9 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Espaçador invisível para empurrar o conteúdo para baixo -->
+    <div class="spacer"></div>
 
     <main class="container">
         <section class="card">
@@ -141,8 +190,55 @@
                     <div class="stat-card" id="card-status"><span>Situação</span><strong id="val-status">---</strong></div>
                 </div>
             </div>
+
+            <!-- Seção de explicação do gráfico -->
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-chart-line"></i> Entendendo o Gráfico - Guia Completo</h3>
+                
+                <p><strong>A interface acima apresenta duas visualizações importantes para entender o problema de otimização de volume.</strong> À esquerda, você vê a representação física da chapa sendo cortada; à direita, o gráfico matemático que mostra como o volume varia conforme o corte. Abaixo, explicamos detalhadamente cada elemento:</p>
+                
+                <h4><i class="fas fa-cut"></i> 1. Diagrama de Corte (Esquerda)</h4>
+                <p>O retângulo <strong style="color: #fff9c4;">amarelo</strong> representa a chapa original de <strong>12cm x 8cm</strong>. Os quadrados <strong style="color: #ef9a9a;">vermelhos</strong> nos cantos indicam os cortes que serão feitos. A área <strong style="color: #b2dfdb;">verde-azulada</strong> central mostra a base da caixa após os cortes, com dimensões \((12 - 2x)\) por \((8 - 2x)\). O valor de <strong>x</strong> (tamanho do corte) é controlado pelo slider abaixo e afeta diretamente o tamanho dos quadrados vermelhos e da base verde.</p>
+                
+                <h4><i class="fas fa-chart-line"></i> 2. Curva de Volume (Direita)</h4>
+                <p>O gráfico da direita mostra a função <strong>Volume V(x)</strong> em azul. Esta curva representa como o volume da caixa muda conforme aumentamos o corte x. O ponto <strong style="color: #b71c1c;">vermelho</strong> se move sobre a curva, mostrando o volume atual para o valor de x selecionado. A linha tracejada <strong style="color: #f57f17;">laranja</strong> marca a posição do <strong>máximo teórico em x = 1,57 cm</strong>, que é o valor que você deve buscar.</p>
+                
+                <h4><i class="fas fa-mountain"></i> 3. Interpretação da Curva</h4>
+                <p>A curva de volume tem um comportamento característico:</p>
+                <ul>
+                    <li><strong>Para x pequeno (próximo de 0):</strong> O volume é pequeno porque a altura da caixa é muito baixa.</li>
+                    <li><strong>Para x = 1,57 cm (máximo):</strong> O volume atinge seu valor máximo, que é <strong>aproximadamente 70,5 cm³</strong>. Este é o ponto ideal!</li>
+                    <li><strong>Para x grande (próximo de 4 cm):</strong> O volume diminui porque as dimensões da base (12-2x e 8-2x) ficam muito pequenas.</li>
+                    <li><strong>Limite máximo:</strong> x não pode ser maior que 4 cm, pois a largura (8 cm) se tornaria negativa.</li>
+                </ul>
+                
+                <h4><i class="fas fa-bullseye"></i> 4. O Ponto Ótimo (x = 1,57 cm)</h4>
+                <p>O valor <strong>x = 1,57 cm</strong> é encontrado matematicamente através do cálculo diferencial, igualando a primeira derivada a zero e verificando que a segunda derivada é negativa, confirmando ser um máximo. Este é o <strong>corte que maximiza o volume</strong> da caixa, gerando um volume de aproximadamente <strong>70,5 cm³</strong>.</p>
+                
+                <h4><i class="fas fa-chart-simple"></i> 5. Como Usar o Simulador</h4>
+                <p>O <strong>slider</strong> abaixo do gráfico permite explorar diferentes valores de x. Conforme você o move:</p>
+                <ul>
+                    <li>O diagrama da esquerda se atualiza, mostrando visualmente como a base e os cortes mudam.</li>
+                    <li>O ponto vermelho no gráfico da direita se move, mostrando o volume correspondente.</li>
+                    <li>Os <strong>cards informativos</strong> mostram o valor exato de x e o volume atual.</li>
+                    <li>O <strong>status</strong> indica se você está abaixo do ótimo, no ótimo, ou acima do ótimo.</li>
+                </ul>
+                
+                <div class="destaque">
+                    <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> Para encontrar a solução ótima, mova o slider até que o ponto vermelho no gráfico esteja exatamente no topo da curva azul, alinhado com a linha tracejada laranja. Você saberá que encontrou o máximo quando o status indicar "🏅 VOLUME ÓTIMO!" e o volume for aproximadamente 70,5 cm³.
+                </div>
+                
+                <h4><i class="fas fa-calculator"></i> 6. Aplicação Prática</h4>
+                <p>Este problema é uma aplicação clássica de <strong>otimização em engenharia de produção</strong>. Empresas que fabricam embalagens utilizam exatamente este princípio para <strong>maximizar o volume interno</strong> de caixas a partir de chapas de material, reduzindo desperdício e otimizando o uso de matéria-prima. O cálculo diferencial fornece a ferramenta matemática para encontrar a solução ideal sem precisar testar milhares de valores manualmente.</p>
+                
+                <p style="margin-top: 15px; font-style: italic; color: #555;"><i class="fas fa-graduation-cap"></i> Este experimento demonstra como o Cálculo Diferencial se aplica a problemas reais da indústria, conectando a matemática teórica à prática de otimização de recursos.</p>
+            </div>
         </div>
     </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Otimização com Cálculo Diferencial
+    </footer>
 
     <script>
         function toggleResolucao() {
@@ -172,36 +268,70 @@ def atualizar(event=None):
     a, b = 12.0, 8.0
     vol = (a - 2*x) * (b - 2*x) * x
 
-    # Criando a figura
-    fig = plt.figure(figsize=(12, 5), facecolor='white')
-    ax1 = fig.add_subplot(1, 2, 1) 
-    ax2 = fig.add_subplot(1, 2, 2)
+    # Detectando tamanho da tela
+    from js import window
+    width = window.innerWidth
+    
+    # Criando a figura com tamanho adaptado
+    if width <= 768:
+        # Telas pequenas: figura mais alongada verticalmente
+        fig = plt.figure(figsize=(8, 10), facecolor='white', dpi=100)
+        ax1 = fig.add_subplot(2, 1, 1)
+        ax2 = fig.add_subplot(2, 1, 2)
+    else:
+        # Telas grandes: lado a lado
+        fig = plt.figure(figsize=(12, 5), facecolor='white', dpi=100)
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax2 = fig.add_subplot(1, 2, 2)
 
     # --- ESQUERDA: Diagrama 2D ---
-    ax1.add_patch(patches.Rectangle((0, 0), a, b, facecolor="#fff9c4", edgecolor="k"))
+    ax1.add_patch(patches.Rectangle((0, 0), a, b, facecolor="#fff9c4", edgecolor="k", linewidth=1.5))
     for p in [(0,0), (a-x,0), (0,b-x), (a-x,b-x)]:
-        ax1.add_patch(patches.Rectangle(p, x, x, facecolor="#ef9a9a", edgecolor="#b71c1c", ls="--"))
-    ax1.add_patch(patches.Rectangle((x, x), a-2*x, b-2*x, facecolor="#b2dfdb", alpha=0.5, ls="--", edgecolor="k"))
-    ax1.set_xlim(-1, a+1), ax1.set_ylim(-1, b+1)
+        if p[0] >= 0 and p[1] >= 0 and p[0] + x <= a and p[1] + x <= b:
+            ax1.add_patch(patches.Rectangle(p, x, x, facecolor="#ef9a9a", edgecolor="#b71c1c", ls="--", linewidth=1))
+    ax1.add_patch(patches.Rectangle((x, x), a-2*x, b-2*x, facecolor="#b2dfdb", alpha=0.7, ls="-", edgecolor="k", linewidth=1.5))
+    
+    # Adicionando anotações de dimensões
+    ax1.annotate(f'{a} cm', xy=(a/2, -0.5), ha='center', fontsize=8, color='#555')
+    ax1.annotate(f'{b} cm', xy=(-0.8, b/2), ha='center', rotation=90, fontsize=8, color='#555')
+    ax1.annotate(f'x = {x:.2f} cm', xy=(x/2, x/2), ha='center', va='center', fontsize=7, color='#b71c1c')
+    
+    ax1.set_xlim(-1, a+1)
+    ax1.set_ylim(-1, b+1)
     ax1.set_aspect('equal')
     ax1.axis('off')
-    ax1.set_title("Plano de Corte", fontsize=10, fontweight='bold')
+    ax1.set_title("Plano de Corte - Chapa Original", fontsize=10, fontweight='bold')
 
-    # --- DIREITA: Gráfico Volume ---
-    x_range = np.linspace(0, 4, 150)
+    # --- DIREITA: Gráfico Volume (corrigido para não distorcer) ---
+    x_range = np.linspace(0, 4, 300)
     y_range = (a - 2*x_range) * (b - 2*x_range) * x_range
-    ax2.plot(x_range, y_range, color="#00796b", lw=2, label="Curva de Volume")
+    
+    # Garantindo que a proporção do gráfico seja mantida
+    ax2.plot(x_range, y_range, color="#00796b", lw=2.5, label="Curva de Volume V(x)")
     
     # Ponto Vermelho que se move com o slider
-    ax2.scatter(x, vol, color="#b71c1c", s=80, zorder=10)
+    ax2.scatter(x, vol, color="#b71c1c", s=100, zorder=10, edgecolors='white', linewidth=2, label="Valor Atual")
     
     # Barra Laranja do Ótimo (Fixa em 1.57)
-    ax2.axvline(1.57, color='#f57f17', ls='--', lw=2, alpha=0.8, label="Máximo Teórico (1.57)")
+    ax2.axvline(1.57, color='#f57f17', ls='--', lw=2.5, alpha=0.8, label="Máximo Teórico (1.57 cm)")
     
-    ax2.set_title("Curva de Volume", fontsize=10, fontweight='bold')
-    ax2.set_xlabel("x (cm)"), ax2.set_ylabel("V (cm³)")
-    ax2.legend(fontsize=8)
-    ax2.grid(True, alpha=0.1)
+    # Destacando o ponto ótimo na curva
+    vol_otimo = (12 - 2*1.57) * (8 - 2*1.57) * 1.57
+    ax2.scatter(1.57, vol_otimo, color='#f57f17', s=120, zorder=10, edgecolors='black', linewidth=2, marker='*', label=f'Ótimo: {vol_otimo:.1f} cm³')
+    
+    ax2.set_title("Curva de Volume da Caixa", fontsize=11, fontweight='bold')
+    ax2.set_xlabel("x - Tamanho do Corte (cm)", fontsize=9)
+    ax2.set_ylabel("V - Volume (cm³)", fontsize=9)
+    ax2.legend(fontsize=8, loc='upper right')
+    ax2.grid(True, alpha=0.2)
+    ax2.set_xlim(0, 4)
+    ax2.set_ylim(0, 75)
+    
+    # Forçando a proporção igual para não distorcer a curva
+    ax2.set_box_aspect(0.8)
+    
+    # Ajustando layout para melhor visualização
+    plt.tight_layout()
 
     # Status e UI
     target_x = 1.57
@@ -213,10 +343,10 @@ def atualizar(event=None):
         status_el.innerText = "🏅 VOLUME ÓTIMO!"
         status_el.style.color = "#1b5e20"
     elif x < target_x:
-        status_el.innerText = "➡️ Aumente o corte"
+        status_el.innerText = "➡️ Aumente o corte (x muito pequeno)"
         status_el.style.color = "#f57f17"
     else:
-        status_el.innerText = "⬇️ Volume caindo..."
+        status_el.innerText = "⬇️ Volume caindo... (corte muito grande)"
         status_el.style.color = "#b71c1c"
 
     display(fig, target="#output_grafico")

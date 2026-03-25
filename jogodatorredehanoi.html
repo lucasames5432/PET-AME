@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torre de Hanói | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Espaçador para compensar o menu fixo */
+        .spacer {
+            width: 100%;
+            height: 80px;
+        }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
+        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
+
+        .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        #hanoi-canvas {
+            background: #fff;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .controls-box { background: #fdfdfd; padding: 25px; border-radius: 12px; margin: 20px 0; border: 2px solid #e0e0e0; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #eee; transition: 0.3s; }
+        .stat-card span { font-size: 0.75rem; color: #999; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .stat-card strong { font-size: 1.2rem; font-family: var(--fonte-secundaria); color: var(--text-secondary); }
+        
+        .game-btn { 
+            background: var(--accent-primary); 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-family: var(--fonte-secundaria); 
+            transition: 0.3s; 
+            margin: 10px; 
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); }
+        .game-btn:disabled { background: #90a4ae; cursor: not-allowed; transform: none; }
+        
+        /* Estilo para a explicação do gráfico */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        .explicacao-grafico .destaque { background: white; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px solid #d4e0d4; }
+        
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .card { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.2rem; }
+            .explicacao-grafico { padding: 18px; }
+            .game-btn { padding: 8px 16px; font-size: 0.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .spacer { height: 160px; }
+            .game-btn { padding: 6px 12px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Espaçador invisível para empurrar o conteúdo para baixo -->
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-tower-cell"></i> Torre de Hanói</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                A <b>Torre de Hanói</b> é um clássico problema matemático que consiste em mover todos os discos da primeira haste para a terceira, respeitando as regras:
+                <ul style="margin-left: 20px;">
+                    <li>Apenas um disco pode ser movido por vez.</li>
+                    <li>Um disco maior nunca pode ser colocado sobre um menor.</li>
+                </ul>
+                <b>Instrução:</b> Clique em uma haste para selecionar um disco, depois clique em outra haste para movê-lo. O objetivo é mover todos os discos para a haste da direita com o menor número de movimentos possível.
+                <br><br>
+                O número mínimo de movimentos para resolver com <b>n discos</b> é <b>2ⁿ - 1</b>.
+            </p>
+
+            <button class="btn-resolucao" onclick="toggleResolucao()">
+                <i class="fas fa-brain"></i> Ver Explicação Matemática
+            </button>
+
+            <div id="resolucao-conteudo">
+                <h4><b>Torre de Hanói - Análise Matemática</b></h4>
+                
+                <p><b>1. O Problema:</b><br>
+                A Torre de Hanói foi criada pelo matemático francês Édouard Lucas em 1883. O problema consiste em três hastes e um número variável de discos de tamanhos diferentes, empilhados em ordem decrescente (maior embaixo, menor em cima).</p>
+                
+                <p><b>2. Regras:</b><br>
+                - Mover apenas um disco por vez.<br>
+                - Nunca colocar um disco maior sobre um menor.<br>
+                - Todos os discos começam na haste esquerda (A) e devem terminar na haste direita (C).</p>
+                
+                <p><b>3. Solução Recursiva:</b><br>
+                A solução do problema pode ser descrita recursivamente:</p>
+                <ul>
+                    <li>Mover n-1 discos da haste A para a haste B (usando C como auxiliar).</li>
+                    <li>Mover o disco maior da haste A para a haste C.</li>
+                    <li>Mover n-1 discos da haste B para a haste C (usando A como auxiliar).</li>
+                </ul>
+                
+                <p><b>4. Número Mínimo de Movimentos:</b><br>
+                A sequência de movimentos segue uma progressão geométrica. Seja M(n) o número mínimo de movimentos para n discos:</p>
+                <p>\[M(1) = 1\]</p>
+                <p>\[M(n) = 2 \cdot M(n-1) + 1\]</p>
+                <p>Resolvendo esta recorrência, obtemos:</p>
+                <p>\[M(n) = 2^n - 1\]</p>
+                
+                <p><b>5. Exemplos:</b><br>
+                - 1 disco: 2¹ - 1 = 1 movimento<br>
+                - 2 discos: 2² - 1 = 3 movimentos<br>
+                - 3 discos: 2³ - 1 = 7 movimentos<br>
+                - 4 discos: 2⁴ - 1 = 15 movimentos<br>
+                - 5 discos: 2⁵ - 1 = 31 movimentos</p>
+                
+                <p><b>6. Complexidade:</b><br>
+                O problema tem complexidade exponencial O(2ⁿ), o que significa que o número de movimentos dobra a cada disco adicional. Para 10 discos, são necessários 1023 movimentos!</p>
+            </div>
+        </section>
+
+        <div class="game-area">
+            <canvas id="hanoi-canvas" width="700" height="400" style="width:100%; height:auto; max-width:700px; aspect-ratio:700/400"></canvas>
+
+            <div class="controls-box">
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Discos</span><strong id="discos-count">0</strong></div>
+                    <div class="stat-card"><span>Jogadas</span><strong id="jogadas-count">0</strong></div>
+                    <div class="stat-card"><span>Mínimo Teórico</span><strong id="minimo-teorico">0</strong></div>
+                    <div class="stat-card"><span>Status</span><strong id="status-jogo">Selecione discos</strong></div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                    <button id="btn-reiniciar" class="game-btn" onclick="reiniciarJogo()">
+                        <i class="fas fa-undo-alt"></i> Reiniciar / Mudar Discos
+                    </button>
+                    <button id="btn-resolver" class="game-btn" onclick="resolverAutomatico()">
+                        <i class="fas fa-robot"></i> Resolver Automaticamente
+                    </button>
+                </div>
+            </div>
+
+            <!-- Seção de explicação do gráfico -->
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-puzzle-piece"></i> Entendendo a Torre de Hanói - Guia Completo</h3>
+                
+                <p><strong>A Torre de Hanói é um problema clássico que demonstra conceitos importantes de recursividade e complexidade computacional.</strong> Abaixo, explicamos detalhadamente cada elemento do jogo:</p>
+                
+                <h4><i class="fas fa-tower-cell"></i> 1. Estrutura do Jogo</h4>
+                <p>O jogo consiste em três hastes verticais (A, B, C) e um conjunto de discos de tamanhos diferentes. Inicialmente, todos os discos estão empilhados na haste esquerda (A) em ordem decrescente - o maior disco na base e o menor no topo. O objetivo é mover toda a pilha para a haste direita (C).</p>
+                
+                <h4><i class="fas fa-hand-pointer"></i> 2. Como Jogar</h4>
+                <p>Para jogar manualmente:</p>
+                <ul>
+                    <li><strong>Clique em uma haste</strong> para selecionar o disco do topo (o disco ficará destacado em vermelho).</li>
+                    <li><strong>Clique em outra haste</strong> para mover o disco selecionado.</li>
+                    <li>O movimento só é permitido se o disco for menor que o disco do topo da haste de destino.</li>
+                    <li>O jogo termina quando todos os discos estiverem na haste da direita.</li>
+                </ul>
+                
+                <h4><i class="fas fa-chart-line"></i> 3. Número Mínimo de Movimentos</h4>
+                <p>O número mínimo de movimentos para resolver a Torre de Hanói com n discos é dado pela fórmula:</p>
+                <p style="text-align: center; font-family: monospace; font-size: 1.2rem; background: #f5f5f5; padding: 10px; border-radius: 8px;">
+                    M(n) = 2ⁿ - 1
+                </p>
+                <p>Isso significa que:</p>
+                <ul>
+                    <li><strong>3 discos:</strong> 7 movimentos mínimos</li>
+                    <li><strong>4 discos:</strong> 15 movimentos</li>
+                    <li><strong>5 discos:</strong> 31 movimentos</li>
+                    <li><strong>6 discos:</strong> 63 movimentos</li>
+                </ul>
+                
+                <h4><i class="fas fa-robot"></i> 4. Resolução Automática</h4>
+                <p>O botão "Resolver Automaticamente" executa o algoritmo recursivo clássico que resolve o problema em tempo real. Você verá os discos se movendo um a um até que todos estejam na haste direita. Esta animação demonstra visualmente como a solução recursiva funciona na prática.</p>
+                
+                <div class="destaque">
+                    <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> Para obter a melhor pontuação, tente resolver o jogo com o menor número possível de movimentos. Compare seus resultados com o número mínimo teórico mostrado no painel. Quanto mais próximo você chegar, melhor!
+                </div>
+                
+                <h4><i class="fas fa-graduation-cap"></i> 5. Aplicações Educacionais</h4>
+                <p>A Torre de Hanói é amplamente utilizada no ensino de:</p>
+                <ul>
+                    <li><strong>Recursividade:</strong> A solução natural do problema é recursiva.</li>
+                    <li><strong>Complexidade Algorítmica:</strong> Demonstra problemas de tempo exponencial.</li>
+                    <li><strong>Pensamento Lógico:</strong> Desenvolve raciocínio estratégico e planejamento.</li>
+                    <li><strong>Algoritmos de Busca:</strong> Introduz conceitos de espaço de estados e busca de soluções.</li>
+                </ul>
+                
+                <p style="margin-top: 15px; font-style: italic; color: #555;"><i class="fas fa-calculator"></i> Este jogo é um excelente exercício para desenvolver raciocínio lógico e entender conceitos fundamentais da computação e matemática aplicada.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Torre de Hanói - Raciocínio Lógico
+    </footer>
+
+    <script>
+        // Variáveis do jogo
+        let discos = 3;
+        let torres = [[], [], []];
+        let jogadas = 0;
+        let hasteSelecionada = null;
+        let animando = false;
+        let movimentosPendentes = [];
+        let canvas = document.getElementById('hanoi-canvas');
+        let ctx = canvas.getContext('2d');
+        
+        // Configuração das hastes
+        const HASTES_X = [150, 350, 550];
+        const BASE_Y = 320;
+        const TOPO_Y = 80;
+        const ALTURA_DISCO = 28;
+        
+        function getLarguraDisco(tamanho, maxDiscos) {
+            return 30 + (tamanho * (200 / maxDiscos));
+        }
+        
+        function desenhar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenhar base
+            ctx.fillStyle = '#795548';
+            ctx.fillRect(0, BASE_Y, canvas.width, 12);
+            ctx.fillStyle = '#8d6e63';
+            ctx.fillRect(0, BASE_Y + 10, canvas.width, 5);
+            
+            // Desenhar hastes
+            for (let i = 0; i < HASTES_X.length; i++) {
+                ctx.beginPath();
+                ctx.moveTo(HASTES_X[i], TOPO_Y);
+                ctx.lineTo(HASTES_X[i], BASE_Y);
+                ctx.lineWidth = 8;
+                ctx.strokeStyle = hasteSelecionada === i ? '#d32f2f' : '#5d4037';
+                ctx.stroke();
+                
+                // Desenhar os discos
+                const torre = torres[i];
+                for (let j = 0; j < torre.length; j++) {
+                    const disco = torre[j];
+                    const largura = getLarguraDisco(disco, discos);
+                    const x = HASTES_X[i] - largura / 2;
+                    const y = BASE_Y - (j + 1) * ALTURA_DISCO;
+                    
+                    // Gradiente para os discos
+                    const gradiente = ctx.createLinearGradient(x, y, x + largura, y + ALTURA_DISCO);
+                    gradiente.addColorStop(0, '#4fc3f7');
+                    gradiente.addColorStop(1, '#0288d1');
+                    ctx.fillStyle = gradiente;
+                    ctx.fillRect(x, y, largura, ALTURA_DISCO - 2);
+                    
+                    // Borda do disco
+                    ctx.strokeStyle = '#01579b';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, largura, ALTURA_DISCO - 2);
+                    
+                    // Número do disco
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 14px Poppins';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(disco.toString(), HASTES_X[i], y + ALTURA_DISCO / 2 - 1);
+                }
+            }
+            
+            // Nomes das hastes
+            ctx.fillStyle = '#5d4037';
+            ctx.font = 'bold 14px Poppins';
+            ctx.textAlign = 'center';
+            ctx.fillText('A', HASTES_X[0], BASE_Y + 25);
+            ctx.fillText('B', HASTES_X[1], BASE_Y + 25);
+            ctx.fillText('C', HASTES_X[2], BASE_Y + 25);
+        }
+        
+        function mover(origem, destino) {
+            if (torres[origem].length === 0) return false;
+            const discoOrigem = torres[origem][torres[origem].length - 1];
+            if (torres[destino].length > 0 && discoOrigem > torres[destino][torres[destino].length - 1]) return false;
+            
+            const disco = torres[origem].pop();
+            torres[destino].push(disco);
+            jogadas++;
+            document.getElementById('jogadas-count').innerText = jogadas;
+            desenhar();
+            return true;
+        }
+        
+        function verificarVitoria() {
+            if (torres[2].length === discos) {
+                const minimo = Math.pow(2, discos) - 1;
+                let mensagem = `🎉 PARABÉNS! Você resolveu em ${jogadas} movimentos!`;
+                if (jogadas === minimo) {
+                    mensagem += `\n🏆 PERFEITO! Você atingiu o número mínimo (${minimo} movimentos)!`;
+                } else {
+                    mensagem += `\nO mínimo teórico é ${minimo} movimentos. Continue treinando!`;
+                }
+                document.getElementById('status-jogo').innerHTML = '🏆 VITÓRIA!';
+                setTimeout(() => alert(mensagem), 100);
+                return true;
+            }
+            return false;
+        }
+        
+        function cliqueCanvas(event) {
+            if (animando) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const x = (event.clientX - rect.left) * scaleX;
+            
+            let hasteClicada = null;
+            for (let i = 0; i < HASTES_X.length; i++) {
+                if (Math.abs(x - HASTES_X[i]) < 60) {
+                    hasteClicada = i;
+                    break;
+                }
+            }
+            
+            if (hasteClicada === null) return;
+            
+            if (hasteSelecionada === null) {
+                if (torres[hasteClicada].length > 0) {
+                    hasteSelecionada = hasteClicada;
+                    desenhar();
+                }
+            } else {
+                if (hasteSelecionada !== hasteClicada) {
+                    const sucesso = mover(hasteSelecionada, hasteClicada);
+                    if (!sucesso) {
+                        alert('Movimento inválido! Disco maior não pode ficar sobre um menor.');
+                    } else {
+                        verificarVitoria();
+                    }
+                }
+                hasteSelecionada = null;
+                desenhar();
+            }
+        }
+        
+        function reiniciarJogo() {
+            if (animando) return;
+            
+            let novosDiscos = prompt('Digite a quantidade de discos (1 a 8):', discos);
+            if (novosDiscos === null) return;
+            novosDiscos = parseInt(novosDiscos);
+            if (isNaN(novosDiscos) || novosDiscos < 1 || novosDiscos > 8) {
+                alert('Por favor, digite um número entre 1 e 8.');
+                return;
+            }
+            
+            discos = novosDiscos;
+            torres = [Array.from({length: discos}, (_, i) => discos - i), [], []];
+            jogadas = 0;
+            hasteSelecionada = null;
+            animando = false;
+            movimentosPendentes = [];
+            
+            document.getElementById('discos-count').innerText = discos;
+            document.getElementById('jogadas-count').innerText = jogadas;
+            document.getElementById('minimo-teorico').innerText = Math.pow(2, discos) - 1;
+            document.getElementById('status-jogo').innerHTML = 'Jogando...';
+            document.getElementById('btn-resolver').disabled = false;
+            
+            desenhar();
+        }
+        
+        function gerarMovimentos(n, origem, destino, auxiliar) {
+            if (n === 1) {
+                movimentosPendentes.push([origem, destino]);
+                return;
+            }
+            gerarMovimentos(n - 1, origem, auxiliar, destino);
+            movimentosPendentes.push([origem, destino]);
+            gerarMovimentos(n - 1, auxiliar, destino, origem);
+        }
+        
+        function executarProximoMovimento() {
+            if (movimentosPendentes.length === 0) {
+                animando = false;
+                document.getElementById('btn-resolver').disabled = false;
+                verificarVitoria();
+                return;
+            }
+            
+            const [origem, destino] = movimentosPendentes.shift();
+            mover(origem, destino);
+            desenhar();
+            setTimeout(executarProximoMovimento, 400);
+        }
+        
+        function resolverAutomatico() {
+            if (animando) return;
+            if (torres[0].length !== discos) {
+                alert('A resolução automática requer que o jogo esteja na posição inicial.');
+                return;
+            }
+            if (torres[2].length === discos) {
+                alert('O jogo já está completo!');
+                return;
+            }
+            
+            animando = true;
+            movimentosPendentes = [];
+            document.getElementById('btn-resolver').disabled = true;
+            hasteSelecionada = null;
+            jogadas = 0;
+            document.getElementById('jogadas-count').innerText = jogadas;
+            document.getElementById('status-jogo').innerHTML = '🤖 Resolvendo...';
+            
+            gerarMovimentos(discos, 0, 2, 1);
+            executarProximoMovimento();
+        }
+        
+        // Inicialização
+        function init() {
+            canvas.addEventListener('click', cliqueCanvas);
+            discos = 3;
+            torres = [Array.from({length: discos}, (_, i) => discos - i), [], []];
+            jogadas = 0;
+            document.getElementById('discos-count').innerText = discos;
+            document.getElementById('jogadas-count').innerText = jogadas;
+            document.getElementById('minimo-teorico').innerText = Math.pow(2, discos) - 1;
+            desenhar();
+            
+            // Ajustar tamanho do canvas responsivamente
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                const maxWidth = Math.min(700, container.clientWidth - 40);
+                canvas.style.width = maxWidth + 'px';
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+        }
+        
+        function toggleResolucao() {
+            var div = document.getElementById("resolucao-conteudo");
+            div.style.display = (div.style.display === "block") ? "none" : "block";
+        }
+        
+        init();
+    </script>
+
+</body>
+</html>
