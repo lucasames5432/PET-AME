@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta das Equações | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="./logopet.png" type="image/x-icon">
+
+    <style>
+        :root {
+            --bg-main: #e8f5e9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+            --text-primary: #37474f;
+            --text-secondary: #38703b;
+            --accent-primary: #4db6ac;
+            --accent-secondary: #4fc3f7;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1080px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.88rem; }
+        .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+        main { padding-bottom: 50px; }
+        .section { padding: 40px 20px; max-width: 1080px; margin: 0 auto; }
+        
+        .game-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 7px 14px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
+        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
+
+        .equacao-box {
+            background: linear-gradient(135deg, #e0f2e9, #c8e6d9);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 2rem;
+            font-family: var(--fonte-secundaria);
+            font-weight: bold;
+            color: var(--text-primary);
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .premio-box {
+            background: linear-gradient(135deg, #ffd54f, #ffb74d);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: inline-block;
+        }
+        
+        .premio-box span {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #bf360c;
+        }
+
+        .input-resposta {
+            width: 80%;
+            max-width: 400px;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: var(--fonte-secundaria);
+            text-align: center;
+        }
+        
+        .input-resposta:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+            box-shadow: 0 0 5px rgba(56, 112, 59, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .stat-card span {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card strong {
+            font-size: 1.5rem;
+            font-family: var(--fonte-secundaria);
+            color: var(--text-secondary);
+        }
+        
+        .game-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: var(--fonte-secundaria);
+            transition: 0.3s;
+            margin: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .game-btn:hover:not(:disabled) {
+            background: #00796b;
+            transform: translateY(-2px);
+        }
+        
+        .game-btn:disabled {
+            background: #90a4ae;
+            cursor: not-allowed;
+        }
+        
+        .feedback {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .feedback.acerto {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .feedback.erro {
+            background: #ffcdd2;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+        
+        .explicacao-grafico {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border-left: 5px solid var(--text-secondary);
+            text-align: left;
+        }
+        
+        .explicacao-grafico h3 {
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .explicacao-grafico h4 {
+            color: var(--text-primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .explicacao-grafico p {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        .explicacao-grafico ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .explicacao-grafico li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .explicacao-grafico .destaque {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #d4e0d4;
+        }
+        
+        .dica-formato {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .section { padding: 20px 15px; }
+            .game-container { padding: 20px; }
+            .equacao-box { font-size: 1.3rem; padding: 20px; }
+            .premio-box span { font-size: 1.5rem; }
+            .stat-card strong { font-size: 1.2rem; }
+            .game-btn { padding: 8px 16px; font-size: 0.8rem; }
+            .input-resposta { width: 90%; }
+        }
+        
+        @media (max-width: 480px) {
+            .spacer { height: 160px; }
+            .equacao-box { font-size: 1.1rem; }
+            .premio-box span { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="eventos.html">Eventos</a></li>
+                <li><a href="jogos.html" style="color: var(--accent-primary)">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main>
+        <section class="section">
+            <div class="game-container">
+                <h2 style="font-family: var(--fonte-secundaria); color: var(--text-primary);">
+                    <i class="fas fa-chalkboard-user"></i> Roleta das Equações
+                </h2>
+                <p style="text-align: justify; line-height: 1.6;">
+                    <b>Desafie seus conhecimentos em equações!</b> Resolva equações do 1º e 2º grau e acumule prêmios. 
+                    Quanto mais acertar, maior o prêmio! Mas cuidado: um erro e você perde o prêmio acumulado.
+                </p>
+
+                <button class="btn-resolucao" onclick="toggleResolucao()">
+                    <i class="fas fa-brain"></i> Ver Dicas e Fórmulas
+                </button>
+
+                <div id="resolucao-conteudo">
+                    <h4><b>Dicas para Resolver Equações</b></h4>
+                    
+                    <p><b>1. Equações do 1º Grau (ax + b = 0):</b><br>
+                    Solução: x = -b/a, desde que a ≠ 0.</p>
+                    
+                    <p><b>2. Equações do 2º Grau (ax² + bx + c = 0):</b><br>
+                    Utilize a fórmula de Bhaskara: Δ = b² - 4ac<br>
+                    x = (-b ± √Δ) / (2a)</p>
+                    
+                    <p><b>3. Casos Especiais:</b></p>
+                    <ul>
+                        <li><strong>Δ > 0:</strong> Duas raízes reais e distintas</li>
+                        <li><strong>Δ = 0:</strong> Uma raiz real (raiz dupla)</li>
+                        <li><strong>Δ < 0:</strong> Não possui raízes reais</li>
+                    </ul>
+                    
+                    <p><b>4. Formato de Resposta:</b></p>
+                    <ul>
+                        <li>Para uma raiz: digite apenas o número (ex: 3, -2, 1/2)</li>
+                        <li>Para duas raízes: separe por vírgula (ex: 2, 5 ou -3, 1)</li>
+                        <li>Para nenhuma raiz real: digite "n"</li>
+                        <li>Use frações: ex: 1/2, -3/4</li>
+                    </ul>
+                    
+                    <div class="destaque">
+                        <strong><i class="fas fa-lightbulb"></i> Dica:</strong> Quanto maior a sequência de acertos, maior o prêmio! Comece com prêmio 1 e cada acerto multiplica o prêmio. Um erro reseta para 1.
+                    </div>
+                </div>
+
+                <div class="premio-box">
+                    <i class="fas fa-trophy"></i> Prêmio Atual: <span id="premio">1</span>
+                </div>
+
+                <div class="equacao-box" id="equacao">
+                    Aguardando...
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span>Sequência de Acertos</span>
+                        <strong id="sequencia">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Maior Prêmio</span>
+                        <strong id="maior-premio">1</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Status</span>
+                        <strong id="status-jogo">Aguardando resposta</strong>
+                    </div>
+                </div>
+
+                <input type="text" id="resposta" class="input-resposta" placeholder="Digite sua resposta...">
+                <div class="dica-formato">
+                    <i class="fas fa-info-circle"></i> Formato: "n" para nenhuma raiz, "2,5" para duas raízes, "3" ou "1/2" para uma raiz
+                </div>
+
+                <div>
+                    <button id="btn-verificar" class="game-btn" onclick="verificarResposta()">
+                        <i class="fas fa-check-circle"></i> Verificar Resposta
+                    </button>
+                    <button id="btn-proxima" class="game-btn" onclick="proximaEquacao()" style="background: #90a4ae;">
+                        <i class="fas fa-forward"></i> Próxima Equação
+                    </button>
+                </div>
+
+                <div id="feedback" style="display: none;" class="feedback"></div>
+
+                <div class="explicacao-grafico">
+                    <h3><i class="fas fa-chart-line"></i> Guia do Jogo - Roleta das Equações</h3>
+                    
+                    <p><strong>Bem-vindo à Roleta das Equações!</strong> Este jogo testa seus conhecimentos em equações do 1º e 2º grau. Quanto mais você acerta, maior fica seu prêmio!</p>
+                    
+                    <h4><i class="fas fa-gamepad"></i> 1. Como Jogar</h4>
+                    <p>Uma equação será exibida. Você deve determinar suas raízes reais e digitar no campo de resposta. Após digitar, clique em "Verificar Resposta". Se acertar, o prêmio aumenta! Se errar, o prêmio volta para 1 e uma nova equação é gerada.</p>
+                    
+                    <h4><i class="fas fa-calculator"></i> 2. Sistema de Pontuação</h4>
+                    <ul>
+                        <li><strong>Prêmio Inicial:</strong> 1 ponto</li>
+                        <li><strong>Cada acerto:</strong> O prêmio dobra (1, 2, 4, 8, 16...)</li>
+                        <li><strong>Erro:</strong> Prêmio volta para 1</li>
+                        <li><strong>Objetivo:</strong> Conseguir a maior sequência de acertos possível!</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-keyboard"></i> 3. Formatos de Resposta</h4>
+                    <ul>
+                        <li><strong>Nenhuma raiz real:</strong> Digite <code>n</code> (minúsculo)</li>
+                        <li><strong>Uma raiz:</strong> Digite o número (ex: <code>3</code>, <code>-2.5</code>, <code>1/2</code>)</li>
+                        <li><strong>Duas raízes:</strong> Separe por vírgula (ex: <code>2, 5</code> ou <code>-3, 1.5</code>)</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-chart-simple"></i> 4. Tipos de Equações</h4>
+                    <p>O jogo gera aleatoriamente equações do 1º grau (quando a = 0) e do 2º grau (quando a ≠ 0). Todas as equações geradas garantem raízes reais (Δ ≥ 0 para quadráticas ou b ≠ 0 para lineares).</p>
+                    
+                    <div class="destaque">
+                        <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> 
+                        Use a fórmula de Bhaskara para equações do 2º grau: x = [-b ± √(b² - 4ac)] / (2a). Para equações do 1º grau, isole o x: x = -c/b.
+                    </div>
+                    
+                    <h4><i class="fas fa-graduation-cap"></i> 5. Exemplos</h4>
+                    <ul>
+                        <li><strong>Equação:</strong> 2x² - 8x + 6 = 0 → <strong>Resposta:</strong> 1, 3</li>
+                        <li><strong>Equação:</strong> x² - 4x + 4 = 0 → <strong>Resposta:</strong> 2</li>
+                        <li><strong>Equação:</strong> 2x + 4 = 0 → <strong>Resposta:</strong> -2</li>
+                        <li><strong>Equação:</strong> x² + 1 = 0 → <strong>Resposta:</strong> n</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px; font-style: italic; color: #555;"><i class="fas fa-chart-line"></i> Pratique suas habilidades matemáticas e tente bater seu recorde de prêmio!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Roleta das Equações - Pratique Equações do 1º e 2º Grau
+    </footer>
+
+    <script>
+        let equacaoAtual = null;
+        let premio = 1;
+        let maiorPremio = 1;
+        let sequencia = 0;
+        
+        function parseFraction(s) {
+            s = s.trim();
+            if (s.includes('/')) {
+                const partes = s.split('/');
+                const num = parseFloat(partes[0]);
+                const den = parseFloat(partes[1]);
+                if (den === 0) throw new Error('Divisão por zero');
+                return num / den;
+            }
+            return parseFloat(s);
+        }
+        
+        function gerarEquacao() {
+            while (true) {
+                const a = Math.floor(Math.random() * 11) - 5;
+                const b = Math.floor(Math.random() * 21) - 10;
+                const c = Math.floor(Math.random() * 21) - 10;
+                
+                if (a === 0) {
+                    if (b !== 0) {
+                        const raiz = -c / b;
+                        return { a, b, c, raizes: [raiz], tipo: 'linear' };
+                    }
+                } else {
+                    const delta = b * b - 4 * a * c;
+                    if (delta >= 0) {
+                        if (delta === 0) {
+                            const raiz = -b / (2 * a);
+                            return { a, b, c, raizes: [raiz], tipo: 'quadratica' };
+                        } else {
+                            const raiz1 = (-b + Math.sqrt(delta)) / (2 * a);
+                            const raiz2 = (-b - Math.sqrt(delta)) / (2 * a);
+                            return { a, b, c, raizes: [Math.min(raiz1, raiz2), Math.max(raiz1, raiz2)], tipo: 'quadratica' };
+                        }
+                    }
+                }
+            }
+        }
+        
+        function formatarEquacao(a, b, c) {
+            let str = '';
+            
+            if (a !== 0) {
+                if (a === 1) str += 'x²';
+                else if (a === -1) str += '-x²';
+                else str += `${a}x²`;
+            }
+            
+            if (b !== 0) {
+                if (str) {
+                    if (b > 0) str += ' + ';
+                    else str += ' - ';
+                } else if (b < 0) str += '-';
+                
+                const absB = Math.abs(b);
+                if (absB === 1) str += 'x';
+                else str += `${absB}x`;
+            }
+            
+            if (c !== 0) {
+                if (str) {
+                    if (c > 0) str += ' + ';
+                    else str += ' - ';
+                } else if (c < 0) str += '-';
+                
+                str += `${Math.abs(c)}`;
+            }
+            
+            if (str === '') str = '0';
+            return str + ' = 0';
+        }
+        
+        function normalizarRaiz(valor) {
+            return Math.round(valor * 1e10) / 1e10;
+        }
+        
+        function compararRaizes(r1, r2) {
+            if (r1.length !== r2.length) return false;
+            for (let i = 0; i < r1.length; i++) {
+                if (Math.abs(r1[i] - r2[i]) > 1e-6) return false;
+            }
+            return true;
+        }
+        
+        function proximaEquacao() {
+            equacaoAtual = gerarEquacao();
+            const equacaoStr = formatarEquacao(equacaoAtual.a, equacaoAtual.b, equacaoAtual.c);
+            document.getElementById('equacao').innerHTML = equacaoStr;
+            document.getElementById('resposta').value = '';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('status-jogo').innerHTML = 'Aguardando resposta...';
+            document.getElementById('status-jogo').style.color = '#37474f';
+        }
+        
+        function verificarResposta() {
+            if (!equacaoAtual) return;
+            
+            const respostaUsuario = document.getElementById('resposta').value.trim().toLowerCase();
+            const feedbackDiv = document.getElementById('feedback');
+            
+            try {
+                let raizesUsuario;
+                
+                if (respostaUsuario === 'n') {
+                    raizesUsuario = [];
+                } else {
+                    const partes = respostaUsuario.split(',');
+                    raizesUsuario = partes.map(p => parseFraction(p.trim())).sort((a, b) => a - b);
+                }
+                
+                const raizesCorretas = equacaoAtual.raizes.map(r => normalizarRaiz(r));
+                
+                if (compararRaizes(raizesUsuario, raizesCorretas)) {
+                    // Acertou!
+                    sequencia++;
+                    premio = Math.pow(2, sequencia - 1);
+                    if (premio > maiorPremio) maiorPremio = premio;
+                    
+                    feedbackDiv.className = 'feedback acerto';
+                    feedbackDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✅ PARABÉNS! Você acertou! Prêmio: ${premio}`;
+                    feedbackDiv.style.display = 'block';
+                    document.getElementById('status-jogo').innerHTML = '✅ ACERTOU!';
+                    document.getElementById('status-jogo').style.color = '#2e7d32';
+                    
+                    document.getElementById('premio').innerText = premio;
+                    document.getElementById('sequencia').innerText = sequencia;
+                    document.getElementById('maior-premio').innerText = maiorPremio;
+                    
+                    proximaEquacao();
+                } else {
+                    // Errou!
+                    const raizesStr = raizesCorretas.length === 0 ? 'nenhuma raiz real' : 
+                                     raizesCorretas.length === 1 ? `raiz: ${raizesCorretas[0].toFixed(4)}` : 
+                                     `raízes: ${raizesCorretas[0].toFixed(4)} e ${raizesCorretas[1].toFixed(4)}`;
+                    
+                    sequencia = 0;
+                    premio = 1;
+                    
+                    feedbackDiv.className = 'feedback erro';
+                    feedbackDiv.innerHTML = `<i class="fas fa-times-circle"></i> ❌ Que pena! Você errou. A resposta correta é ${raizesStr}. Prêmio resetado para 1.`;
+                    feedbackDiv.style.display = 'block';
+                    document.getElementById('status-jogo').innerHTML = '❌ ERROU!';
+                    document.getElementById('status-jogo').style.color = '#c62828';
+                    
+                    document.getElementById('premio').innerText = premio;
+                    document.getElementById('sequencia').innerText = sequencia;
+                    
+                    proximaEquacao();
+                }
+            } catch (e) {
+                feedbackDiv.className = 'feedback erro';
+                feedbackDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Formato inválido! Use "n", um número (ex: 3, -2.5, 1/2) ou dois números separados por vírgula (ex: 2, 5).`;
+                feedbackDiv.style.display = 'block';
+                document.getElementById('status-jogo').innerHTML = '⚠️ Formato inválido';
+                document.getElementById('status-jogo').style.color = '#f57f17';
+            }
+        }
+        
+        function toggleResolucao() {
+            var div = document.getElementById("resolucao-conteudo");
+            div.style.display = (div.style.display === "block") ? "none" : "block";
+        }
+        
+        // Inicialização
+        proximaEquacao();
+    </script>
+
+</body>
+</html>
