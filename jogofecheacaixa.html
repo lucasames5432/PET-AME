@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feche a Caixa | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="./logopet.png" type="image/x-icon">
+
+    <style>
+        :root {
+            --bg-main: #e8f5e9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-navbar: rgba(220, 240, 220, 0.92);
+            --text-primary: #37474f;
+            --text-secondary: #38703b;
+            --accent-primary: #4db6ac;
+            --accent-secondary: #4fc3f7;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+            --gradiente-primario: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-secondary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1080px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.88rem; }
+        .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+        main { padding-bottom: 50px; }
+        .section { padding: 40px 20px; max-width: 1080px; margin: 0 auto; }
+        
+        .game-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 7px 14px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
+        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
+
+        /* Números da Caixa */
+        .numeros-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .numero-btn {
+            width: 70px;
+            height: 70px;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #e0e0e0;
+            color: #37474f;
+            font-family: var(--fonte-secundaria);
+        }
+        
+        .numero-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            background: #b2dfdb;
+        }
+        
+        .numero-btn.selecionado {
+            background: #4db6ac;
+            color: white;
+            box-shadow: 0 4px 10px rgba(77, 182, 172, 0.3);
+        }
+        
+        .numero-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #bdbdbd;
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-panel h3 {
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+        }
+        
+        .dado-resultado {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--accent-primary);
+            background: white;
+            display: inline-block;
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin: 10px 0;
+            font-family: var(--fonte-secundaria);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .stat-card span {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card strong {
+            font-size: 1.5rem;
+            font-family: var(--fonte-secundaria);
+            color: var(--text-secondary);
+        }
+        
+        .game-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: var(--fonte-secundaria);
+            transition: 0.3s;
+            margin: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .game-btn:hover:not(:disabled) {
+            background: #00796b;
+            transform: translateY(-2px);
+        }
+        
+        .game-btn:disabled {
+            background: #90a4ae;
+            cursor: not-allowed;
+        }
+        
+        .explicacao-grafico {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border-left: 5px solid var(--text-secondary);
+            text-align: left;
+        }
+        
+        .explicacao-grafico h3 {
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .explicacao-grafico h4 {
+            color: var(--text-primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .explicacao-grafico p {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        .explicacao-grafico ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .explicacao-grafico li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .explicacao-grafico .destaque {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #d4e0d4;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .section { padding: 20px 15px; }
+            .game-container { padding: 20px; }
+            .numero-btn { width: 55px; height: 55px; font-size: 20px; }
+            .dado-resultado { font-size: 36px; padding: 10px 20px; }
+            .stat-card strong { font-size: 1.2rem; }
+            .game-btn { padding: 8px 16px; font-size: 0.8rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .spacer { height: 160px; }
+            .numero-btn { width: 45px; height: 45px; font-size: 18px; }
+            .dado-resultado { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="eventos.html">Eventos</a></li>
+                <li><a href="jogos.html" style="color: var(--accent-primary)">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main>
+        <section class="section">
+            <div class="game-container">
+                <h2 style="font-family: var(--fonte-secundaria); color: var(--text-primary);">
+                    <i class="fas fa-dice-d6"></i> Feche a Caixa
+                </h2>
+                <p style="text-align: justify; line-height: 1.6;">
+                    <b>Feche a Caixa</b> é um jogo de estratégia e probabilidade. O objetivo é "fechar" (eliminar) todos os números de 1 a 9. 
+                    <br><br>
+                    <b>Regras:</b> Role os dados, some os valores e escolha combinações de números ainda abertos que somem exatamente esse valor. 
+                    Você pode usar 1 ou 2 dados quando os números restantes são todos menores que 7. O jogo termina quando não há mais jogadas possíveis.
+                </p>
+
+                <button class="btn-resolucao" onclick="toggleResolucao()">
+                    <i class="fas fa-brain"></i> Ver Estratégias e Matemática
+                </button>
+
+                <div id="resolucao-conteudo">
+                    <h4><b>Estratégias para Vencer</b></h4>
+                    <p><b>1. Entendendo o Jogo:</b><br>
+                    "Feche a Caixa" é um jogo de azar com elementos de estratégia. Você começa com os números 1 a 9 abertos. Após rolar os dados, você deve escolher uma combinação de números abertos que some exatamente o valor rolado.</p>
+                    
+                    <p><b>2. Quando usar 1 ou 2 dados:</b><br>
+                    Quando os números restantes são todos menores que 7, você tem a opção de jogar 1 ou 2 dados. Use 1 dado quando precisar de números específicos e 2 dados quando quiser maior variedade de combinações.</p>
+                    
+                    <p><b>3. Estratégias Recomendadas:</b></p>
+                    <ul>
+                        <li><strong>Priorize números maiores:</strong> 8 e 9 são mais difíceis de fechar, pois só podem ser fechados com combinações específicas.</li>
+                        <li><strong>Planeje combinações:</strong> Sempre pense nas combinações futuras. Evite fechar números que podem ser úteis para somas futuras.</li>
+                        <li><strong>Use combinações de 2 números:</strong> É mais eficiente que usar 3 ou 4 números, quando possível.</li>
+                        <li><strong>Guardes números pequenos:</strong> Números como 1, 2 e 3 são versáteis para completar somas. Tente mantê-los para o final.</li>
+                    </ul>
+                    
+                    <p><b>4. Probabilidades:</b><br>
+                    - A soma mais provável com 2 dados é 7 (16,67% de chance)<br>
+                    - As somas extremas (2 e 12) têm apenas 2,78% de chance cada<br>
+                    - Com 1 dado, todas as faces têm 16,67% de chance</p>
+                    
+                    <p><b>5. Pontuação:</b><br>
+                    Se você fechar todos os números (1 a 9), vence o jogo! Caso contrário, sua pontuação final é a soma dos números que sobraram. Quanto menor a pontuação, melhor!</p>
+                </div>
+
+                <div class="numeros-container" id="numeros-container">
+                    <!-- Números 1-9 serão gerados via JavaScript -->
+                </div>
+
+                <div class="info-panel">
+                    <h3><i class="fas fa-dice"></i> Resultado dos Dados</h3>
+                    <div class="dado-resultado" id="dado-resultado">--</div>
+                    <div id="soma-selecionada" style="font-size: 1.1rem; margin-top: 10px;">
+                        <i class="fas fa-calculator"></i> Soma selecionada: <strong>0</strong>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span>Números Restantes</span>
+                        <strong id="numeros-restantes">9</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Pontuação Atual</span>
+                        <strong id="pontuacao-atual">45</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Status</span>
+                        <strong id="status-jogo">Aguardando jogada</strong>
+                    </div>
+                </div>
+
+                <div>
+                    <button id="btn-rolar" class="game-btn" onclick="rolarDados()">
+                        <i class="fas fa-dice-d6"></i> Rolar Dados
+                    </button>
+                    <button id="btn-confirmar" class="game-btn" onclick="confirmarJogada()" disabled>
+                        <i class="fas fa-check"></i> Confirmar Jogada
+                    </button>
+                    <button id="btn-reiniciar" class="game-btn" onclick="reiniciarJogo()">
+                        <i class="fas fa-undo-alt"></i> Reiniciar Jogo
+                    </button>
+                </div>
+
+                <div class="explicacao-grafico">
+                    <h3><i class="fas fa-chart-line"></i> Guia do Jogo - Feche a Caixa</h3>
+                    
+                    <p><strong>"Feche a Caixa" é um jogo clássico que combina sorte e estratégia.</strong> O objetivo é eliminar todos os números de 1 a 9. Abaixo, explicamos como jogar:</p>
+                    
+                    <h4><i class="fas fa-dice"></i> 1. Como Jogar</h4>
+                    <p>Clique em <strong>"Rolar Dados"</strong> para obter uma soma (1 dado ou 2 dados, dependendo dos números restantes). Depois, clique nos números que deseja selecionar. A soma dos números selecionados deve ser igual ao valor rolado. Clique em <strong>"Confirmar Jogada"</strong> para eliminar esses números.</p>
+                    
+                    <h4><i class="fas fa-chart-simple"></i> 2. Regras Especiais</h4>
+                    <ul>
+                        <li><strong>Máximo de 4 números:</strong> Você pode selecionar até 4 números por jogada.</li>
+                        <li><strong>1 ou 2 dados:</strong> Quando todos os números restantes são menores que 7, você escolhe se quer jogar 1 ou 2 dados.</li>
+                        <li><strong>Fim de jogo:</strong> O jogo termina quando você não consegue formar a soma rolada com os números disponíveis.</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-trophy"></i> 3. Como Vencer</h4>
+                    <p>Para vencer, você precisa eliminar <strong>TODOS os números de 1 a 9</strong>. Isso é chamado de "fechar a caixa". Se não for possível, sua pontuação final é a soma dos números que sobraram. Quanto menor a pontuação, melhor seu desempenho!</p>
+                    
+                    <div class="destaque">
+                        <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> Priorize eliminar os números maiores (8 e 9) primeiro, pois eles têm menos combinações possíveis. Guarde os números pequenos (1, 2, 3) para o final, pois são mais versáteis para completar somas.
+                    </div>
+                    
+                    <h4><i class="fas fa-calculator"></i> 4. Matemática do Jogo</h4>
+                    <p>A probabilidade de fechar a caixa com uma jogada perfeita é baixa, mas possível com boa estratégia. O número máximo de jogadas possíveis é 9 (eliminando um número por vez), mas normalmente são necessárias mais jogadas devido à necessidade de combinações.</p>
+                    
+                    <p style="margin-top: 15px; font-style: italic; color: #555;"><i class="fas fa-graduation-cap"></i> Este jogo desenvolve raciocínio lógico, planejamento estratégico e noções de probabilidade, sendo excelente para exercitar o pensamento matemático.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Feche a Caixa - Estratégia e Probabilidade
+    </footer>
+
+    <script>
+        let caixa = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let selecionados = [];
+        let somaAtual = 0;
+        let jogadaAtiva = false;
+        
+        function atualizarInterface() {
+            const container = document.getElementById('numeros-container');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 9; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'numero-btn';
+                if (selecionados.includes(i)) {
+                    btn.classList.add('selecionado');
+                }
+                if (!caixa.includes(i)) {
+                    btn.disabled = true;
+                }
+                btn.textContent = i;
+                btn.onclick = () => alternarSelecao(i);
+                container.appendChild(btn);
+            }
+            
+            document.getElementById('numeros-restantes').innerText = caixa.length;
+            const somaRestante = caixa.reduce((a, b) => a + b, 0);
+            document.getElementById('pontuacao-atual').innerText = somaRestante;
+            
+            const somaSel = selecionados.reduce((a, b) => a + b, 0);
+            document.getElementById('soma-selecionada').innerHTML = `<i class="fas fa-calculator"></i> Soma selecionada: <strong>${somaSel}</strong>`;
+            
+            if (caixa.length === 0) {
+                document.getElementById('status-jogo').innerHTML = '🏆 VITÓRIA! CAIXA FECHADA! 🏆';
+                document.getElementById('btn-rolar').disabled = true;
+                document.getElementById('btn-confirmar').disabled = true;
+                jogadaAtiva = false;
+            } else if (!jogadaAtiva) {
+                document.getElementById('status-jogo').innerHTML = 'Aguardando rolagem...';
+            }
+        }
+        
+        function alternarSelecao(num) {
+            if (!jogadaAtiva) {
+                alert('Role os dados primeiro!');
+                return;
+            }
+            
+            const index = selecionados.indexOf(num);
+            if (index === -1) {
+                if (selecionados.length < 4) {
+                    selecionados.push(num);
+                } else {
+                    alert('Você pode selecionar no máximo 4 números por jogada!');
+                    return;
+                }
+            } else {
+                selecionados.splice(index, 1);
+            }
+            atualizarInterface();
+        }
+        
+        function rolarDados() {
+            if (caixa.length === 0) {
+                alert('Parabéns! Você já fechou a caixa! Reinicie o jogo para jogar novamente.');
+                return;
+            }
+            
+            let d1 = Math.floor(Math.random() * 6) + 1;
+            let d2 = Math.floor(Math.random() * 6) + 1;
+            let soma;
+            let usarDoisDados = true;
+            
+            const maxNumero = Math.max(...caixa);
+            
+            if (maxNumero < 7) {
+                const opcao = confirm(`Números restantes: ${caixa.join(', ')}\n\nVocê pode jogar 1 ou 2 dados.\nClique em OK para jogar 2 dados ou Cancelar para jogar 1 dado.`);
+                if (!opcao) {
+                    usarDoisDados = false;
+                    soma = d1;
+                } else {
+                    soma = d1 + d2;
+                }
+            } else {
+                soma = d1 + d2;
+            }
+            
+            if (usarDoisDados) {
+                document.getElementById('dado-resultado').innerHTML = `${d1} + ${d2} = ${soma}`;
+            } else {
+                document.getElementById('dado-resultado').innerHTML = `${soma}`;
+            }
+            
+            somaAtual = soma;
+            jogadaAtiva = true;
+            selecionados = [];
+            atualizarInterface();
+            document.getElementById('btn-rolar').disabled = true;
+            document.getElementById('btn-confirmar').disabled = false;
+            document.getElementById('status-jogo').innerHTML = `Soma: ${soma} | Selecione números que somem ${soma}`;
+            
+            if (!possivel(soma)) {
+                finalizarJogo();
+            }
+        }
+        
+        function possivel(soma) {
+            if (caixa.includes(soma)) return true;
+            
+            function encontrarCombinacao(arr, alvo, maxLen) {
+                for (let len = 2; len <= Math.min(maxLen, arr.length); len++) {
+                    const combinacoes = combinacoesDe(arr, len);
+                    for (const combo of combinacoes) {
+                        if (combo.reduce((a, b) => a + b, 0) === alvo) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            
+            return encontrarCombinacao(caixa, soma, 4);
+        }
+        
+        function combinacoesDe(arr, k) {
+            const result = [];
+            function gerar(inicio, atual) {
+                if (atual.length === k) {
+                    result.push([...atual]);
+                    return;
+                }
+                for (let i = inicio; i < arr.length; i++) {
+                    atual.push(arr[i]);
+                    gerar(i + 1, atual);
+                    atual.pop();
+                }
+            }
+            gerar(0, []);
+            return result;
+        }
+        
+        function confirmarJogada() {
+            const somaSelecionada = selecionados.reduce((a, b) => a + b, 0);
+            
+            if (somaSelecionada !== somaAtual) {
+                alert(`A soma dos números selecionados (${somaSelecionada}) não é igual à soma dos dados (${somaAtual})!`);
+                return;
+            }
+            
+            for (const num of selecionados) {
+                const index = caixa.indexOf(num);
+                if (index !== -1) {
+                    caixa.splice(index, 1);
+                }
+            }
+            
+            selecionados = [];
+            jogadaAtiva = false;
+            somaAtual = 0;
+            
+            document.getElementById('dado-resultado').innerHTML = '--';
+            document.getElementById('btn-rolar').disabled = false;
+            document.getElementById('btn-confirmar').disabled = true;
+            
+            atualizarInterface();
+            
+            if (caixa.length === 0) {
+                document.getElementById('status-jogo').innerHTML = '🏆 VITÓRIA! CAIXA FECHADA! 🏆';
+                alert('🎉 PARABÉNS! Você fechou a caixa! 🎉');
+                document.getElementById('btn-rolar').disabled = true;
+            } else {
+                document.getElementById('status-jogo').innerHTML = 'Aguardando rolagem...';
+            }
+        }
+        
+        function finalizarJogo() {
+            const pontos = caixa.reduce((a, b) => a + b, 0);
+            alert(`❌ Fim de jogo! Não há combinações possíveis para a soma ${somaAtual}.\n\nSua pontuação final: ${pontos} pontos\nNúmeros restantes: ${caixa.join(', ')}`);
+            document.getElementById('status-jogo').innerHTML = `Fim de jogo! Pontuação: ${pontos}`;
+            document.getElementById('btn-rolar').disabled = true;
+            document.getElementById('btn-confirmar').disabled = true;
+            jogadaAtiva = false;
+        }
+        
+        function reiniciarJogo() {
+            caixa = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            selecionados = [];
+            somaAtual = 0;
+            jogadaAtiva = false;
+            document.getElementById('dado-resultado').innerHTML = '--';
+            document.getElementById('btn-rolar').disabled = false;
+            document.getElementById('btn-confirmar').disabled = true;
+            atualizarInterface();
+        }
+        
+        function toggleResolucao() {
+            var div = document.getElementById("resolucao-conteudo");
+            div.style.display = (div.style.display === "block") ? "none" : "block";
+        }
+        
+        atualizarInterface();
+    </script>
+
+</body>
+</html>
