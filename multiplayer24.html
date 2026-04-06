@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo 24 Multiplayer | PET-AME</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #f1f8e9; --card: #ffffff; --green: #388e3c; --accent: #009688; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* Telas */
+        #tela-login { display: block; }
+        #tela-jogo { display: none; }
+
+        .input-group { margin: 15px 0; }
+        input { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 200px; font-size: 1rem; }
+        
+        .mesa { display: flex; justify-content: center; gap: 15px; margin: 25px 0; flex-wrap: wrap; min-height: 160px;}
+        .card-img { width: 100px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        
+        .btn { background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: 600; margin: 5px; transition: 0.3s; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-red { background: #d32f2f; }
+        
+        #status-info { background: #fff3e0; padding: 10px; border-radius: 8px; margin: 15px 0; font-weight: 600; color: #e65100; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2><i class="fas fa-users"></i> Jogo 24 Multiplayer</h2>
+
+        <div id="tela-login">
+            <div class="input-group">
+                <input type="text" id="nome-usuario" placeholder="Seu Nome">
+            </div>
+            <div class="input-group">
+                <input type="text" id="codigo-sala" placeholder="Código da Sala (Ex: PET1)">
+            </div>
+            <button class="btn" onclick="entrarNaSala()">Entrar na Partida</button>
+        </div>
+
+        <div id="tela-jogo">
+            <div id="status-info">Aguardando sorteio...</div>
+            
+            <div class="mesa" id="mesa-cartas">
+                </div>
+
+            <div id="controles">
+                <button class="btn" id="btn-sortear" onclick="sortearParaTodos()">Sortear para Todos</button>
+                <button class="btn btn-red" id="btn-bati" onclick="bater()" style="display:none;">BATI!</button>
+            </div>
+
+            <div id="area-solucao" style="display:none; margin-top:20px;">
+                <input type="text" id="input-conta" placeholder="Digite sua conta (ex: (10+2)*2)">
+                <button class="btn" onclick="verificarConta()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <script src="banco_solucoes.js"></script>
+
+    <script>
+        // CONFIGURAÇÃO DO SEU PROJETO
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0dK-OFYJEY55n4lksVBOytaoHAnlbq7Q",
+            authDomain: "pet-ame-24.firebaseapp.com",
+            projectId: "pet-ame-24",
+            databaseURL: "https://pet-ame-24-default-rtdb.firebaseio.com", // Adicionado para garantir conexão
+            storageBucket: "pet-ame-24.firebasestorage.app",
+            messagingSenderId: "969986270740",
+            appId: "1:969986270740:web:8418e725243cd804f7a901"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let meuNome = "";
+        let salaID = "";
+        let cartasAtuais = [];
+
+        function entrarNaSala() {
+            meuNome = document.getElementById('nome-usuario').value;
+            salaID = document.getElementById('codigo-sala').value.toUpperCase();
+
+            if(!meuNome || !salaID) return alert("Preencha tudo!");
+
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('tela-jogo').style.display = 'block';
+
+            // OUVIR MUDANÇAS NA SALA
+            db.ref('salas/' + salaID).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if(!data) return;
+
+                if(data.cartas) {
+                    cartasAtuais = data.cartas;
+                    renderizarCartas(data.cartas);
+                    document.getElementById('btn-bati').style.display = 'inline-block';
+                    document.getElementById('area-solucao').style.display = 'none';
+                }
+
+                if(data.status === "bloqueado") {
+                    document.getElementById('status-info').innerText = `🚨 ${data.quemBateu} está resolvendo!`;
+                    document.getElementById('btn-bati').disabled = true;
+                    if(data.quemBateu === meuNome) document.getElementById('area-solucao').style.display = 'block';
+                } else {
+                    document.getElementById('status-info').innerText = "Valendo! Quem resolve primeiro?";
+                    document.getElementById('btn-bati').disabled = false;
+                }
+            });
+        }
+
+        function sortearParaTodos() {
+            const maoSorteada = maosValidas[Math.floor(Math.random() * maosValidas.length)];
+            db.ref('salas/' + salaID).set({
+                cartas: maoSorteada,
+                status: "jogando",
+                quemBateu: ""
+            });
+        }
+
+        function renderizarCartas(cartas) {
+            const mesa = document.getElementById('mesa-cartas');
+            mesa.innerHTML = "";
+            cartas.forEach(num => {
+                let letra = num;
+                if(num === 1) letra = 'A';
+                if(num === 10) letra = '0';
+                if(num === 11) letra = 'J';
+                if(num === 12) letra = 'Q';
+                if(num === 13) letra = 'K';
+                
+                const img = document.createElement('img');
+                img.src = `https://deckofcardsapi.com/static/img/${letra}H.png`; // Simplificado para Copas
+                img.className = "card-img";
+                mesa.appendChild(img);
+            });
+        }
+
+        function bater() {
+            db.ref('salas/' + salaID).update({
+                status: "bloqueado",
+                quemBateu: meuNome
+            });
+        }
+
+        function verificarConta() {
+            const conta = document.getElementById('input-conta').value;
+            try {
+                // Validação básica de segurança (só permite números e operadores)
+                if (/[^0-9\+\-\*\/\(\)\. ]/.test(conta)) throw "Caracteres inválidos";
+                
+                const resultado = eval(conta);
+                if(resultado === 24) {
+                    alert("✅ CORRETO! Você é fera!");
+                    db.ref('salas/' + salaID).update({ status: "jogando", quemBateu: "" });
+                } else {
+                    alert(`❌ DEU ${resultado}. Tente novamente!`);
+                }
+            } catch(e) {
+                alert("Erro na conta!");
+            }
+        }
+    </script>
+</body>
+</html>
