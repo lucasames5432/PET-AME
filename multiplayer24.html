@@ -152,22 +152,41 @@
         }
 
         function verificarConta() {
-            const conta = document.getElementById('input-conta').value;
-            try {
-                // Validação básica de segurança (só permite números e operadores)
-                if (/[^0-9\+\-\*\/\(\)\. ]/.test(conta)) throw "Caracteres inválidos";
-                
-                const resultado = eval(conta);
-                if(resultado === 24) {
-                    alert("✅ CORRETO! Você é fera!");
-                    db.ref('salas/' + salaID).update({ status: "jogando", quemBateu: "" });
-                } else {
-                    alert(`❌ DEU ${resultado}. Tente novamente!`);
-                }
-            } catch(e) {
-                alert("Erro na conta!");
-            }
+    const contaOriginal = document.getElementById('input-conta').value;
+    
+    try {
+        // 1. Segurança: Só permite números e sinais básicos
+        if (/[^0-9\+\-\*\/\(\)\. ]/.test(contaOriginal)) {
+            return alert("❌ Use apenas números e os sinais (+, -, *, /)");
         }
+
+        // 2. Extrai os números que o usuário digitou na conta
+        const numerosDigitados = contaOriginal.match(/\d+/g).map(Number).sort();
+        
+        // 3. Pega as cartas que estão na mesa e ordena para comparar
+        const cartasNaMesa = [...cartasAtuais].sort((a, b) => a - b);
+
+        // 4. Validação: Checa se os números usados são os mesmos das cartas
+        if (JSON.stringify(numerosDigitados) !== JSON.stringify(cartasNaMesa)) {
+            return alert("❌ Você precisa usar exatamente as 4 cartas da mesa (uma vez cada)!");
+        }
+
+        // 5. Calcula o resultado final
+        const resultado = eval(contaOriginal);
+        
+        if (Math.abs(resultado - 24) < 0.1) {
+            alert("✅ SENSACIONAL! Você resolveu corretamente!");
+            // Destrava a sala para a próxima rodada
+            db.ref('salas/' + salaID).update({ status: "jogando", quemBateu: "" });
+            document.getElementById('input-conta').value = ""; // Limpa o campo
+        } else {
+            alert(`❌ Quase! Sua conta resultou em ${resultado}. Tente chegar em 24!`);
+        }
+
+    } catch (e) {
+        alert("⚠️ Ocorreu um erro na sua expressão matemática. Verifique os parênteses!");
+    }
+}
     </script>
 </body>
 </html>
