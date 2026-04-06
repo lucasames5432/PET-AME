@@ -38,12 +38,8 @@
         .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
         .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
 
-        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
-        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
-
         .game-area { background: var(--bg-card); padding: 40px 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         
-        /* Estilos específicos para o Jogo 24 */
         .mesa-baralho {
             display: flex;
             justify-content: center;
@@ -138,13 +134,6 @@
         }
         .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
 
-        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 40px; border-left: 5px solid var(--text-secondary); }
-        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
-        .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
-        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
-        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
-        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
-        
         @media (max-width: 768px) {
             .navbar-container { flex-direction: column; gap: 10px; }
             .spacer { height: 130px; }
@@ -173,34 +162,16 @@
         <section class="card">
             <h2 class="section-title"><i class="fas fa-layer-group"></i> Jogo 24</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                O <b>Jogo 24</b> é um clássico desafio de aritmética mental inventado na China. O objetivo é simples: você recebe 4 cartas de um baralho tradicional e deve usar as quatro operações matemáticas básicas (adição, subtração, multiplicação e divisão) para chegar ao resultado exato de <b>24</b>.
+                O <b>Jogo 24</b> é um clássico desafio de aritmética mental. O objetivo é simples: você recebe 4 cartas de um baralho tradicional e deve usar as quatro operações matemáticas básicas (adição, subtração, multiplicação e divisão) para chegar ao resultado exato de <b>24</b>.
                 <ul style="margin-left: 20px;">
                     <li>Você deve usar <b>todas</b> as quatro cartas.</li>
                     <li>Cada carta pode ser usada <b>apenas uma vez</b>.</li>
                     <li>O Ás vale 1, Valete vale 11, Dama vale 12 e Rei vale 13.</li>
                 </ul>
             </p>
-
-            <button class="btn-resolucao" onclick="toggleResolucao()">
-                <i class="fas fa-brain"></i> Ver Análise Matemática
-            </button>
-
-            <div id="resolucao-conteudo">
-                <h4><b>Jogo 24 - A Matemática por Trás</b></h4>
-                
-                <p><b>1. Combinações Possíveis:</b><br>
-                Um baralho tradicional possui cartas de 1 a 13. Como o naipe não importa para o cálculo e a ordem das cartas na mesa não altera as possibilidades, o número total de mãos diferentes que podem ser sorteadas é calculado usando combinações com repetição. Existem 1.820 mãos únicas possíveis.</p>
-                
-                <p><b>2. O Mito das Mãos Impossíveis:</b><br>
-                Ao contrário do que muitos pensam, nem toda mão tem solução. Estudos computacionais baseados em algoritmos de força bruta (como a busca em árvores recursivas) demonstram que cerca de <b>87%</b> das mãos geradas aleatoriamente são resolvíveis. As outras 13% são matematicamente impossíveis de chegar a 24 com as 4 operações básicas.</p>
-                
-                <p><b>3. Ansiedade Matemática:</b><br>
-                O Jogo 24 é amplamente estudado na área de Educação Matemática. Pesquisas mostram que a prática regular deste jogo ajuda a desenvolver o "Senso Numérico" (Number Sense) e é uma ferramenta poderosa para combater a Ansiedade Matemática em estudantes, pois transforma o cálculo em um processo exploratório de tentativa e erro.</p>
-            </div>
         </section>
 
         <div class="game-area">
-            
             <div class="mesa-baralho">
                 <div class="deck-container" onclick="sortearCartas()" title="Clique para sortear!">
                     <img src="https://deckofcardsapi.com/static/img/back.png" alt="Baralho" class="deck-image">
@@ -226,35 +197,6 @@
                 <ul id="lista-solucoes" style="margin-bottom: 0; font-family: monospace; font-size: 1.1rem; line-height: 1.8; color: #1b5e20;">
                     </ul>
             </div>
-
-            <div class="explicacao-grafico">
-                <h3><i class="fas fa-chess-knight"></i> Estratégias Mentais para o Jogo 24</h3>
-                
-                <p>Abaixo estão algumas das estratégias mais utilizadas para resolver o jogo rapidamente:</p>
-                
-                <h4><i class="fas fa-bolt"></i> 1. A Estratégia da "Alavanca" (Fatores)</h4>
-                <p>A forma mais comum de chegar a 24 é focar na multiplicação. Tente encontrar duas cartas que formem um fator de 24 (como 4 e 6, 3 e 8, ou 2 e 12). Depois, use as outras duas cartas para criar o segundo fator necessário.</p>
-                <div class="destaque">
-                    Exemplo: Cartas <b>[2, 3, 4, 6]</b>. Se você guardar o <b>4</b>, precisa transformar (2, 3, 6) em um 6. <br>
-                    Solução: (6 + 2 - 3) = 5. Não deu certo. <br>
-                    Vamos guardar o <b>6</b>. Precisamos transformar (2, 3, 4) em um 4. <br>
-                    Solução: 6 * (4 * (3 - 2)) = 24.
-                </div>
-
-                <h4><i class="fas fa-balance-scale"></i> 2. Elementos Neutros (Zerar ou Igualar a Um)</h4>
-                <p>Se você já tem cartas que somam ou multiplicam para 24, você pode "gastar" as cartas restantes anulando-as (subtraindo uma pela outra para dar 0, ou dividindo para dar 1).</p>
-                <div class="destaque">
-                    Exemplo: Cartas <b>[8, 3, 5, 5]</b>.<br>
-                    Solução: (8 * 3) + (5 - 5) = 24.
-                </div>
-
-                <h4><i class="fas fa-divide"></i> 3. Frações (Nível Difícil)</h4>
-                <p>As mãos mais difíceis do jogo requerem que você crie frações no meio do cálculo. Se você ficar preso, tente pensar em divisões que não resultam em números inteiros imediatamente.</p>
-                <div class="destaque">
-                    Exemplo: Cartas <b>[3, 3, 8, 8]</b> (Mão Clássica).<br>
-                    Solução: 8 / (3 - (8 / 3)) = 24.
-                </div>
-            </div>
         </div>
     </main>
 
@@ -265,13 +207,12 @@
     <script src="banco_solucoes.js"></script>
 
     <script>
-        const naipes = ['H', 'D', 'C', 'S']; // Copas(Hearts), Ouros(Diamonds), Paus(Clubs), Espadas(Spades)
-        let maoAtualString = ""; // Variável para sabermos qual mão está na mesa
-        
-        // Mapeia números de 1 a 13 para as letras das cartas na API
+        const naipes = ['H', 'D', 'C', 'S'];
+        let maoAtualString = ""; 
+
         function numeroParaLetra(num) {
             if (num === 1) return 'A';
-            if (num === 10) return '0'; // <-- CORREÇÃO: A API usa '0' para o número 10
+            if (num === 10) return '0'; 
             if (num === 11) return 'J';
             if (num === 12) return 'Q';
             if (num === 13) return 'K';
@@ -279,52 +220,35 @@
         }
 
         function sortearCartas() {
-            // Esconde as soluções da mão anterior, se estiverem abertas
             document.getElementById('area-solucoes').style.display = 'none';
 
-            // Tratamento de erro caso o JS do banco não tenha sido carregado
             if (typeof maosValidas === 'undefined') {
-                alert("O arquivo 'banco_solucoes.js' não foi encontrado. Gere o arquivo usando o código Python primeiro!");
+                alert("O arquivo 'banco_solucoes.js' não foi encontrado!");
                 return;
             }
 
-            // Sorteia uma mão aleatória da variável maosValidas (que veio do banco_solucoes.js)
             const maoSorteada = maosValidas[Math.floor(Math.random() * maosValidas.length)];
-            
-            // Salva a versão string com os espaços exatos gerados pelo Python
             maoAtualString = "[" + maoSorteada.join(", ") + "]";
             
             const slots = document.querySelectorAll('.card-slot');
-            
-            // "Desvira" as cartas antes de trocar
             slots.forEach(slot => slot.classList.remove('flipped'));
 
-            // Pequeno delay para a animação de desvirar terminar antes de sortear as novas
             setTimeout(() => {
-                const cartasUsadas = new Set(); // Para garantir que não haja cartas exatas repetidas
-
+                const cartasUsadas = new Set();
                 slots.forEach((slot, index) => {
                     const numero = maoSorteada[index];
                     const valorCarta = numeroParaLetra(numero);
+                    let naipe, cartaId;
                     
-                    let naipe;
-                    let cartaId;
-                    
-                    // Garante que não sortearemos a mesma carta (ex: dois Ases de Copas)
                     do {
                         naipe = naipes[Math.floor(Math.random() * naipes.length)];
                         cartaId = valorCarta + naipe;
                     } while (cartasUsadas.has(cartaId));
                     
                     cartasUsadas.add(cartaId);
-                    
-                    // Busca a imagem na API
                     const imageUrl = `https://deckofcardsapi.com/static/img/${cartaId}.png`;
+                    slot.querySelector('.card-front').innerHTML = `<img src="${imageUrl}" alt="${cartaId}">`;
                     
-                    const frontElement = slot.querySelector('.card-front');
-                    frontElement.innerHTML = `<img src="${imageUrl}" alt="${cartaId}">`;
-                    
-                    // Vira a carta um pouco depois para dar efeito de distribuição
                     setTimeout(() => {
                         slot.classList.add('flipped');
                     }, 100 * index); 
@@ -338,11 +262,8 @@
                 return;
             }
             
-            // Busca as soluções no dicionário gerado pelo Python
             const solucoes = bancoSolucoes[maoAtualString];
             const lista = document.getElementById('lista-solucoes');
-            
-            // Limpa a lista anterior e adiciona as novas
             lista.innerHTML = '';
             
             if (solucoes && solucoes.length > 0) {
@@ -357,19 +278,10 @@
                 lista.appendChild(li);
             }
             
-            // Mostra a caixinha com a animação suave
             const area = document.getElementById('area-solucoes');
             area.style.display = 'block';
-            
-            // Rola a página suavemente para as soluções
             area.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-
-        function toggleResolucao() {
-            var div = document.getElementById("resolucao-conteudo");
-            div.style.display = (div.style.display === "block") ? "none" : "block";
-        }
     </script>
-
 </body>
 </html>
