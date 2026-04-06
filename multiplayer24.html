@@ -9,21 +9,27 @@
     <style>
         :root { --bg: #f1f8e9; --card: #ffffff; --green: #388e3c; --accent: #009688; --dark: #263238; }
         body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; flex-direction: row; }
+
         .sidebar { width: 260px; background: var(--dark); color: white; padding: 20px; display: none; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 10; }
         .jogador-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #37474f; align-items: center; font-size: 0.9rem; }
         .status-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; background: #546e7a; }
         .status-pronto { background: var(--green); }
+
         .main-content { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
         .container { width: 95%; max-width: 700px; background: var(--card); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
+
         .mesa { display: flex; justify-content: center; gap: 10px; margin: 20px 0; min-height: 120px; flex-wrap: wrap; }
         .card-img { width: 22%; max-width: 110px; min-width: 70px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
         .btn { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: 600; margin: 8px; transition: 0.2s; font-size: 1rem; }
         .btn-red { background: #d32f2f; }
         .btn-gray { background: #90a4ae; }
         .btn:disabled { background: #eee; color: #bbb; cursor: not-allowed; }
+
         #status-info { background: #fff3e0; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; color: #e65100; font-size: 1.1rem; }
         #revelacao-solucoes { background: #e3f2fd; padding: 15px; border-radius: 12px; margin-top: 20px; display: none; text-align: left; border-left: 5px solid #1e88e5; }
         input { padding: 12px; border-radius: 10px; border: 2px solid #ddd; width: 90%; max-width: 400px; margin-bottom: 12px; font-size: 1.2rem; text-align: center; font-family: monospace; }
+
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
             .sidebar { width: 100%; height: auto; box-sizing: border-box; padding: 10px 20px; }
@@ -64,8 +70,8 @@
             </div>
             <div id="revelacao-solucoes">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong style="color:#1565c0;">💡 Soluções:</strong>
-                    <span id="timer-proxima" style="color:red; font-size: 0.9rem;"></span>
+                    <strong style="color:#1565c0;">💡 Soluções Possíveis:</strong>
+                    <span id="timer-proxima" style="color:red; font-weight:bold;"></span>
                 </div>
                 <ul id="lista-possibilidades" style="font-family: monospace; font-size: 0.9rem; margin-top: 8px;"></ul>
             </div>
@@ -122,10 +128,9 @@
                 lista.innerHTML += `<li class="jogador-item"><span>${nome} <span class="status-badge ${info.pronto ? 'status-pronto' : ''}">${info.pronto ? 'OK' : '...'}</span></span><span class="pontos">${info.pontos} pts</span></li>`;
             });
 
-            // Sorteio inicial (quem entrar primeiro puxa a fila)
             if(!data.cartas && meuNome === jogadoresOrdenados[0][0]) setTimeout(proximaRodada, 1000);
 
-            // Detecção de NOVA RODADA (As cartas mudaram no servidor)
+            // Detecção de NOVA RODADA
             if(data.cartas && JSON.stringify(cartasAtuais) !== JSON.stringify(data.cartas)) {
                 cartasAtuais = data.cartas;
                 rodadaFinalizada = false;
@@ -139,7 +144,7 @@
                 document.getElementById('input-conta').value = "";
             }
 
-            // Interface de bloqueio (Alguém bateu)
+            // Interface de bloqueio
             if(data.status === "bloqueado") {
                 document.getElementById('status-info').innerText = `${data.quemBateu} resolvendo...`;
                 document.getElementById('btn-bati').disabled = true;
@@ -151,10 +156,8 @@
                 document.getElementById('status-info').innerText = "Valendo 24!";
             }
 
-            // GATILHO: Rodada termina se todos estiverem prontos OU se alguém acertou
-            if(data.status === "terminada" && !rodadaFinalizada) {
-                finalizarRodadaAutomatico(data.cartas, jogadoresOrdenados[0][0]);
-            } else if(prontos >= jogadoresEntries.length && jogadoresEntries.length > 0 && !rodadaFinalizada) {
+            // REVELAÇÃO GLOBAL: Se a rodada foi terminada por alguém ou por todos prontos
+            if((data.status === "terminada" || prontos >= jogadoresEntries.length) && !rodadaFinalizada && jogadoresEntries.length > 0) {
                 finalizarRodadaAutomatico(data.cartas, jogadoresOrdenados[0][0]);
             }
         }
@@ -165,6 +168,8 @@
             document.getElementById('btn-bati').disabled = true;
             document.getElementById('btn-desisto').disabled = true;
             document.getElementById('area-solucao').style.display = 'none';
+            
+            // MOSTRA SOLUÇÕES PARA TODOS
             mostrarPossibilidades(cartas);
 
             let segundos = 8;
@@ -184,7 +189,6 @@
             db.ref(`salas/${salaID}`).once('value', snap => {
                 const data = snap.val();
                 const updates = {};
-                // Limpa o status 'pronto' de todos
                 if(data.jogadores) {
                     for(let n in data.jogadores) updates[`jogadores/${n}/pronto`] = false;
                 }
@@ -212,17 +216,15 @@
             try {
                 if (/[^0-9\+\-\*\/\(\)\. ]/.test(conta)) throw "Sinais inválidos!";
                 const numsUsados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
-                const mesaOrdenada = [...cartasAtuais].sort((a,b)=>a-b);
-
-                if (JSON.stringify(numsUsados) !== JSON.stringify(mesaOrdenada)) throw "Use exatamente as cartas da mesa!";
+                if (JSON.stringify(numsUsados) !== JSON.stringify([...cartasAtuais].sort((a,b)=>a-b))) throw "Use as cartas da mesa!";
 
                 const resultado = eval(conta);
                 if (Math.abs(resultado - 24) < 0.1) {
                     jaRespondeu = true;
                     db.ref(`salas/${salaID}/jogadores`).once('value', snap => {
                         const total = Object.keys(snap.val()).length;
-                        // Atualiza pontos do vencedor e termina a rodada para todos verem a solução
                         db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pronto: true, pontos: firebase.database.ServerValue.increment(total) });
+                        // Avisa a sala toda que a rodada acabou
                         db.ref(`salas/${salaID}`).update({ status: "terminada", quemBateu: "" });
                     });
                 } else {
