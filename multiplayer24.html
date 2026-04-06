@@ -8,126 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #f1f8e9; --card: #ffffff; --green: #388e3c; --accent: #009688; --dark: #263238; }
-        
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: var(--bg); 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            height: 100vh; 
-            overflow: hidden;
-            flex-direction: row;
-        }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; flex-direction: row; }
 
-        /* Sidebar - Escondida por padrão */
-        .sidebar { 
-            width: 260px; 
-            background: var(--dark); 
-            color: white; 
-            padding: 20px; 
-            display: none; /* Só aparece no JS após login */
-            flex-direction: column; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2); 
-            z-index: 10;
-        }
-        
+        .sidebar { width: 260px; background: var(--dark); color: white; padding: 20px; display: none; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 10; }
         .jogador-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #37474f; align-items: center; font-size: 0.9rem; }
         .status-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; background: #546e7a; }
         .status-pronto { background: var(--green); }
 
-        /* Área Principal */
-        .main-content { 
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            width: 100%;
-        }
+        .main-content { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .container { width: 95%; max-width: 700px; background: var(--card); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
 
-        .container { 
-            width: 95%; 
-            max-width: 700px; 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center;
-            box-sizing: border-box;
-        }
+        .mesa { display: flex; justify-content: center; gap: 10px; margin: 20px 0; min-height: 120px; flex-wrap: wrap; }
+        .card-img { width: 22%; max-width: 110px; min-width: 70px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        /* Cartas Responsivas */
-        .mesa { 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
-            margin: 20px 0; 
-            min-height: 120px; 
-            flex-wrap: wrap;
-        }
-        .card-img { 
-            width: 22%; /* Quatro cartas lado a lado */
-            max-width: 110px; 
-            min-width: 70px;
-            border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-        }
-
-        .btn { 
-            background: var(--accent); 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 30px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            margin: 8px; 
-            transition: 0.2s; 
-            font-size: 1rem; 
-        }
+        .btn { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: 600; margin: 8px; transition: 0.2s; font-size: 1rem; }
         .btn-red { background: #d32f2f; }
         .btn-gray { background: #90a4ae; }
         .btn:disabled { background: #eee; color: #bbb; cursor: not-allowed; }
 
         #status-info { background: #fff3e0; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; color: #e65100; font-size: 1.1rem; }
-        
-        #revelacao-solucoes { 
-            background: #e3f2fd; 
-            padding: 15px; 
-            border-radius: 12px; 
-            margin-top: 20px; 
-            display: none; 
-            text-align: left; 
-            border-left: 5px solid #1e88e5; 
-        }
+        #revelacao-solucoes { background: #e3f2fd; padding: 15px; border-radius: 12px; margin-top: 20px; display: none; text-align: left; border-left: 5px solid #1e88e5; }
+        input { padding: 12px; border-radius: 10px; border: 2px solid #ddd; width: 90%; max-width: 400px; margin-bottom: 12px; font-size: 1.2rem; text-align: center; font-family: monospace; }
 
-        input { 
-            padding: 12px; 
-            border-radius: 10px; 
-            border: 2px solid #ddd; 
-            width: 90%; 
-            max-width: 400px;
-            margin-bottom: 12px; 
-            font-size: 1.2rem; 
-            text-align: center; 
-            font-family: monospace; 
-        }
-
-        /* Ajustes para Celular (Mobile) */
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
-            .sidebar { 
-                width: 100%; 
-                height: auto; 
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-                box-sizing: border-box;
-                padding: 10px 20px;
-            }
+            .sidebar { width: 100%; height: auto; box-sizing: border-box; padding: 10px 20px; }
             .main-content { padding: 15px; justify-content: flex-start; margin-top: 20px; }
-            .card-img { width: 35%; } /* No mobile muito pequeno, fica 2x2 */
+            .card-img { width: 35%; }
             .btn { width: 80%; padding: 15px; }
         }
     </style>
@@ -142,7 +49,6 @@
     <div class="main-content">
         <div class="container" id="tela-login">
             <h2 style="color: var(--green); margin-top:0;">Arena PET-AME 24</h2>
-            <p>Nome e sala para começar:</p>
             <input type="text" id="nome-usuario" placeholder="Seu Nome">
             <input type="text" id="codigo-sala" placeholder="Código da Sala">
             <br>
@@ -151,21 +57,17 @@
 
         <div class="container" id="tela-jogo" style="display:none;">
             <div id="status-info">Iniciando...</div>
-            
             <div class="mesa" id="mesa-cartas"></div>
-
             <div id="controles">
                 <button class="btn btn-red" id="btn-bati" onclick="bater()">BATI!</button>
                 <button class="btn btn-gray" id="btn-desisto" onclick="desistir()">DESISTO</button>
             </div>
-
             <div id="area-solucao" style="display:none; margin-top:15px;">
-                <p><strong>Digite sua conta:</strong></p>
+                <p><strong>Sua Expressão:</strong></p>
                 <input type="text" id="input-conta" placeholder="Ex: (10+2)*(8/4)">
                 <br>
-                <button class="btn" onclick="verificarConta()">Validar</button>
+                <button class="btn" id="btn-validar" onclick="verificarConta()">Validar</button>
             </div>
-
             <div id="revelacao-solucoes">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <strong style="color:#1565c0;">💡 Soluções:</strong>
@@ -194,7 +96,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let meuNome = "", salaID = "", cartasAtuais = [], minhaVez = true, rodadaFinalizada = false;
+        let meuNome = "", salaID = "", cartasAtuais = [], rodadaFinalizada = false, jaRespondeu = false;
 
         function entrarNaSala() {
             meuNome = document.getElementById('nome-usuario').value.trim();
@@ -203,7 +105,7 @@
 
             document.getElementById('tela-login').style.display = 'none';
             document.getElementById('tela-jogo').style.display = 'block';
-            document.getElementById('barra-ranking').style.display = 'flex'; // MOSTRA SIDEBAR
+            document.getElementById('barra-ranking').style.display = 'flex';
 
             db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pontos: 0, pronto: false });
 
@@ -219,16 +121,11 @@
             lista.innerHTML = "";
             const jogadoresEntries = Object.entries(data.jogadores || {});
             const jogadoresOrdenados = jogadoresEntries.sort((a,b) => b[1].pontos - a[1].pontos);
-            let totalJogadores = jogadoresEntries.length;
             let prontos = 0;
 
             jogadoresOrdenados.forEach(([nome, info]) => {
                 if(info.pronto) prontos++;
-                lista.innerHTML += `
-                    <li class="jogador-item">
-                        <span>${nome} <span class="status-badge ${info.pronto ? 'status-pronto' : ''}">${info.pronto ? 'OK' : '...'}</span></span>
-                        <span class="pontos">${info.pontos} pts</span>
-                    </li>`;
+                lista.innerHTML += `<li class="jogador-item"><span>${nome} <span class="status-badge ${info.pronto ? 'status-pronto' : ''}">${info.pronto ? 'OK' : '...'}</span></span><span class="pontos">${info.pontos} pts</span></li>`;
             });
 
             if(!data.cartas && meuNome === jogadoresOrdenados[0][0]) setTimeout(proximaRodada, 1000);
@@ -236,24 +133,25 @@
             if(data.cartas && JSON.stringify(cartasAtuais) !== JSON.stringify(data.cartas)) {
                 cartasAtuais = data.cartas;
                 rodadaFinalizada = false;
-                minhaVez = true;
+                jaRespondeu = false;
                 renderizarCartas(data.cartas);
                 document.getElementById('revelacao-solucoes').style.display = 'none';
                 document.getElementById('area-solucao').style.display = 'none';
                 document.getElementById('btn-bati').disabled = false;
                 document.getElementById('btn-desisto').disabled = false;
+                document.getElementById('btn-validar').disabled = false;
             }
 
             if(data.status === "bloqueado") {
                 document.getElementById('status-info').innerText = `${data.quemBateu} resolvendo...`;
                 document.getElementById('btn-bati').disabled = true;
                 document.getElementById('btn-desisto').disabled = true;
-                if(data.quemBateu === meuNome) document.getElementById('area-solucao').style.display = 'block';
+                if(data.quemBateu === meuNome && !jaRespondeu) document.getElementById('area-solucao').style.display = 'block';
             } else if (!rodadaFinalizada) {
                 document.getElementById('status-info').innerText = "Valendo 24!";
             }
 
-            if(prontos >= totalJogadores && totalJogadores > 0 && !rodadaFinalizada) {
+            if(prontos >= jogadoresEntries.length && jogadoresEntries.length > 0 && !rodadaFinalizada) {
                 finalizarRodadaAutomatico(data.cartas, jogadoresOrdenados[0][0]);
             }
         }
@@ -290,33 +188,44 @@
             });
         }
 
-        function bater() { db.ref('salas/' + salaID).update({ status: "bloqueado", quemBateu: meuNome }); }
+        function bater() { 
+            db.ref('salas/' + salaID).update({ status: "bloqueado", quemBateu: meuNome }); 
+        }
 
         function desistir() {
-            minhaVez = false;
-            document.getElementById('btn-bati').disabled = true;
-            document.getElementById('btn-desisto').disabled = true;
+            jaRespondeu = true;
             db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pronto: true });
         }
 
         function verificarConta() {
+            const btn = document.getElementById('btn-validar');
             const conta = document.getElementById('input-conta').value;
+            btn.disabled = true; // Bloqueia clique duplo
+
             try {
                 if (/[^0-9\+\-\*\/\(\)\. ]/.test(conta)) throw "Sinais inválidos!";
                 const numsUsados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
-                if (JSON.stringify(numsUsados) !== JSON.stringify([...cartasAtuais].sort((a,b)=>a-b))) throw "Use as cartas da mesa!";
-                if (Math.abs(eval(conta) - 24) < 0.1) {
-                    minhaVez = false;
+                if (JSON.stringify(numsUsados) !== JSON.stringify([...cartasAtuais].sort((a,b)=>a-b))) throw "Use exatamente as cartas da mesa!";
+
+                const resultado = eval(conta);
+                if (Math.abs(resultado - 24) < 0.1) {
+                    jaRespondeu = true;
                     db.ref(`salas/${salaID}/jogadores`).once('value', snap => {
                         const total = Object.keys(snap.val()).length;
+                        // Incrementa pontos e marca pronto
                         db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pronto: true, pontos: firebase.database.ServerValue.increment(total) });
+                        // Libera sala
                         db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
                     });
                 } else {
-                    alert("Errado! Deu " + eval(conta));
+                    alert("Errado! Deu " + resultado);
+                    btn.disabled = false;
                     db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
                 }
-            } catch(e) { alert(e); }
+            } catch(e) { 
+                alert(e); 
+                btn.disabled = false;
+            }
         }
 
         function renderizarCartas(cartas) {
