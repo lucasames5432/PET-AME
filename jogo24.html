@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo 24 | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
+        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
+
+        .game-area { background: var(--bg-card); padding: 40px 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        /* Estilos específicos para o Jogo 24 */
+        .mesa-baralho {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .deck-container {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .deck-container:hover {
+            transform: scale(1.05);
+        }
+
+        .deck-image {
+            width: 120px;
+            height: 175px;
+            border-radius: 8px;
+            box-shadow: -2px 2px 5px rgba(0,0,0,0.2), -4px 4px 0px #fff, -4px 4px 5px rgba(0,0,0,0.2);
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 15px;
+            min-height: 175px;
+        }
+
+        .card-slot {
+            width: 120px;
+            height: 175px;
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card-slot.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-front {
+            background-color: transparent;
+            transform: rotateY(180deg);
+        }
+
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .card-back {
+            background-color: #e0e0e0;
+            border: 2px dashed #bbb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            font-size: 2rem;
+        }
+
+        .game-btn { 
+            background: var(--accent-primary); 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-family: var(--fonte-secundaria); 
+            transition: 0.3s; 
+            margin: 10px; 
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 40px; border-left: 5px solid var(--text-secondary); }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .mesa-baralho { flex-direction: column; }
+            .cards-container { flex-wrap: wrap; justify-content: center; }
+            .card-slot { width: 90px; height: 130px; }
+            .deck-image { width: 90px; height: 130px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-layer-group"></i> Jogo 24</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                O <b>Jogo 24</b> é um clássico desafio de aritmética mental inventado na China. O objetivo é simples: você recebe 4 cartas de um baralho tradicional e deve usar as quatro operações matemáticas básicas (adição, subtração, multiplicação e divisão) para chegar ao resultado exato de <b>24</b>.
+                <ul style="margin-left: 20px;">
+                    <li>Você deve usar <b>todas</b> as quatro cartas.</li>
+                    <li>Cada carta pode ser usada <b>apenas uma vez</b>.</li>
+                    <li>O Ás vale 1, Valete vale 11, Dama vale 12 e Rei vale 13.</li>
+                </ul>
+            </p>
+
+            <button class="btn-resolucao" onclick="toggleResolucao()">
+                <i class="fas fa-brain"></i> Ver Análise Matemática
+            </button>
+
+            <div id="resolucao-conteudo">
+                <h4><b>Jogo 24 - A Matemática por Trás</b></h4>
+                
+                <p><b>1. Combinações Possíveis:</b><br>
+                Um baralho tradicional possui cartas de 1 a 13. Como o naipe não importa para o cálculo e a ordem das cartas na mesa não altera as possibilidades, o número total de mãos diferentes que podem ser sorteadas é calculado usando combinações com repetição. Existem 1.820 mãos únicas possíveis.</p>
+                
+                <p><b>2. O Mito das Mãos Impossíveis:</b><br>
+                Ao contrário do que muitos pensam, nem toda mão tem solução. Estudos computacionais baseados em algoritmos de força bruta (como a busca em árvores recursivas) demonstram que cerca de <b>87%</b> das mãos geradas aleatoriamente são resolvíveis. As outras 13% são matematicamente impossíveis de chegar a 24 com as 4 operações básicas.</p>
+                
+                <p><b>3. Ansiedade Matemática:</b><br>
+                O Jogo 24 é amplamente estudado na área de Educação Matemática. Pesquisas mostram que a prática regular deste jogo ajuda a desenvolver o "Senso Numérico" (Number Sense) e é uma ferramenta poderosa para combater a Ansiedade Matemática em estudantes, pois transforma o cálculo em um processo exploratório de tentativa e erro.</p>
+            </div>
+        </section>
+
+        <div class="game-area">
+            
+            <div class="mesa-baralho">
+                <div class="deck-container" onclick="sortearCartas()" title="Clique para sortear!">
+                    <img src="https://deckofcardsapi.com/static/img/back.png" alt="Baralho" class="deck-image">
+                </div>
+
+                <div class="cards-container" id="cards-container">
+                    <div class="card-slot"><div class="card-inner"><div class="card-back">?</div><div class="card-front"></div></div></div>
+                    <div class="card-slot"><div class="card-inner"><div class="card-back">?</div><div class="card-front"></div></div></div>
+                    <div class="card-slot"><div class="card-inner"><div class="card-back">?</div><div class="card-front"></div></div></div>
+                    <div class="card-slot"><div class="card-inner"><div class="card-back">?</div><div class="card-front"></div></div></div>
+                </div>
+            </div>
+
+            <button id="btn-sortear" class="game-btn" onclick="sortearCartas()">
+                <i class="fas fa-random"></i> Sortear Nova Mão
+            </button>
+            <button id="btn-solucoes" class="game-btn" onclick="mostrarSolucoes()" style="background-color: #546e7a;">
+                <i class="fas fa-lightbulb"></i> Ver Soluções
+            </button>
+
+            <div id="area-solucoes" style="display: none; background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left; border-left: 5px solid #2e7d32;">
+                <h4 style="color: #2e7d32; margin-top: 0;">Possíveis Soluções:</h4>
+                <ul id="lista-solucoes" style="margin-bottom: 0; font-family: monospace; font-size: 1.1rem; line-height: 1.8; color: #1b5e20;">
+                    </ul>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-chess-knight"></i> Estratégias Mentais para o Jogo 24</h3>
+                
+                <p>Abaixo estão algumas das estratégias mais utilizadas para resolver o jogo rapidamente:</p>
+                
+                <h4><i class="fas fa-bolt"></i> 1. A Estratégia da "Alavanca" (Fatores)</h4>
+                <p>A forma mais comum de chegar a 24 é focar na multiplicação. Tente encontrar duas cartas que formem um fator de 24 (como 4 e 6, 3 e 8, ou 2 e 12). Depois, use as outras duas cartas para criar o segundo fator necessário.</p>
+                <div class="destaque">
+                    Exemplo: Cartas <b>[2, 3, 4, 6]</b>. Se você guardar o <b>4</b>, precisa transformar (2, 3, 6) em um 6. <br>
+                    Solução: (6 + 2 - 3) = 5. Não deu certo. <br>
+                    Vamos guardar o <b>6</b>. Precisamos transformar (2, 3, 4) em um 4. <br>
+                    Solução: 6 * (4 * (3 - 2)) = 24.
+                </div>
+
+                <h4><i class="fas fa-balance-scale"></i> 2. Elementos Neutros (Zerar ou Igualar a Um)</h4>
+                <p>Se você já tem cartas que somam ou multiplicam para 24, você pode "gastar" as cartas restantes anulando-as (subtraindo uma pela outra para dar 0, ou dividindo para dar 1).</p>
+                <div class="destaque">
+                    Exemplo: Cartas <b>[8, 3, 5, 5]</b>.<br>
+                    Solução: (8 * 3) + (5 - 5) = 24.
+                </div>
+
+                <h4><i class="fas fa-divide"></i> 3. Frações (Nível Difícil)</h4>
+                <p>As mãos mais difíceis do jogo requerem que você crie frações no meio do cálculo. Se você ficar preso, tente pensar em divisões que não resultam em números inteiros imediatamente.</p>
+                <div class="destaque">
+                    Exemplo: Cartas <b>[3, 3, 8, 8]</b> (Mão Clássica).<br>
+                    Solução: 8 / (3 - (8 / 3)) = 24.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Jogo 24 - Raciocínio Aritmético
+    </footer>
+
+    <script src="banco_solucoes.js"></script>
+
+    <script>
+        const naipes = ['H', 'D', 'C', 'S']; // Copas(Hearts), Ouros(Diamonds), Paus(Clubs), Espadas(Spades)
+        let maoAtualString = ""; // Variável para sabermos qual mão está na mesa
+        
+        // Mapeia números de 1 a 13 para as letras das cartas na API
+        function numeroParaLetra(num) {
+            if (num === 1) return 'A';
+            if (num === 10) return '0'; // <-- CORREÇÃO: A API usa '0' para o número 10
+            if (num === 11) return 'J';
+            if (num === 12) return 'Q';
+            if (num === 13) return 'K';
+            return num.toString();
+        }
+
+        function sortearCartas() {
+            // Esconde as soluções da mão anterior, se estiverem abertas
+            document.getElementById('area-solucoes').style.display = 'none';
+
+            // Tratamento de erro caso o JS do banco não tenha sido carregado
+            if (typeof maosValidas === 'undefined') {
+                alert("O arquivo 'banco_solucoes.js' não foi encontrado. Gere o arquivo usando o código Python primeiro!");
+                return;
+            }
+
+            // Sorteia uma mão aleatória da variável maosValidas (que veio do banco_solucoes.js)
+            const maoSorteada = maosValidas[Math.floor(Math.random() * maosValidas.length)];
+            
+            // Salva a versão string com os espaços exatos gerados pelo Python
+            maoAtualString = "[" + maoSorteada.join(", ") + "]";
+            
+            const slots = document.querySelectorAll('.card-slot');
+            
+            // "Desvira" as cartas antes de trocar
+            slots.forEach(slot => slot.classList.remove('flipped'));
+
+            // Pequeno delay para a animação de desvirar terminar antes de sortear as novas
+            setTimeout(() => {
+                const cartasUsadas = new Set(); // Para garantir que não haja cartas exatas repetidas
+
+                slots.forEach((slot, index) => {
+                    const numero = maoSorteada[index];
+                    const valorCarta = numeroParaLetra(numero);
+                    
+                    let naipe;
+                    let cartaId;
+                    
+                    // Garante que não sortearemos a mesma carta (ex: dois Ases de Copas)
+                    do {
+                        naipe = naipes[Math.floor(Math.random() * naipes.length)];
+                        cartaId = valorCarta + naipe;
+                    } while (cartasUsadas.has(cartaId));
+                    
+                    cartasUsadas.add(cartaId);
+                    
+                    // Busca a imagem na API
+                    const imageUrl = `https://deckofcardsapi.com/static/img/${cartaId}.png`;
+                    
+                    const frontElement = slot.querySelector('.card-front');
+                    frontElement.innerHTML = `<img src="${imageUrl}" alt="${cartaId}">`;
+                    
+                    // Vira a carta um pouco depois para dar efeito de distribuição
+                    setTimeout(() => {
+                        slot.classList.add('flipped');
+                    }, 100 * index); 
+                });
+            }, 300);
+        }
+
+        function mostrarSolucoes() {
+            if (!maoAtualString) {
+                alert("Por favor, sorteie uma mão de cartas primeiro!");
+                return;
+            }
+            
+            // Busca as soluções no dicionário gerado pelo Python
+            const solucoes = bancoSolucoes[maoAtualString];
+            const lista = document.getElementById('lista-solucoes');
+            
+            // Limpa a lista anterior e adiciona as novas
+            lista.innerHTML = '';
+            
+            if (solucoes && solucoes.length > 0) {
+                solucoes.forEach(sol => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${sol}</strong> = 24`;
+                    lista.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.innerText = "Nenhuma solução cadastrada para esta mão.";
+                lista.appendChild(li);
+            }
+            
+            // Mostra a caixinha com a animação suave
+            const area = document.getElementById('area-solucoes');
+            area.style.display = 'block';
+            
+            // Rola a página suavemente para as soluções
+            area.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function toggleResolucao() {
+            var div = document.getElementById("resolucao-conteudo");
+            div.style.display = (div.style.display === "block") ? "none" : "block";
+        }
+    </script>
+
+</body>
+</html>
