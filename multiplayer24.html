@@ -219,36 +219,70 @@
             db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pronto: true });
         }
 
-        function verificarConta() {
-            const btn = document.getElementById('btn-validar');
-            const conta = document.getElementById('input-conta').value;
-            btn.disabled = true;
+       function verificarConta() {
+    const btn = document.getElementById('btn-validar');
+    let contaRaw = document.getElementById('input-conta').value;
+    btn.disabled = true;
 
-            try {
-                if (/[^0-9\+\-\*\/\(\)\. ]/.test(conta)) throw "Sinais inválidos!";
-                const numsUsados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
-                if (JSON.stringify(numsUsados) !== JSON.stringify([...cartasAtuais].sort((a,b)=>a-b))) throw "Use as cartas da mesa!";
+    // 1. LIMPEZA E TRADUÇÃO (Prevenção de erros de digitação)
+    let conta = contaRaw.replace(/×/g, "*")
+                        .replace(/÷/g, "/")
+                        .replace(/,/g, ".")
+                        .replace(/\s+/g, ""); // Remove espaços
 
-                const resultado = eval(conta);
-                if (Math.abs(resultado - 24) < 0.1) {
-                    jaRespondeu = true;
-                    db.ref(`salas/${salaID}/jogadores`).once('value', snap => {
-                        const total = Object.keys(snap.val()).length;
-                        db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pronto: true, pontos: firebase.database.ServerValue.increment(total) });
-                        db.ref(`salas/${salaID}`).update({ 
-                            status: "terminada", 
-                            quemBateu: "", 
-                            ultimaSolucao: conta, 
-                            quemGanhou: meuNome 
-                        });
-                    });
-                } else {
-                    alert("Errado! Deu " + resultado);
-                    btn.disabled = false;
-                    db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
-                }
-            } catch(e) { alert(e); btn.disabled = false; }
+    try {
+        // 2. SEGURANÇA (Só permite números e operadores)
+        if (/[^0-9\+\-\*\/\(\)\.]/.test(conta)) {
+            throw "❌ Caractere inválido! Use apenas números e sinais (+ - * /)";
         }
+
+        // 3. CONFERÊNCIA DE CARTAS (O coração do jogo)
+        const numsDigitados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
+        const mesaOrdenada = [...cartasAtuais].sort((a,b)=>a-b);
+
+        if (numsDigitados.length !== 4) {
+            throw "❌ Você precisa usar as 4 cartas da mesa!";
+        }
+
+        if (JSON.stringify(numsDigitados) !== JSON.stringify(mesaOrdenada)) {
+            throw "❌ Os números digitados não batem com as cartas da mesa!";
+        }
+
+        // 4. CÁLCULO
+        const resultado = eval(conta);
+        
+        if (Math.abs(resultado - 24) < 0.01) {
+            jaRespondeu = true;
+            db.ref(`salas/${salaID}/jogadores`).once('value', snap => {
+                const total = Object.keys(snap.val()).length;
+                
+                // Grava a vitória e o histórico
+                db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ 
+                    pronto: true, 
+                    pontos: firebase.database.ServerValue.increment(total) 
+                });
+                
+                db.ref(`salas/${salaID}`).update({ 
+                    status: "terminada", 
+                    quemBateu: "", 
+                    ultimaSolucao: contaRaw, 
+                    quemGanhou: meuNome 
+                });
+            });
+        } else {
+            alert(`❌ Quase! Sua conta deu ${resultado.toFixed(1)}. Tente chegar em 24!`);
+            btn.disabled = false;
+            // Libera a sala para outros tentarem se ele errou
+            db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
+        }
+
+    } catch(e) { 
+        alert(e); 
+        btn.disabled = false;
+        // Se deu erro de sintaxe, libera a sala também
+        db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
+    }
+}
 
         function renderizarCartas(cartas) {
             const mesa = document.getElementById('mesa-cartas');
