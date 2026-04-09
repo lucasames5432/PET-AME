@@ -58,7 +58,7 @@
                 <button class="btn btn-red" id="btn-bati" onclick="bater()">BATI!</button>
             </div>
 
-            <div id="area-escolha-duvida" style="display:none; margin-top:15px;">
+            <div id="area-escolha-duvida" style="display:none; margin-top:15px; flex-wrap: wrap; justify-content: center;">
             </div>
 
             <div id="area-solucao" style="display:none; margin-top:15px;">
@@ -152,7 +152,11 @@
             document.getElementById('area-escolha-duvida').style.display = 'none';
             document.getElementById('area-solucao').style.display = 'none';
             document.getElementById('revelacao-solucoes').style.display = 'none';
-            if (data.fase !== 'respondendo_duvida') clearInterval(timerInterval);
+            
+            // Só cancela o intervalo se não estiver nas fases de timer
+            if (data.fase !== 'respondendo_duvida' && data.fase !== 'escolhendo_duvida') {
+                clearInterval(timerInterval);
+            }
 
             // FLUXO DO JOGO - FASE: INICIO
             if (!data.fase || data.fase === 'inicio') {
@@ -177,7 +181,11 @@
                 if (totalPlayers > 1 && bateuCount === totalPlayers - 1) {
                     const ultimo = Object.keys(jogadores).find(k => !jogadores[k].bateu);
                     if (meuNome === ultimo) {
-                        db.ref(`salas/${salaID}`).update({ fase: 'escolhendo_duvida', quemDuvida: meuNome });
+                        db.ref(`salas/${salaID}`).update({ 
+                            fase: 'escolhendo_duvida', 
+                            quemDuvida: meuNome,
+                            tempoFimDuvida: Date.now() + 10000 // Inicia o timer de 10s para escolha
+                        });
                     }
                 } 
                 // Modo Treino (1 Jogador)
@@ -185,10 +193,9 @@
                     db.ref(`salas/${salaID}`).update({ fase: 'resultado', msgResultado: "Você bateu no modo treino!" });
                 }
             }
-            // FASE: ESCOLHENDO DUVIDA (O último jogador escolhe)
+            // FASE: ESCOLHENDO DUVIDA (O último jogador escolhe com timer de 10s)
             else if (data.fase === 'escolhendo_duvida') {
                 if (meuNome === data.quemDuvida) {
-                    document.getElementById('status-info').innerText = "Você foi o último! De quem você duvida?";
                     const divEscolha = document.getElementById('area-escolha-duvida');
                     divEscolha.style.display = 'flex';
                     divEscolha.innerHTML = "";
@@ -197,9 +204,8 @@
                             divEscolha.innerHTML += `<button class="btn btn-red" onclick="duvidarDe('${nome}')">Duvidar de ${nome}</button>`;
                         }
                     });
-                } else {
-                    document.getElementById('status-info').innerText = `${data.quemDuvida} está escolhendo quem vai provar!`;
                 }
+                iniciarCronometroEscolha(data.tempoFimDuvida);
             }
             // FASE: RESPONDENDO DUVIDA (15 Segundos)
             else if (data.fase === 'respondendo_duvida') {
@@ -207,7 +213,7 @@
                     document.getElementById('area-solucao').style.display = 'block';
                     document.getElementById('btn-validar').disabled = false;
                 }
-                iniciarCronometro(data.tempoFim);
+                iniciarCronometroResposta(data.tempoFim);
             }
             // FASE: RESULTADO E RESET
             else if (data.fase === 'resultado') {
@@ -263,7 +269,32 @@
             });
         }
 
-        function iniciarCronometro(tempoFim) {
+        // Cronômetro para o jogador escolher de quem vai duvidar (10s)
+        function iniciarCronometroEscolha(tempoFim) {
+            clearInterval(timerInterval);
+            const statusEl = document.getElementById('status-info');
+            const ehODuvidador = (meuNome === dataAtual.quemDuvida);
+
+            timerInterval = setInterval(() => {
+                const rest = Math.max(0, Math.floor((tempoFim - Date.now()) / 1000));
+                statusEl.innerText = ehODuvidador ? `⏳ Escolha rápido de quem duvidar! (${rest}s)` : `⏳ ${dataAtual.quemDuvida} está decidindo quem desafiar... (${rest}s)`;
+
+                if (rest === 0) {
+                    clearInterval(timerInterval);
+                    if (ehODuvidador) {
+                        document.getElementById('area-escolha-duvida').style.display = 'none';
+                        // Se o tempo esgotar, encerra a rodada sem ganhos extras
+                        db.ref(`salas/${salaID}`).update({
+                            fase: 'resultado',
+                            msgResultado: `⚠️ Tempo esgotado! <b>${dataAtual.quemDuvida}</b> demorou muito para escolher alguém.`
+                        });
+                    }
+                }
+            }, 500);
+        }
+
+        // Cronômetro para o jogador resolver a equação (15s)
+        function iniciarCronometroResposta(tempoFim) {
             clearInterval(timerInterval);
             const statusEl = document.getElementById('status-info');
             const ehOAlvo = (meuNome === dataAtual.alvoDuvida);
