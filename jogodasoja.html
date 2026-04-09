@@ -123,7 +123,6 @@
         </div>
     </nav>
 
-    <!-- Espaçador invisível para empurrar o conteúdo para baixo -->
     <div class="spacer"></div>
 
     <main class="container">
@@ -204,7 +203,6 @@
                 </div>
             </div>
 
-            <!-- Nova seção de explicação do gráfico -->
             <div class="explicacao-grafico">
                 <h3><i class="fas fa-chart-line"></i> Entendendo o Gráfico - Guia Completo</h3>
                 
@@ -228,7 +226,6 @@
                     <li><strong>(0,80):</strong> Plantar apenas Milho (80 hectares)</li>
                     <li><strong>(40,60):</strong> Plantar 40 hectares de Soja e 60 de Milho</li>
                     <li><strong>(80,0):</strong> Plantar apenas Soja (80 hectares)</li>
-                    <li><strong>(100,0):</strong> Plantar apenas Soja (100 hectares)</li>
                 </ul>
                 
                 <h4><i class="fas fa-star-of-life"></i> 4. Ponto Ótimo (Estrela Verde)</h4>
@@ -312,7 +309,7 @@ def atualizar(event=None):
     ax.plot(x_range, y_lucro, color='#d32f2f', lw=3, label=f'Z = R$ {z_alvo:,.0f}')
     
     # Marcando os vértices
-    vertices = [(0, 0), (0, 80), (40, 60), (80, 0), (100, 0)]
+    vertices = [(0, 0), (0, 80), (40, 60), (80, 0)]
     for x, y in vertices:
         if x >= 0 and y >= 0 and x <= 100 and y <= 100:
             ax.scatter(x, y, color='gold', s=100, edgecolors='black', zorder=5)
