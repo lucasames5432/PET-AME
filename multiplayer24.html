@@ -39,12 +39,16 @@
     <div class="sidebar" id="barra-ranking">
         <h3><i class="fas fa-medal"></i> Ranking Sala</h3>
         <ul id="placar-lista" style="list-style:none; padding:0;"></ul>
+        <button id="btn-excluir-sala" class="btn btn-red" style="display:none; margin-top:auto; font-size: 0.9rem;" onclick="confirmarExclusaoSala()">
+            <i class="fas fa-trash"></i> Excluir Sala
+        </button>
     </div>
 
     <div class="main-content">
         <div class="container" id="tela-login">
             <h2 style="color: var(--green); margin-top:0;">Arena PET-AME 24</h2>
-            <input type="text" id="nome-usuario" placeholder="Seu Nome">
+            <input type="text" id="nome-usuario" placeholder="Seu Nickname">
+            <input type="password" id="senha-usuario" placeholder="Senha (para reconectar)">
             <input type="text" id="codigo-sala" placeholder="Código da Sala">
             <br>
             <button class="btn" id="btn-entrar" onclick="entrarNaSala()">Entrar na Arena</button>
@@ -102,30 +106,81 @@
 
         async function entrarNaSala() {
             meuNome = document.getElementById('nome-usuario').value.trim();
+            const senhaDigitada = document.getElementById('senha-usuario').value.trim();
             salaID = document.getElementById('codigo-sala').value.trim().toUpperCase();
-            if(!meuNome || !salaID) return alert("Preencha tudo!");
+
+            // Verifica se todos os campos foram preenchidos
+            if(!meuNome || !salaID || !senhaDigitada) return alert("Preencha o Nome, a Senha e a Sala!");
 
             const snapshot = await db.ref(`salas/${salaID}/jogadores/${meuNome}`).get();
-            if(snapshot.exists()){
-                alert("Este nome já está em uso nesta sala. Escolha outro!");
-                return;
+
+            if(snapshot.exists()) {
+                // JOGADOR JÁ EXISTE: Verifica se a senha bate
+                const dadosJogador = snapshot.val();
+                if (dadosJogador.senha !== senhaDigitada) {
+                    alert("⚠️ Este nome já está em uso na sala e a senha incorreta! Se for você, digite a senha correta para reconectar.");
+                    return;
+                }
+                // Se a senha estiver correta, ele entra sem zerar os pontos (reconectar)
+            } else {
+                // JOGADOR NOVO: Cria o jogador salvando a senha
+                db.ref(`salas/${salaID}/jogadores/${meuNome}`).set({ 
+                    pontos: 0, 
+                    bateu: false,
+                    senha: senhaDigitada 
+                });
+
+                // Verifica se a sala já tem um criador. Se não tiver, define este jogador como criador.
+                const criadorSnap = await db.ref(`salas/${salaID}/criador`).get();
+                if (!criadorSnap.exists()) {
+                    db.ref(`salas/${salaID}/criador`).set(meuNome);
+                }
             }
 
+            // Oculta a tela de login e mostra o jogo
             document.getElementById('tela-login').style.display = 'none';
             document.getElementById('tela-jogo').style.display = 'block';
             document.getElementById('barra-ranking').style.display = 'flex';
 
-            db.ref(`salas/${salaID}/jogadores/${meuNome}`).set({ pontos: 0, bateu: false });
-
+            // Escuta as alterações na sala (usando off() antes para evitar duplicação em caso de reconexão na mesma aba)
+            db.ref('salas/' + salaID).off();
             db.ref('salas/' + salaID).on('value', (snapshot) => {
                 const data = snapshot.val();
-                if(!data) return;
+                
+                // Se o data for null, significa que a sala foi excluída
+                if(!data) {
+                    if (document.getElementById('tela-jogo').style.display === 'block') {
+                        alert("⚠️ A sala foi encerrada pelo criador.");
+                        window.location.reload(); // Recarrega a página voltando para a tela inicial
+                    }
+                    return;
+                }
+                
                 gerenciarFluxoJogo(data);
             });
         }
 
+        // Função de Exclusão de Sala
+        function confirmarExclusaoSala() {
+            if(confirm("Tem certeza que deseja excluir esta sala?\n\nTodos os jogadores serão desconectados e os pontos serão perdidos para sempre.")) {
+                db.ref(`salas/${salaID}`).remove().then(() => {
+                    // O redirecionamento é tratado no on('value') de todo mundo, inclusive do criador
+                }).catch((error) => {
+                    alert("Erro ao excluir sala: " + error);
+                });
+            }
+        }
+
         function gerenciarFluxoJogo(data) {
             dataAtual = data;
+            
+            // Exibe o botão de exclusão apenas se o jogador for o criador da sala
+            if (data.criador === meuNome) {
+                document.getElementById('btn-excluir-sala').style.display = 'block';
+            } else {
+                document.getElementById('btn-excluir-sala').style.display = 'none';
+            }
+
             const lista = document.getElementById('placar-lista');
             lista.innerHTML = "";
             const jogadores = data.jogadores || {};
@@ -254,7 +309,6 @@
         }
 
         function bater() { 
-            // O jogador ganha 1 ponto imediatamente ao clicar em BATI
             db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ 
                 bateu: true, 
                 pontos: firebase.database.ServerValue.increment(1) 
@@ -265,11 +319,10 @@
             db.ref(`salas/${salaID}`).update({
                 fase: 'respondendo_duvida',
                 alvoDuvida: alvo,
-                tempoFim: Date.now() + 15000 // 15 segundos
+                tempoFim: Date.now() + 15000 
             });
         }
 
-        // Cronômetro para o jogador escolher de quem vai duvidar (10s)
         function iniciarCronometroEscolha(tempoFim) {
             clearInterval(timerInterval);
             const statusEl = document.getElementById('status-info');
@@ -283,7 +336,6 @@
                     clearInterval(timerInterval);
                     if (ehODuvidador) {
                         document.getElementById('area-escolha-duvida').style.display = 'none';
-                        // Se o tempo esgotar, encerra a rodada sem ganhos extras
                         db.ref(`salas/${salaID}`).update({
                             fase: 'resultado',
                             msgResultado: `⚠️ Tempo esgotado! <b>${dataAtual.quemDuvida}</b> demorou muito para escolher alguém.`
@@ -293,7 +345,6 @@
             }, 500);
         }
 
-        // Cronômetro para o jogador resolver a equação (15s)
         function iniciarCronometroResposta(tempoFim) {
             clearInterval(timerInterval);
             const statusEl = document.getElementById('status-info');
@@ -306,7 +357,6 @@
                 if (rest === 0) {
                     clearInterval(timerInterval);
                     if (ehOAlvo) document.getElementById('btn-validar').disabled = true;
-                    // Quem controla a punição do timeout é o duvidador para evitar concorrência no Firebase
                     if (meuNome === dataAtual.quemDuvida) {
                         falharDuvida("Tempo esgotado");
                     }
@@ -317,7 +367,6 @@
         function falharDuvida(motivo) {
             if (dataAtual.fase !== 'respondendo_duvida') return;
             const updates = {};
-            // Alvo perde 1 ponto (zera o ponto ganho na rodada), Duvidador ganha 2
             updates[`jogadores/${dataAtual.alvoDuvida}/pontos`] = firebase.database.ServerValue.increment(-1);
             updates[`jogadores/${dataAtual.quemDuvida}/pontos`] = firebase.database.ServerValue.increment(2);
             updates[`fase`] = 'resultado';
@@ -344,7 +393,6 @@
                 const resultado = eval(conta);
                 
                 if (Math.abs(resultado - 24) < 0.01) {
-                    // SUCESSO: Alvo ganha +1 extra
                     const updates = {};
                     updates[`jogadores/${dataAtual.alvoDuvida}/pontos`] = firebase.database.ServerValue.increment(1);
                     updates[`fase`] = 'resultado';
@@ -355,7 +403,6 @@
                     throw `Conta deu ${resultado.toFixed(1)}`;
                 }
             } catch(e) { 
-                // Se errar a matemática, falha na hora
                 falharDuvida(`Calculou errado: ${e}`);
             }
         }
