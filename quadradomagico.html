@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadrado Mágico | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .status-panel { 
+            background: #e8f5e9; 
+            padding: 15px; 
+            border-radius: 10px; 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--accent-primary); 
+            transition: 0.3s;
+        }
+
+        .game-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* Banco de Números */
+        .number-bank {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #eee;
+            min-height: 80px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .num-block {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-card);
+            border: 2px solid #cfd8dc;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-family: var(--fonte-secundaria);
+            font-weight: 700;
+            color: var(--text-primary);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.2s;
+            user-select: none;
+        }
+
+        .num-block:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); border-color: var(--accent-primary); }
+        .num-block.selected { background: var(--accent-primary); color: white; border-color: var(--accent-primary); transform: scale(1.1); box-shadow: 0 0 15px rgba(0,150,136,0.4); }
+        .num-block.hidden { opacity: 0; pointer-events: none; transform: scale(0); }
+
+        /* Grade do Quadrado Mágico (4x4 para incluir somas) */
+        .magic-board-container {
+            position: relative;
+            display: inline-block;
+            padding: 10px;
+            background: #eceff1;
+            border-radius: 15px;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .magic-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            grid-template-rows: repeat(4, 60px);
+            gap: 8px;
+        }
+
+        .grid-cell {
+            width: 60px;
+            height: 60px;
+            background: #ffffff;
+            border: 2px dashed #b0bec5;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            font-family: var(--fonte-secundaria);
+            font-weight: 700;
+            color: var(--accent-primary);
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+
+        .grid-cell.highlight { border-color: var(--accent-primary); background: #e0f2f1; }
+        .grid-cell.filled { border-style: solid; border-color: var(--accent-primary); background: #e8f5e9; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        
+        .sum-cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            font-family: var(--fonte-secundaria);
+            font-weight: bold;
+            color: #90a4ae;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .sum-cell.correct { color: white; background: var(--text-secondary); box-shadow: 0 0 10px rgba(56, 142, 60, 0.4); }
+        .sum-cell.wrong { color: white; background: #e53935; box-shadow: 0 0 10px rgba(229, 57, 53, 0.4); }
+
+        /* Controles */
+        .controls { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; font-weight: 600; font-size: 1rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+        .btn-gray { background: #78909c; }
+        .btn-gray:hover { background: #546e7a; }
+        .btn-gold { background: #fbc02d; color: #333; }
+        .btn-gold:hover { background: #f9a825; box-shadow: 0 4px 10px rgba(251,192,45,0.3); }
+
+        /* Explicação Didática */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; color: var(--text-primary); }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; color: var(--text-primary); }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        .destaque-math { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; text-align: center; margin: 15px 0; color: #1565c0; font-size: 1.1rem;}
+
+        #mensagem-vitoria {
+            display: none;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #a5d6a7;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        @media (max-width: 600px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .magic-grid { grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(4, 50px); gap: 5px; }
+            .grid-cell, .sum-cell { width: 50px; height: 50px; font-size: 1.5rem; }
+            .num-block { width: 45px; height: 45px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-border-all"></i> Quadrado Mágico Interativo</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                O lendário <b>Quadrado Mágico</b> (também conhecido como Quadrado de Lo Shu na China Antiga) é um dos enigmas matemáticos mais antigos da humanidade. 
+                <br><br>
+                <b>Sua Missão:</b> Organize os números de <b>1 a 9</b> na grade 3x3 de forma que <b>todas</b> as linhas horizontais, colunas verticais e as duas diagonais somem exatamente <b>15</b>!
+                <br>
+                <i>Dica: Clique no número que deseja mover e depois clique no quadrado vazio.</i>
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div id="status-display" class="status-panel">
+                Selecione um número no banco abaixo e posicione na grade!
+            </div>
+
+            <div class="game-layout">
+                <div class="number-bank" id="number-bank">
+                    <div class="num-block" onclick="selecionarNumero(1)" id="num-1">1</div>
+                    <div class="num-block" onclick="selecionarNumero(2)" id="num-2">2</div>
+                    <div class="num-block" onclick="selecionarNumero(3)" id="num-3">3</div>
+                    <div class="num-block" onclick="selecionarNumero(4)" id="num-4">4</div>
+                    <div class="num-block" onclick="selecionarNumero(5)" id="num-5">5</div>
+                    <div class="num-block" onclick="selecionarNumero(6)" id="num-6">6</div>
+                    <div class="num-block" onclick="selecionarNumero(7)" id="num-7">7</div>
+                    <div class="num-block" onclick="selecionarNumero(8)" id="num-8">8</div>
+                    <div class="num-block" onclick="selecionarNumero(9)" id="num-9">9</div>
+                </div>
+
+                <div class="magic-board-container">
+                    <div class="magic-grid">
+                        <div class="grid-cell" id="cell-0" onclick="clicarCelula(0)"></div>
+                        <div class="grid-cell" id="cell-1" onclick="clicarCelula(1)"></div>
+                        <div class="grid-cell" id="cell-2" onclick="clicarCelula(2)"></div>
+                        <div class="sum-cell" id="sum-r0" title="Soma da Linha 1">0</div>
+
+                        <div class="grid-cell" id="cell-3" onclick="clicarCelula(3)"></div>
+                        <div class="grid-cell" id="cell-4" onclick="clicarCelula(4)"></div>
+                        <div class="grid-cell" id="cell-5" onclick="clicarCelula(5)"></div>
+                        <div class="sum-cell" id="sum-r1" title="Soma da Linha 2">0</div>
+
+                        <div class="grid-cell" id="cell-6" onclick="clicarCelula(6)"></div>
+                        <div class="grid-cell" id="cell-7" onclick="clicarCelula(7)"></div>
+                        <div class="grid-cell" id="cell-8" onclick="clicarCelula(8)"></div>
+                        <div class="sum-cell" id="sum-r2" title="Soma da Linha 3">0</div>
+
+                        <div class="sum-cell" id="sum-c0" title="Soma da Coluna 1">0</div>
+                        <div class="sum-cell" id="sum-c1" title="Soma da Coluna 2">0</div>
+                        <div class="sum-cell" id="sum-c2" title="Soma da Coluna 3">0</div>
+                        <div class="sum-cell" id="sum-diag" title="Somas das Diagonais" style="font-size: 0.9rem; background:#cfd8dc; color:#37474f;">D1: 0<br>D2: 0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mensagem-vitoria">
+                <i class="fas fa-medal"></i> Perfeito! Todas as somas são 15. Você resolveu o Quadrado Mágico!
+            </div>
+
+            <div class="controls">
+                <button class="game-btn btn-gray" onclick="reiniciarJogo()"><i class="fas fa-trash-can"></i> Limpar Tudo</button>
+                <button class="game-btn btn-gold" onclick="darDica()"><i class="fas fa-lightbulb"></i> Ver Dica Matemática</button>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-square-root-variable"></i> O Pensamento Algébrico</h3>
+                <p>Resolver o Quadrado Mágico por tentativa e erro pode demorar horas. Porém, usando a Álgebra Básica e Sistemas Lineares, podemos descobrir as posições exatas como verdadeiros matemáticos!</p>
+                
+                <h4>Por que a soma tem que ser 15?</h4>
+                <p>Sabemos que a soma de todos os números disponíveis (1 + 2 + 3 + ... + 9) é igual a <b>45</b>. Como o quadrado tem 3 linhas horizontais e cada número pertence a apenas uma linha, a soma das 3 linhas juntas também tem que ser 45. Logo, para que todas as linhas sejam iguais, dividimos: <b>45 &divide; 3 = 15</b>.</p>
+
+                <h4>O Segredo do Centro (C)</h4>
+                <p>Podemos provar matematicamente qual número deve ficar no quadrado central. O número central ($C$) participa de <b>4 somas diferentes</b>: uma linha, uma coluna e duas diagonais.</p>
+
+                <div class="destaque-math">
+                    Linha Central + Coluna Central + Diagonal 1 + Diagonal 2 = 15 &times; 4 = <b>60</b>
+                </div>
+
+                <p>Se somarmos essas 4 direções, estaremos somando todos os números do tabuleiro de 1 a 9 (que dá 45), <b>mas o número central ($C$) foi contado 3 vezes a mais</b>. Transformando isso em uma equação linear:</p>
+
+                <div class="destaque-math">
+                    Soma Total do Tabuleiro + 3C = 60<br>
+                    45 + 3C = 60<br>
+                    3C = 15<br>
+                    <b>C = 5</b>
+                </div>
+
+                <p>Assim, a Álgebra prova irrefutavelmente que <b>o número 5 deve estar no centro!</b> Sem ele, é impossível fechar o sistema. A partir dessa dedução, fica fácil posicionar os números pares nos cantos e os ímpares nas bordas (meios).</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Pensamento Algébrico e Resolução de Problemas
+    </footer>
+
+    <script>
+        let numeroSelecionado = null;
+        let grid = [null, null, null, null, null, null, null, null, null];
+
+        function selecionarNumero(num) {
+            // Remove seleção anterior
+            document.querySelectorAll('.num-block').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.grid-cell').forEach(el => el.classList.add('highlight'));
+            
+            numeroSelecionado = num;
+            document.getElementById(`num-${num}`).classList.add('selected');
+            
+            const painel = document.getElementById('status-display');
+            painel.innerText = `Você selecionou o ${num}. Clique em um quadrado vazio!`;
+            painel.style.backgroundColor = "#e0f2f1";
+            painel.style.color = "var(--accent-primary)";
+            painel.style.borderColor = "var(--accent-primary)";
+        }
+
+        function clicarCelula(index) {
+            const cell = document.getElementById(`cell-${index}`);
+
+            // Se clicou numa célula que já tem número, devolve o número pro banco
+            if (grid[index] !== null) {
+                let numDevolvido = grid[index];
+                grid[index] = null;
+                cell.innerText = "";
+                cell.classList.remove('filled');
+                document.getElementById(`num-${numDevolvido}`).classList.remove('hidden');
+                calcularSomas();
+                return;
+            }
+
+            // Se tem um número selecionado no banco, coloca na célula
+            if (numeroSelecionado !== null) {
+                grid[index] = numeroSelecionado;
+                cell.innerText = numeroSelecionado;
+                cell.classList.add('filled');
+                
+                // Esconde do banco e limpa seleção
+                document.getElementById(`num-${numeroSelecionado}`).classList.add('hidden');
+                document.getElementById(`num-${numeroSelecionado}`).classList.remove('selected');
+                document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('highlight'));
+                numeroSelecionado = null;
+                
+                document.getElementById('status-display').innerText = "Selecione outro número ou retire um da grade.";
+                document.getElementById('status-display').style.backgroundColor = "#e8f5e9";
+                document.getElementById('status-display').style.color = "var(--text-secondary)";
+                document.getElementById('status-display').style.borderColor = "var(--accent-primary)";
+
+                calcularSomas();
+            }
+        }
+
+        function calcularSomas() {
+            // Linhas
+            const r0 = [grid[0], grid[1], grid[2]];
+            const r1 = [grid[3], grid[4], grid[5]];
+            const r2 = [grid[6], grid[7], grid[8]];
+            
+            // Colunas
+            const c0 = [grid[0], grid[3], grid[6]];
+            const c1 = [grid[1], grid[4], grid[7]];
+            const c2 = [grid[2], grid[5], grid[8]];
+            
+            // Diagonais
+            const d1 = [grid[0], grid[4], grid[8]]; // Principal
+            const d2 = [grid[2], grid[4], grid[6]]; // Secundária
+
+            const somas = {
+                'sum-r0': sumArray(r0), 'sum-r1': sumArray(r1), 'sum-r2': sumArray(r2),
+                'sum-c0': sumArray(c0), 'sum-c1': sumArray(c1), 'sum-c2': sumArray(c2)
+            };
+
+            let todasCompletas = true;
+            let todasCorretas = true;
+
+            // Atualiza UI de Linhas e Colunas
+            for (let id in somas) {
+                const el = document.getElementById(id);
+                el.innerText = somas[id].val;
+                
+                el.classList.remove('correct', 'wrong');
+                if (somas[id].full) {
+                    if (somas[id].val === 15) el.classList.add('correct');
+                    else { el.classList.add('wrong'); todasCorretas = false; }
+                } else {
+                    todasCompletas = false;
+                    todasCorretas = false;
+                }
+            }
+
+            // Atualiza UI das Diagonais (célula unificada)
+            const sumD1 = sumArray(d1);
+            const sumD2 = sumArray(d2);
+            const elDiag = document.getElementById('sum-diag');
+            elDiag.innerHTML = `D1: ${sumD1.val}<br>D2: ${sumD2.val}`;
+            
+            elDiag.classList.remove('correct', 'wrong');
+            if (sumD1.full && sumD2.full) {
+                if (sumD1.val === 15 && sumD2.val === 15) elDiag.classList.add('correct');
+                else { elDiag.classList.add('wrong'); todasCorretas = false; }
+            } else {
+                todasCompletas = false;
+                todasCorretas = false;
+            }
+
+            // Verifica Vitória Final
+            if (todasCompletas && todasCorretas) {
+                document.getElementById('mensagem-vitoria').style.display = 'block';
+                document.getElementById('status-display').style.display = 'none';
+            } else {
+                document.getElementById('mensagem-vitoria').style.display = 'none';
+                document.getElementById('status-display').style.display = 'block';
+            }
+        }
+
+        function sumArray(arr) {
+            let sum = 0;
+            let count = 0;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] !== null) {
+                    sum += arr[i];
+                    count++;
+                }
+            }
+            return { val: sum, full: count === 3 };
+        }
+
+        function reiniciarJogo() {
+            grid = [null, null, null, null, null, null, null, null, null];
+            numeroSelecionado = null;
+            
+            // Reseta grade
+            for (let i = 0; i < 9; i++) {
+                const cell = document.getElementById(`cell-${i}`);
+                cell.innerText = "";
+                cell.classList.remove('filled', 'highlight');
+            }
+            
+            // Reseta banco de números
+            for (let i = 1; i <= 9; i++) {
+                const numBlock = document.getElementById(`num-${i}`);
+                numBlock.classList.remove('hidden', 'selected');
+            }
+
+            calcularSomas();
+            
+            document.getElementById('status-display').innerText = "Selecione um número no banco abaixo e posicione na grade!";
+            document.getElementById('status-display').style.backgroundColor = "#e8f5e9";
+            document.getElementById('status-display').style.color = "var(--text-secondary)";
+            document.getElementById('status-display').style.borderColor = "var(--accent-primary)";
+        }
+
+        function darDica() {
+            alert("Dica de Mestre: A Matemática prova que o número 5 deve OBRIGATORIAMENTE ficar no centro. Os números pares (2, 4, 6, 8) devem sempre ficar nos quatro cantos!");
+        }
+
+        window.onload = reiniciarJogo;
+    </script>
+</body>
+</html>

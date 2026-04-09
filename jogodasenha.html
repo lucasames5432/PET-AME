@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Senha | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .status-panel { 
+            background: #e8f5e9; 
+            padding: 15px; 
+            border-radius: 10px; 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--accent-primary); 
+        }
+
+        .mastermind-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .board {
+            background: #eceff1;
+            padding: 15px;
+            border-radius: 15px;
+            border: 4px solid #cfd8dc;
+            display: flex;
+            flex-direction: column-reverse; /* Mostra as tentativas de baixo para cima */
+            gap: 10px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .board-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 15px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .board-row.active {
+            opacity: 1;
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 0 10px rgba(0, 150, 136, 0.3);
+            transform: scale(1.02);
+        }
+
+        .row-num { font-family: var(--fonte-secundaria); font-weight: bold; color: #90a4ae; width: 25px; }
+
+        .guess-slots { display: flex; gap: 10px; }
+        
+        .slot {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+
+        .feedback-pegs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            background: #e0e0e0;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .peg {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #b0bec5;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .peg.black { background: #263238; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .peg.white { background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+        .controls-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #eee;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .color-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .color-btn:hover { transform: translateY(-3px) scale(1.1); }
+        .color-btn:active { transform: scale(0.95); }
+
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; margin: 5px; font-weight: 600; font-size: 1rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+        .game-btn:disabled { background: #cfd8dc; cursor: not-allowed; transform: none; box-shadow: none; color: #999; }
+        
+        .btn-gray { background: #90a4ae; }
+        .btn-gray:hover { background: #78909c; }
+
+        .secret-reveal {
+            display: none;
+            background: #37474f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+            font-family: var(--fonte-secundaria);
+        }
+        .secret-reveal .guess-slots { justify-content: center; margin-top: 10px; }
+
+        /* Explicação Didática */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; color: var(--text-primary); }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; color: var(--text-primary); }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        .destaque-math { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; text-align: center; margin: 15px 0; color: #1565c0; font-size: 1.1rem;}
+
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .slot { width: 30px; height: 30px; }
+            .color-btn { width: 40px; height: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-unlock-keyhole"></i> O Jogo da Senha (Mastermind)</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                O computador criou uma <b>senha secreta</b> composta por 4 cores. Seu objetivo é adivinhar a sequência exata em até 10 tentativas, utilizando Lógica Dedutiva. As cores podem se repetir!
+                <br><br>
+                <b>Dicas a cada tentativa:</b>
+                <ul style="margin-left: 20px;">
+                    <li><span style="display:inline-block; width:12px; height:12px; background:#263238; border-radius:50%; margin-right:5px;"></span> <b>Pino Preto:</b> Você acertou a <b>Cor</b> e a <b>Posição</b> correta.</li>
+                    <li><span style="display:inline-block; width:12px; height:12px; background:#fff; border:1px solid #ccc; border-radius:50%; margin-right:5px;"></span> <b>Pino Branco:</b> A cor existe na senha, mas está na <b>posição errada</b>.</li>
+                </ul>
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div id="status-display" class="status-panel">
+                Tentativa 1 de 10. Selecione 4 cores!
+            </div>
+
+            <div id="secret-reveal" class="secret-reveal">
+                <div>A SENHA ERA:</div>
+                <div class="guess-slots" id="secret-slots">
+                    <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+                </div>
+            </div>
+
+            <div class="mastermind-container">
+                <div class="board" id="board">
+                    </div>
+
+                <div class="controls-area">
+                    <div class="color-picker" id="color-picker">
+                        </div>
+                    
+                    <div style="display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 10px;">
+                        <button class="game-btn btn-gray" onclick="apagarCor()" id="btn-apagar">
+                            <i class="fas fa-backspace"></i> Apagar
+                        </button>
+                        <button class="game-btn" onclick="enviarTentativa()" id="btn-enviar" disabled>
+                            <i class="fas fa-check-circle"></i> Confirmar
+                        </button>
+                    </div>
+                    <button class="game-btn" style="background:#546e7a; width: 100%; margin-top: 5px;" onclick="iniciarJogo()">
+                        <i class="fas fa-redo"></i> Gerar Nova Senha
+                    </button>
+                </div>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-chart-pie"></i> A Matemática do Mastermind</h3>
+                <p>O <i>Mastermind</i> (ou Jogo da Senha) é uma excelente forma prática de estudar <b>Análise Combinatória</b> e <b>Teoria da Informação</b>. Quando o jogo começa, você não tem nenhuma pista. Quantas possibilidades existem?</p>
+                
+                <p>O jogo possui <b>6 cores disponíveis</b> e a senha tem <b>4 posições</b>. Como as cores podem se repetir (uma senha pode ser Azul-Azul-Azul-Azul), usamos o Princípio Fundamental da Contagem (Arranjo com Repetição):</p>
+
+                <div class="destaque-math">
+                    Possibilidades = 6 &times; 6 &times; 6 &times; 6 = 6<sup>4</sup> = <b>1.296 senhas possíveis</b>
+                </div>
+
+                <p>Isso significa que a sua chance de acertar a senha chutando aleatoriamente na primeira tentativa é de apenas $1 / 1296$ (aproximadamente $0,077\%$).</p>
+
+                <h4>O poder da Lógica Dedutiva</h4>
+                <p>A cada tentativa que você faz, os pinos pretos e brancos funcionam como <b>restrições do espaço amostral</b>. Se você jogar 4 cores iguais e não receber nenhum pino, você acabou de eliminar matematicamente milhares de combinações da sua lista mental, reduzindo drasticamente o número de possibilidades restantes.</p>
+
+                <p><b>Curiosidade Algorítmica:</b> Em 1977, o famoso cientista da computação Donald Knuth provou matematicamente que é possível adivinhar <i>qualquer</i> senha do Mastermind em <b>5 tentativas ou menos</b>, usando um algoritmo chamado <i>Minimax</i>, que escolhe sempre a jogada que elimina a maior quantidade possível de senhas erradas no pior cenário.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Análise Combinatória e Lógica
+    </footer>
+
+    <script>
+        // Configurações do Jogo
+        const COLORS = ['#f44336', '#2196f3', '#4caf50', '#ffeb3b', '#9c27b0', '#ff9800']; // Vermelho, Azul, Verde, Amarelo, Roxo, Laranja
+        const CODE_LENGTH = 4;
+        const MAX_ATTEMPTS = 10;
+        
+        let secretCode = [];
+        let currentGuess = [];
+        let currentRow = 0;
+        let gameActive = false;
+
+        function iniciarJogo() {
+            // Gerar Código Secreto (permite repetidas)
+            secretCode = [];
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                secretCode.push(Math.floor(Math.random() * COLORS.length));
+            }
+
+            currentGuess = [];
+            currentRow = 0;
+            gameActive = true;
+
+            document.getElementById('secret-reveal').style.display = 'none';
+            document.getElementById('status-display').innerText = `Tentativa 1 de ${MAX_ATTEMPTS}. Selecione 4 cores!`;
+            document.getElementById('status-display').style.color = 'var(--text-secondary)';
+            document.getElementById('status-display').style.backgroundColor = '#e8f5e9';
+            document.getElementById('status-display').style.borderColor = 'var(--accent-primary)';
+
+            renderizarControles();
+            renderizarTabuleiro();
+        }
+
+        function renderizarControles() {
+            const picker = document.getElementById('color-picker');
+            picker.innerHTML = '';
+            COLORS.forEach((color, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'color-btn';
+                btn.style.backgroundColor = color;
+                btn.onclick = () => selecionarCor(index);
+                picker.appendChild(btn);
+            });
+            atualizarBotoes();
+        }
+
+        function renderizarTabuleiro() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+
+            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+                const row = document.createElement('div');
+                row.className = `board-row ${i === currentRow ? 'active' : ''}`;
+                row.id = `row-${i}`;
+
+                let rowHtml = `<div class="row-num">${i + 1}</div><div class="guess-slots" id="slots-${i}">`;
+                for (let j = 0; j < CODE_LENGTH; j++) {
+                    rowHtml += `<div class="slot"></div>`;
+                }
+                rowHtml += `</div><div class="feedback-pegs" id="pegs-${i}">`;
+                for (let j = 0; j < CODE_LENGTH; j++) {
+                    rowHtml += `<div class="peg"></div>`;
+                }
+                rowHtml += `</div>`;
+                
+                row.innerHTML = rowHtml;
+                board.appendChild(row);
+            }
+        }
+
+        function selecionarCor(colorIndex) {
+            if (!gameActive || currentGuess.length >= CODE_LENGTH) return;
+            
+            currentGuess.push(colorIndex);
+            atualizarLinhaAtual();
+            atualizarBotoes();
+        }
+
+        function apagarCor() {
+            if (!gameActive || currentGuess.length === 0) return;
+            
+            currentGuess.pop();
+            atualizarLinhaAtual();
+            atualizarBotoes();
+        }
+
+        function atualizarLinhaAtual() {
+            const slotsContainer = document.getElementById(`slots-${currentRow}`);
+            const slots = slotsContainer.getElementsByClassName('slot');
+            
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                if (i < currentGuess.length) {
+                    slots[i].style.backgroundColor = COLORS[currentGuess[i]];
+                    slots[i].style.boxShadow = 'inset 0 0 0 2px rgba(0,0,0,0.1)';
+                } else {
+                    slots[i].style.backgroundColor = '#e0e0e0';
+                    slots[i].style.boxShadow = 'inset 0 3px 5px rgba(0,0,0,0.2)';
+                }
+            }
+        }
+
+        function atualizarBotoes() {
+            document.getElementById('btn-enviar').disabled = (currentGuess.length !== CODE_LENGTH || !gameActive);
+            document.getElementById('btn-apagar').disabled = (currentGuess.length === 0 || !gameActive);
+        }
+
+        function enviarTentativa() {
+            if (!gameActive || currentGuess.length !== CODE_LENGTH) return;
+
+            const feedback = calcularFeedback(currentGuess, secretCode);
+            renderizarFeedback(currentRow, feedback);
+
+            if (feedback.black === CODE_LENGTH) {
+                finalizarJogo(true);
+            } else if (currentRow === MAX_ATTEMPTS - 1) {
+                finalizarJogo(false);
+            } else {
+                currentRow++;
+                currentGuess = [];
+                document.getElementById('status-display').innerText = `Tentativa ${currentRow + 1} de ${MAX_ATTEMPTS}.`;
+                
+                // Atualizar visual das linhas
+                document.getElementById(`row-${currentRow - 1}`).classList.remove('active');
+                document.getElementById(`row-${currentRow}`).classList.add('active');
+                atualizarBotoes();
+            }
+        }
+
+        function calcularFeedback(guess, secret) {
+            let black = 0;
+            let white = 0;
+            let secretCopy = [...secret];
+            let guessCopy = [...guess];
+
+            // 1ª Passagem: Pinos Pretos (Cor e Posição corretas)
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                if (guessCopy[i] === secretCopy[i]) {
+                    black++;
+                    secretCopy[i] = null; // Marca como usado
+                    guessCopy[i] = -1;    // Marca como usado
+                }
+            }
+
+            // 2ª Passagem: Pinos Brancos (Apenas Cor correta)
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                if (guessCopy[i] !== -1) {
+                    const matchIndex = secretCopy.indexOf(guessCopy[i]);
+                    if (matchIndex !== -1) {
+                        white++;
+                        secretCopy[matchIndex] = null; // Marca como usado
+                    }
+                }
+            }
+
+            return { black, white };
+        }
+
+        function renderizarFeedback(rowNum, feedback) {
+            const pegsContainer = document.getElementById(`pegs-${rowNum}`);
+            const pegs = pegsContainer.getElementsByClassName('peg');
+            
+            let pegIndex = 0;
+            // Preenche pretos
+            for (let i = 0; i < feedback.black; i++) {
+                pegs[pegIndex].classList.add('black');
+                pegIndex++;
+            }
+            // Preenche brancos
+            for (let i = 0; i < feedback.white; i++) {
+                pegs[pegIndex].classList.add('white');
+                pegIndex++;
+            }
+        }
+
+        function finalizarJogo(venceu) {
+            gameActive = false;
+            atualizarBotoes();
+            document.getElementById(`row-${currentRow}`).classList.remove('active');
+
+            const statusPanel = document.getElementById('status-display');
+            if (venceu) {
+                statusPanel.innerHTML = `🎉 Fenomenal! Você quebrou a senha em ${currentRow + 1} tentativas!`;
+                statusPanel.style.color = '#1565c0';
+                statusPanel.style.backgroundColor = '#e3f2fd';
+                statusPanel.style.borderColor = '#1e88e5';
+            } else {
+                statusPanel.innerHTML = `❌ Fim de jogo. As tentativas esgotaram!`;
+                statusPanel.style.color = '#c62828';
+                statusPanel.style.backgroundColor = '#ffebee';
+                statusPanel.style.borderColor = '#e53935';
+            }
+
+            // Revelar a senha
+            const secretSlots = document.getElementById('secret-slots').getElementsByClassName('slot');
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                secretSlots[i].style.backgroundColor = COLORS[secretCode[i]];
+            }
+            document.getElementById('secret-reveal').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Iniciar ao carregar a página
+        window.onload = iniciarJogo;
+    </script>
+</body>
+</html>

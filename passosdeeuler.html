@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Lenda dos Passos de Euler | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .status-panel { 
+            background: #e8f5e9; 
+            padding: 15px; 
+            border-radius: 10px; 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--accent-primary); 
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .level-badge {
+            background: var(--text-secondary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-family: var(--fonte-secundaria);
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1);
+            background: #fafafa;
+            border: 3px solid #cfd8dc;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background-color: #fdfdfd;
+            cursor: pointer;
+        }
+
+        .controls { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; font-weight: 600; font-size: 1rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+        .game-btn:disabled { background: #cfd8dc; cursor: not-allowed; transform: none; box-shadow: none; color: #999; }
+        
+        .btn-gray { background: #78909c; }
+        .btn-gray:hover { background: #546e7a; }
+        .btn-gold { background: #fbc02d; color: #333; }
+        .btn-gold:hover { background: #f9a825; box-shadow: 0 4px 10px rgba(251,192,45,0.3); }
+        .btn-red { background: #d32f2f; }
+        .btn-red:hover { background: #c62828; }
+
+        #mensagem-vitoria {
+            display: none;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid #a5d6a7;
+        }
+
+        /* Explicação Didática */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; color: var(--text-primary); }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; color: var(--text-primary); }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        .destaque-math { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; text-align: center; margin: 15px 0; color: #1565c0; font-size: 1.1rem;}
+
+        @media (max-width: 600px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .status-panel { flex-direction: column; gap: 10px; text-align: center; }
+            .game-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-draw-polygon"></i> A Lenda dos Passos de Euler</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Em 1736, a cidade de Königsberg possuía sete pontes conectando duas ilhas às margens do rio. Os moradores tentavam resolver um enigma: <b>É possível dar um passeio pela cidade atravessando todas as pontes exatamente uma vez?</b>
+                <br><br>
+                <b>Sua Missão:</b> Clique nas "Ilhas" (círculos) para atravessar as "Pontes" (linhas). Você deve passar por <b>todas</b> as linhas sem repetir nenhuma. <i>Cuidado: Alguns mapas são matematicamente impossíveis de resolver! Se você tiver certeza que é impossível, clique no botão vermelho.</i>
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div class="status-panel" id="status-panel">
+                <span id="status-texto">Clique em um ponto para começar!</span>
+                <span class="level-badge" id="level-badge">Nível 1/4</span>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="graphCanvas" width="600" height="400"></canvas>
+            </div>
+
+            <div id="mensagem-vitoria"></div>
+
+            <div class="controls">
+                <button class="game-btn btn-gray" onclick="desfazer()" id="btn-desfazer" disabled><i class="fas fa-undo"></i> Desfazer Passo</button>
+                <button class="game-btn btn-gray" onclick="reiniciarNivel()"><i class="fas fa-redo"></i> Recomeçar Nível</button>
+                <button class="game-btn btn-red" onclick="declararImpossivel()" id="btn-impossivel"><i class="fas fa-ban"></i> É Impossível!</button>
+                <button class="game-btn btn-gold" onclick="proximoNivel()" id="btn-proximo" style="display:none;"><i class="fas fa-forward"></i> Próximo Nível</button>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-project-diagram"></i> Teoria dos Grafos e o Teorema de Euler</h3>
+                <p>O grande matemático Leonhard Euler resolveu o problema de Königsberg inventando uma nova área da matemática: a <b>Teoria dos Grafos</b>. Ele percebeu que o formato das ilhas ou o tamanho das pontes não importava. A única coisa que importa é o <b>Grau dos Vértices</b> (quantas pontes se conectam a cada ilha).</p>
+                
+                <p>Ele formulou uma regra infalível para saber se o mapa tem solução <b>antes mesmo de tentar desenhar</b>:</p>
+
+                <div class="destaque-math">
+                    Para que um caminho contínuo sem repetições exista, o mapa pode ter <b>no máximo DUAS</b> ilhas com um número ímpar de pontes conectadas a elas.
+                </div>
+
+                <ul>
+                    <li><b>0 Nós Ímpares (Todos Pares):</b> Você pode começar em qualquer ilha, cruzar todas as pontes e terminar exatamente onde começou (Circuito Euleriano).</li>
+                    <li><b>Exatamente 2 Nós Ímpares:</b> Você consegue cruzar todas as pontes, mas <b>DEVE</b> obrigatoriamente começar em um dos nós ímpares e terminará no outro nó ímpar (Caminho Euleriano).</li>
+                    <li><b>Mais de 2 Nós Ímpares:</b> É matematicamente <b>IMPOSSÍVEL</b>. Você sempre ficará preso em uma ilha sem saída (Como no Nível 3 - Pontes de Königsberg, que possui 4 nós ímpares).</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Teoria dos Grafos e Topologia
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentLevel = 0;
+        let currentNode = null;
+        let path = []; // Histórico de arestas cruzadas
+        let gameFinished = false;
+
+        // Definição dos 4 Níveis
+        const levels = [
+            {
+                // Nível 1: A Ampulheta (Todos pares - Circuito Euleriano)
+                name: "A Ampulheta",
+                isPossible: true,
+                nodes: [
+                    {x: 150, y: 100, label: 'A'}, {x: 450, y: 100, label: 'B'},
+                    {x: 300, y: 200, label: 'C'},
+                    {x: 150, y: 300, label: 'D'}, {x: 450, y: 300, label: 'E'}
+                ],
+                edges: [
+                    {u: 0, v: 1}, {u: 0, v: 2}, {u: 1, v: 2},
+                    {u: 2, v: 3}, {u: 2, v: 4}, {u: 3, v: 4}
+                ]
+            },
+            {
+                // Nível 2: O Envelope (C e D são ímpares - Caminho Euleriano)
+                name: "O Envelope",
+                isPossible: true,
+                nodes: [
+                    {x: 150, y: 150, label: 'A'}, {x: 450, y: 150, label: 'B'},
+                    {x: 450, y: 300, label: 'C'}, {x: 150, y: 300, label: 'D'},
+                    {x: 300, y: 50, label: 'E'}
+                ],
+                edges: [
+                    {u: 0, v: 1}, {u: 1, v: 2}, {u: 2, v: 3}, {u: 3, v: 0},
+                    {u: 0, v: 4}, {u: 1, v: 4}, {u: 0, v: 2}, {u: 1, v: 3}
+                ]
+            },
+            {
+                // Nível 3: Pontes de Königsberg (4 ímpares - Impossível)
+                name: "Pontes de Königsberg",
+                isPossible: false,
+                nodes: [
+                    {x: 300, y: 80, label: 'Norte'}, {x: 300, y: 320, label: 'Sul'},
+                    {x: 150, y: 200, label: 'Ilha'}, {x: 450, y: 200, label: 'Leste'}
+                ],
+                edges: [
+                    {u: 0, v: 2, curve: 30}, {u: 0, v: 2, curve: -30}, // Duas pontes Norte-Ilha
+                    {u: 1, v: 2, curve: 30}, {u: 1, v: 2, curve: -30}, // Duas pontes Sul-Ilha
+                    {u: 0, v: 3}, {u: 1, v: 3}, {u: 2, v: 3} // Pontes simples
+                ]
+            },
+            {
+                // Nível 4: Pentagrama Completo K5 (Todos pares - Circuito)
+                name: "Estrela Completa",
+                isPossible: true,
+                nodes: [
+                    {x: 300, y: 50, label: 'A'}, {x: 442, y: 153, label: 'B'},
+                    {x: 388, y: 321, label: 'C'}, {x: 212, y: 321, label: 'D'},
+                    {x: 158, y: 153, label: 'E'}
+                ],
+                edges: [
+                    {u:0, v:1}, {u:0, v:2}, {u:0, v:3}, {u:0, v:4},
+                    {u:1, v:2}, {u:1, v:3}, {u:1, v:4},
+                    {u:2, v:3}, {u:2, v:4},
+                    {u:3, v:4}
+                ]
+            }
+        ];
+
+        let activeLevel = {};
+
+        // Ajuste para clique responsivo
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: (evt.clientX - rect.left) * scaleX,
+                y: (evt.clientY - rect.top) * scaleY
+            };
+        }
+
+        function loadLevel(index) {
+            currentLevel = index;
+            let baseLevel = levels[currentLevel];
+            
+            // Deep copy to reset state
+            activeLevel = {
+                name: baseLevel.name,
+                isPossible: baseLevel.isPossible,
+                nodes: JSON.parse(JSON.stringify(baseLevel.nodes)),
+                edges: JSON.parse(JSON.stringify(baseLevel.edges)).map(e => ({...e, crossed: false}))
+            };
+
+            currentNode = null;
+            path = [];
+            gameFinished = false;
+
+            document.getElementById('level-badge').innerText = `Nível ${currentLevel + 1}/4`;
+            document.getElementById('status-texto').innerText = `Nível: ${activeLevel.name} - Clique no nó inicial!`;
+            document.getElementById('status-panel').style.backgroundColor = "#e8f5e9";
+            document.getElementById('status-panel').style.borderColor = "var(--accent-primary)";
+            
+            document.getElementById('mensagem-vitoria').style.display = 'none';
+            document.getElementById('btn-proximo').style.display = 'none';
+            document.getElementById('btn-impossivel').style.display = 'inline-block';
+            document.getElementById('btn-desfazer').disabled = true;
+
+            draw();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Edges
+            activeLevel.edges.forEach((e) => {
+                const n1 = activeLevel.nodes[e.u];
+                const n2 = activeLevel.nodes[e.v];
+                
+                ctx.beginPath();
+                ctx.strokeStyle = e.crossed ? '#009688' : '#cfd8dc';
+                ctx.lineWidth = e.crossed ? 6 : 4;
+
+                if (e.curve) {
+                    // Calculate quadratic bezier curve control point
+                    let mx = (n1.x + n2.x) / 2;
+                    let my = (n1.y + n2.y) / 2;
+                    let dx = n2.x - n1.x;
+                    let dy = n2.y - n1.y;
+                    let len = Math.sqrt(dx*dx + dy*dy);
+                    let nx = -dy / len;
+                    let ny = dx / len;
+                    let cx = mx + nx * e.curve;
+                    let cy = my + ny * e.curve;
+                    
+                    ctx.moveTo(n1.x, n1.y);
+                    ctx.quadraticCurveTo(cx, cy, n2.x, n2.y);
+                } else {
+                    ctx.moveTo(n1.x, n1.y);
+                    ctx.lineTo(n2.x, n2.y);
+                }
+                ctx.stroke();
+            });
+
+            // Draw Nodes
+            activeLevel.nodes.forEach((n, i) => {
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 20, 0, 2 * Math.PI);
+                
+                if (i === currentNode) {
+                    ctx.fillStyle = '#ffb300'; // Amarelo para atual
+                    ctx.strokeStyle = '#e65100';
+                } else if (path.length > 0 && i === path[0].startNode && i !== currentNode) {
+                    ctx.fillStyle = '#64b5f6'; // Azul clarinho para o início
+                    ctx.strokeStyle = '#1565c0';
+                } else {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.strokeStyle = '#78909c';
+                }
+                
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                ctx.fillStyle = (i === currentNode) ? '#fff' : '#37474f';
+                ctx.font = 'bold 16px Roboto Mono';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(n.label, n.x, n.y);
+            });
+        }
+
+        canvas.addEventListener('click', (evt) => {
+            if (gameFinished) return;
+
+            const pos = getMousePos(evt);
+            
+            // Find clicked node
+            let clickedNode = null;
+            for (let i = 0; i < activeLevel.nodes.length; i++) {
+                const n = activeLevel.nodes[i];
+                const dist = Math.sqrt(Math.pow(pos.x - n.x, 2) + Math.pow(pos.y - n.y, 2));
+                if (dist <= 25) {
+                    clickedNode = i;
+                    break;
+                }
+            }
+
+            if (clickedNode !== null) {
+                processNodeClick(clickedNode);
+            }
+        });
+
+        function processNodeClick(nodeIndex) {
+            // First click sets starting node
+            if (currentNode === null) {
+                currentNode = nodeIndex;
+                document.getElementById('status-texto').innerText = "Ponto marcado! Agora clique no próximo destino.";
+                draw();
+                return;
+            }
+
+            // Clicked same node
+            if (nodeIndex === currentNode) return;
+
+            // Find an uncrossed edge between currentNode and clickedNode
+            let edgeToCross = activeLevel.edges.find(e => 
+                !e.crossed && ((e.u === currentNode && e.v === nodeIndex) || (e.u === nodeIndex && e.v === currentNode))
+            );
+
+            if (edgeToCross) {
+                edgeToCross.crossed = true;
+                // Save state for undo
+                path.push({ edge: edgeToCross, startNode: currentNode });
+                currentNode = nodeIndex;
+                
+                document.getElementById('btn-desfazer').disabled = false;
+                draw();
+                checkWin();
+            } else {
+                // Flash red if invalid
+                document.getElementById('status-panel').style.backgroundColor = "#ffebee";
+                document.getElementById('status-texto').innerText = "Movimento inválido! Não há ponte livre aqui.";
+                setTimeout(() => {
+                    if(!gameFinished) document.getElementById('status-panel').style.backgroundColor = "#e8f5e9";
+                }, 800);
+            }
+        }
+
+        function desfazer() {
+            if (path.length > 0 && !gameFinished) {
+                let lastMove = path.pop();
+                lastMove.edge.crossed = false;
+                currentNode = lastMove.startNode;
+                
+                if (path.length === 0) {
+                    currentNode = null;
+                    document.getElementById('status-texto').innerText = "Clique em um ponto para começar!";
+                    document.getElementById('btn-desfazer').disabled = true;
+                }
+                draw();
+            }
+        }
+
+        function reiniciarNivel() {
+            loadLevel(currentLevel);
+        }
+
+        function checkWin() {
+            const allCrossed = activeLevel.edges.every(e => e.crossed);
+            if (allCrossed) {
+                gameFinished = true;
+                document.getElementById('status-panel').style.backgroundColor = "#e8f5e9";
+                document.getElementById('status-texto').innerText = "Caminho Concluído!";
+                
+                const msg = document.getElementById('mensagem-vitoria');
+                msg.style.display = 'block';
+                msg.style.color = '#2e7d32';
+                msg.style.borderColor = '#a5d6a7';
+                msg.style.backgroundColor = '#e8f5e9';
+                msg.innerHTML = `<i class="fas fa-trophy"></i> Brilhante! Você cruzou todas as pontes sem repetir nenhuma!`;
+
+                document.getElementById('btn-impossivel').style.display = 'none';
+                document.getElementById('btn-desfazer').disabled = true;
+                
+                if (currentLevel < levels.length - 1) {
+                    document.getElementById('btn-proximo').style.display = 'inline-block';
+                }
+            } else {
+                // Check if stuck (no uncrossed edges from current node)
+                const hasMoves = activeLevel.edges.some(e => !e.crossed && (e.u === currentNode || e.v === currentNode));
+                if (!hasMoves) {
+                    document.getElementById('status-panel').style.backgroundColor = "#ffebee";
+                    document.getElementById('status-texto').innerText = "Você ficou preso! Use o botão Desfazer ou Recomece.";
+                } else {
+                    document.getElementById('status-texto').innerText = "Continue atravessando...";
+                }
+            }
+        }
+
+        function declararImpossivel() {
+            if (gameFinished) return;
+            gameFinished = true;
+            document.getElementById('btn-desfazer').disabled = true;
+            document.getElementById('btn-impossivel').style.display = 'none';
+
+            const msg = document.getElementById('mensagem-vitoria');
+            msg.style.display = 'block';
+
+            if (activeLevel.isPossible === false) {
+                // Correct!
+                msg.style.color = '#1565c0';
+                msg.style.borderColor = '#90caf9';
+                msg.style.backgroundColor = '#e3f2fd';
+                msg.innerHTML = `<i class="fas fa-graduation-cap"></i> Você acertou! O Teorema de Euler prova que este mapa é IMPOSSÍVEL porque tem mais de 2 nós com quantidade ímpar de pontes!`;
+                
+                if (currentLevel < levels.length - 1) {
+                    document.getElementById('btn-proximo').style.display = 'inline-block';
+                }
+            } else {
+                // Wrong!
+                msg.style.color = '#c62828';
+                msg.style.borderColor = '#ef9a9a';
+                msg.style.backgroundColor = '#ffebee';
+                msg.innerHTML = `<i class="fas fa-times-circle"></i> Incorreto! A Matemática garante que este mapa TEM solução. Recomece o nível e tente descobrir o caminho.`;
+                setTimeout(() => {
+                    gameFinished = false;
+                    document.getElementById('btn-impossivel').style.display = 'inline-block';
+                    document.getElementById('btn-desfazer').disabled = (path.length === 0);
+                    msg.style.display = 'none';
+                }, 4000);
+            }
+        }
+
+        function proximoNivel() {
+            if (currentLevel < levels.length - 1) {
+                loadLevel(currentLevel + 1);
+            }
+        }
+
+        // Iniciar
+        window.onload = () => loadLevel(0);
+    </script>
+</body>
+</html>

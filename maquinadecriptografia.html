@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máquina de Criptografia | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .status-panel { 
+            background: #fff3e0; 
+            padding: 15px; 
+            border-radius: 10px; 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: #e65100; 
+            margin-bottom: 20px; 
+            border-left: 5px solid #ff9800; 
+            transition: 0.3s;
+        }
+
+        .crypto-machine {
+            background: #eceff1;
+            border: 4px solid #b0bec5;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .display-panel {
+            background: #263238;
+            color: #00e676;
+            font-family: var(--fonte-secundaria);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 2rem;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            text-transform: uppercase;
+            word-wrap: break-word;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .display-panel.intercepted {
+            color: #ff5252;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+        }
+
+        .label-digital {
+            font-size: 0.85rem;
+            color: #78909c;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            text-align: left;
+        }
+
+        .controls-area {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin: 20px 0;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-ui {
+            flex: 1;
+            height: 12px;
+            border-radius: 10px;
+            background: #cfd8dc;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .slider-ui::-webkit-slider-thumb {
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: 0.1s;
+        }
+        
+        .slider-ui::-webkit-slider-thumb:active { transform: scale(1.1); }
+
+        .key-value {
+            font-family: var(--fonte-secundaria);
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            background: #e0f2f1;
+            padding: 5px 15px;
+            border-radius: 8px;
+            min-width: 40px;
+        }
+
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 15px 30px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; margin: 10px 0; font-weight: 700; font-size: 1.1rem; width: 100%;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+        
+        .btn-gold { background: #fbc02d; color: #333; }
+        .btn-gold:hover { background: #f9a825; box-shadow: 0 4px 10px rgba(251,192,45,0.3); }
+
+        /* Explicação Didática */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; color: var(--text-primary); }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; color: var(--text-primary); }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        .destaque-math { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; text-align: center; margin: 15px 0; color: #1565c0; font-size: 1.1rem; font-family: var(--fonte-secundaria);}
+
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .display-panel { font-size: 1.5rem; letter-spacing: 3px; }
+            .crypto-machine { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-user-secret"></i> Máquina de Criptografia Mágica</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Você interceptou um arquivo criptografado da Agência de Inteligência! Sabemos que eles utilizam uma <b>Cifra de Substituição (Cifra de César)</b>, um método clássico que "gira" o alfabeto um certo número de casas.
+                <br><br>
+                <b>Sua Missão:</b> Use a Máquina de Criptografia abaixo para testar diferentes Chaves de Deslocamento (de 0 a 25) até encontrar uma palavra que faça sentido. Quando encontrar a palavra certa, clique em Desbloquear!
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div id="status-info" class="status-panel">
+                <i class="fas fa-exclamation-triangle"></i> Mensagem interceptada! Encontre a chave correta.
+            </div>
+
+            <div class="crypto-machine">
+                <span class="label-digital">Texto Criptografado (Origem)</span>
+                <div class="display-panel intercepted" id="msg-interceptada">
+                    ---
+                </div>
+
+                <div class="controls-area">
+                    <span class="label-digital"><i class="fas fa-key"></i> Chave de Deslocamento (K)</span>
+                    <div class="slider-container">
+                        <input type="range" class="slider-ui" id="chave-slider" min="0" max="25" value="0" oninput="atualizarTraducao()">
+                        <div class="key-value" id="valor-chave">0</div>
+                    </div>
+                </div>
+
+                <span class="label-digital">Decodificação em Tempo Real</span>
+                <div class="display-panel" id="msg-traduzida">
+                    ---
+                </div>
+
+                <button class="game-btn" id="btn-desbloquear" onclick="desbloquear()">
+                    <i class="fas fa-unlock-keyhole"></i> Tentar Desbloquear
+                </button>
+                <button class="game-btn btn-gold" id="btn-novo" onclick="iniciarJogo()" style="display:none;">
+                    <i class="fas fa-satellite-dish"></i> Interceptar Nova Mensagem
+                </button>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-calculator"></i> Aritmética Modular e Funções Bijetoras</h3>
+                <p>O que a sua máquina virtual acabou de fazer é conhecido na Matemática como <b>Aritmética Modular</b> (ou "Matemática do Relógio"). O nosso alfabeto tem 26 letras. Se você estiver na letra 'Z' e precisar pular 3 casas para frente, você não sai do alfabeto; você dá a volta e cai na letra 'C'.</p>
+                
+                <p>Para o computador, cada letra é um número (A = 0, B = 1 ... Z = 25). A função matemática para criptografar é:</p>
+
+                <div class="destaque-math">
+                    <i>C = (P + K) mod 26</i>
+                </div>
+
+                <p>Onde <b>C</b> é a letra Cifrada, <b>P</b> é a letra da Palavra original, <b>K</b> é a Chave de Deslocamento (Key) e <b>mod 26</b> garante que o resultado dê a volta no alfabeto.</p>
+
+                <h4>O Segredo da Segurança (Função Bijetora)</h4>
+                <p>Na Álgebra, dizemos que a Cifra de César é baseada em uma <b>Função Bijetora</b>. Isso significa duas coisas fundamentais para a Ciência da Computação e Segurança da Informação:</p>
+                <ul>
+                    <li><b>Injetora:</b> Duas letras diferentes nunca serão transformadas na mesma letra cifrada (se A virar D, nenhuma outra letra vai virar D).</li>
+                    <li><b>Sobreyetora:</b> Todas as letras do alfabeto são atingidas por alguma transformação.</li>
+                </ul>
+                <p>Por ser uma função bijetora, ela admite uma <b>função inversa</b> perfeita. Sem isso, decodificar a mensagem seria impossível, pois a informação seria corrompida no momento da criptografia!</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Álgebra e Segurança da Informação
+    </footer>
+
+    <script>
+        const palavras = [
+            "MATEMATICA", "LOGISTICA", "ENGENHARIA", "ADMINISTRACAO", 
+            "ALGEBRA", "OTIMIZACAO", "ALGORITMO", "SEGURANCA", 
+            "PRODUCAO", "TECNOLOGIA", "UNIVERSIDADE", "CALCULO"
+        ];
+        
+        let palavraSecreta = "";
+        let mensagemCifrada = "";
+        let chaveCorreta = 0;
+
+        function iniciarJogo() {
+            palavraSecreta = palavras[Math.floor(Math.random() * palavras.length)];
+            // Escolhe uma chave aleatória de 1 a 25
+            chaveCorreta = Math.floor(Math.random() * 25) + 1; 
+            
+            // Cifra a palavra
+            mensagemCifrada = aplicarCifra(palavraSecreta, chaveCorreta);
+            
+            document.getElementById('msg-interceptada').innerText = mensagemCifrada;
+            document.getElementById('chave-slider').value = 0;
+            
+            const painel = document.getElementById('status-info');
+            painel.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Mensagem interceptada! Encontre a chave correta.';
+            painel.style.backgroundColor = "#fff3e0";
+            painel.style.color = "#e65100";
+            painel.style.borderColor = "#ff9800";
+            
+            document.getElementById('btn-desbloquear').style.display = "block";
+            document.getElementById('btn-novo').style.display = "none";
+
+            atualizarTraducao();
+        }
+
+        // Função que desloca o texto 'n' casas para frente
+        function aplicarCifra(texto, chave) {
+            let resultado = "";
+            for(let i = 0; i < texto.length; i++) {
+                let codigoASCII = texto.charCodeAt(i);
+                // Verifica se é letra maiúscula (A=65 até Z=90)
+                if (codigoASCII >= 65 && codigoASCII <= 90) {
+                    // Normaliza para 0-25, aplica a chave, faz o mod 26 e volta para ASCII
+                    let novaLetra = ((codigoASCII - 65 + chave) % 26) + 65;
+                    resultado += String.fromCharCode(novaLetra);
+                } else {
+                    resultado += texto[i];
+                }
+            }
+            return resultado;
+        }
+
+        function atualizarTraducao() {
+            let chaveAtual = parseInt(document.getElementById('chave-slider').value);
+            document.getElementById('valor-chave').innerText = chaveAtual;
+            
+            // Para "voltar" o alfabeto, usamos a operação inversa da Aritmética Modular (26 - chave)
+            let decodificacao = aplicarCifra(mensagemCifrada, 26 - chaveAtual);
+            document.getElementById('msg-traduzida').innerText = decodificacao;
+        }
+
+        function desbloquear() {
+            let chaveAtual = parseInt(document.getElementById('chave-slider').value);
+            
+            if (chaveAtual === chaveCorreta) {
+                const painel = document.getElementById('status-info');
+                painel.innerHTML = '<i class="fas fa-check-circle"></i> Acesso Concedido! Mensagem decodificada com sucesso.';
+                painel.style.backgroundColor = "#e8f5e9";
+                painel.style.color = "#2e7d32";
+                painel.style.borderColor = "#4caf50";
+                
+                document.getElementById('btn-desbloquear').style.display = "none";
+                document.getElementById('btn-novo').style.display = "block";
+            } else {
+                alert("ACESSO NEGADO! Essa tradução não faz sentido nenhum. Continue ajustando a engrenagem.");
+            }
+        }
+
+        // Iniciar ao carregar a página
+        window.onload = iniciarJogo;
+    </script>
+</body>
+</html>

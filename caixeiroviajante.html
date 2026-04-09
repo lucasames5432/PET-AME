@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio do Caixeiro Viajante | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .status-panel { 
+            display: flex; 
+            justify-content: space-around;
+            background: #e8f5e9; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--accent-primary); 
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+        .stat-box span { font-size: 0.8rem; color: #555; text-transform: uppercase; font-weight: 600; display: block; }
+        .stat-box strong { font-size: 1.5rem; font-family: var(--fonte-secundaria); color: var(--text-secondary); }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background-color: #fdfdfd;
+            cursor: crosshair;
+        }
+
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 12px 25px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; margin: 8px; font-weight: 600; font-size: 1rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+        .game-btn:disabled { background: #cfd8dc; cursor: not-allowed; transform: none; box-shadow: none; color: #999; }
+        
+        .btn-red { background: #d32f2f; }
+        .btn-red:hover { background: #c62828; box-shadow: 0 4px 10px rgba(211,47,47,0.3); }
+        
+        .btn-gold { background: #fbc02d; color: #333; }
+        .btn-gold:hover { background: #f9a825; box-shadow: 0 4px 10px rgba(251,192,45,0.3); }
+
+        /* Explicação Didática */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; color: var(--text-primary); }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; color: var(--text-primary); }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        .destaque-math { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; text-align: center; margin: 15px 0; color: #1565c0; font-weight: 600;}
+
+        #mensagem-vitoria {
+            display: none;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #a5d6a7;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .status-panel { flex-direction: column; }
+            .game-btn { width: 100%; margin: 8px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-route"></i> O Desafio do Caixeiro Viajante</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Você foi contratado para otimizar a logística de uma cooperativa agroindustrial. Sua missão é criar a rota de coleta dos caminhões.
+                <br><br>
+                <b>Regras:</b>
+                <ul style="margin-left: 20px;">
+                    <li>Comece clicando em qualquer ponto no mapa.</li>
+                    <li>Clique nos outros pontos para conectá-los. Você deve visitar <b>todos</b> os pontos exatamente uma vez.</li>
+                    <li>Para finalizar a rota, clique novamente no ponto inicial.</li>
+                    <li>O objetivo é criar o caminho com a <b>menor distância total possível</b>!</li>
+                </ul>
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div class="status-panel">
+                <div class="stat-box">
+                    <span>Sua Distância</span>
+                    <strong id="dist-atual">0 km</strong>
+                </div>
+                <div class="stat-box" id="box-melhor" style="display:none;">
+                    <span>Rota Ótima (IA)</span>
+                    <strong id="dist-otima" style="color: #d32f2f;">-- km</strong>
+                </div>
+                <div class="stat-box">
+                    <span>Progresso</span>
+                    <strong id="progresso-nos">0/7</strong>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="mapCanvas" width="700" height="450"></canvas>
+            </div>
+
+            <div id="mensagem-vitoria"></div>
+
+            <div style="margin-top: 20px;">
+                <button class="game-btn btn-red" onclick="desfazerPasso()" id="btn-desfazer" disabled>
+                    <i class="fas fa-undo"></i> Desfazer Passo
+                </button>
+                <button class="game-btn" onclick="limparRota()">
+                    <i class="fas fa-eraser"></i> Limpar Rota
+                </button>
+                <button class="game-btn btn-gold" onclick="mostrarRotaOtima()" id="btn-otima" disabled>
+                    <i class="fas fa-robot"></i> Ver Rota da IA
+                </button>
+                <button class="game-btn" onclick="gerarNovoMapa()" style="background: #546e7a;">
+                    <i class="fas fa-map-marked-alt"></i> Novo Mapa
+                </button>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-network-wired"></i> A Matemática por trás da Logística</h3>
+                <p>O que você acabou de tentar resolver é conhecido na Matemática e na Pesquisa Operacional como o <b>Problema do Caixeiro Viajante (TSP)</b>. Trata-se de um problema clássico da <b>Teoria dos Grafos</b>.</p>
+                
+                <ul>
+                    <li><b>Nós (Vértices):</b> Representam as fazendas, silos ou indústrias no mapa.</li>
+                    <li><b>Arestas (Arcos):</b> Representam as estradas ou rotas entre eles.</li>
+                    <li><b>Pesos:</b> É o custo (neste caso, a distância em quilômetros) de ir de um ponto a outro.</li>
+                </ul>
+
+                <p>O objetivo é encontrar o <b>Ciclo Hamiltoniano de Menor Custo</b> (um caminho que visita todos os vértices uma única vez e retorna ao início custando o mínimo possível).</p>
+
+                <div class="destaque-math">
+                    <i class="fas fa-exclamation-triangle"></i> Por que é tão difícil para o computador? (Explosão Fatorial)
+                </div>
+
+                <p>Para um mapa com apenas 7 pontos (como o deste jogo), existem <b>360 rotas diferentes</b> para verificar. O computador calcula isso em milissegundos. Mas veja o que acontece se aumentarmos o número de cidades na rota de entrega:</p>
+                
+                <ul>
+                    <li>10 Cidades: 181.440 rotas possíveis.</li>
+                    <li>15 Cidades: 43 bilhões de rotas.</li>
+                    <li>20 Cidades: 60 quatrilhões de rotas!</li>
+                </ul>
+
+                <p>Como o número de possibilidades cresce através de fatoriais <b>(n-1)! / 2</b>, este é classificado como um problema <b>NP-Difícil</b>. Não existe, até hoje, uma fórmula matemática que resolva esse problema de forma rápida para mapas muito grandes. É por isso que engenheiros de produção e analistas de logística usam algoritmos de aproximação (heurísticas) para planejar rotas de caminhões de safra e frotas de entrega, economizando milhões em combustível e tempo!</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Pesquisa Operacional e Logística
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('mapCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const NUM_CIDADES = 7;
+        let pontos = [];
+        let rotaUsuario = []; // Índices dos pontos
+        let rotaOtima = [];
+        let distOtima = 0;
+        let jogoFinalizado = false;
+
+        const labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+
+        // Ajuste para lidar com cliques no canvas redimensionado pelo CSS
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: (evt.clientX - rect.left) * scaleX,
+                y: (evt.clientY - rect.top) * scaleY
+            };
+        }
+
+        function gerarNovoMapa() {
+            pontos = [];
+            rotaUsuario = [];
+            rotaOtima = [];
+            distOtima = 0;
+            jogoFinalizado = false;
+            
+            document.getElementById('box-melhor').style.display = 'none';
+            document.getElementById('btn-otima').disabled = true;
+            document.getElementById('mensagem-vitoria').style.display = 'none';
+
+            // Gera pontos aleatórios mantendo uma margem
+            const padding = 50;
+            for (let i = 0; i < NUM_CIDADES; i++) {
+                let x, y, valido;
+                do {
+                    valido = true;
+                    x = Math.floor(Math.random() * (canvas.width - padding * 2)) + padding;
+                    y = Math.floor(Math.random() * (canvas.height - padding * 2)) + padding;
+                    
+                    // Garante que não fiquem muito perto uns dos outros
+                    for (let p of pontos) {
+                        if (calcularDistancia({x, y}, p) < 60) {
+                            valido = false;
+                            break;
+                        }
+                    }
+                } while (!valido);
+                
+                pontos.push({ x, y, label: labels[i] });
+            }
+
+            // O computador já calcula a rota ótima em background (Força Bruta)
+            calcularRotaOtima();
+            atualizarPainel();
+            desenhar();
+        }
+
+        function calcularDistancia(p1, p2) {
+            return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+        }
+
+        function calcularDistanciaRota(rotaIndices) {
+            if (rotaIndices.length < 2) return 0;
+            let dist = 0;
+            for (let i = 0; i < rotaIndices.length - 1; i++) {
+                dist += calcularDistancia(pontos[rotaIndices[i]], pontos[rotaIndices[i+1]]);
+            }
+            return dist;
+        }
+
+        function desenhar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Desenha rota ótima (se o jogo acabou e foi solicitada)
+            if (rotaOtima.length > 0 && jogoFinalizado && document.getElementById('box-melhor').style.display === 'block') {
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(211, 47, 47, 0.4)';
+                ctx.lineWidth = 6;
+                ctx.setLineDash([10, 10]);
+                for (let i = 0; i < rotaOtima.length; i++) {
+                    const p = pontos[rotaOtima[i]];
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Desenha rota do usuário
+            if (rotaUsuario.length > 0) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#009688';
+                ctx.lineWidth = 4;
+                for (let i = 0; i < rotaUsuario.length; i++) {
+                    const p = pontos[rotaUsuario[i]];
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                }
+                ctx.stroke();
+            }
+
+            // Desenha os pontos
+            for (let i = 0; i < pontos.length; i++) {
+                const p = pontos[i];
+                const isStart = (rotaUsuario.length > 0 && rotaUsuario[0] === i);
+                const isCurrent = (rotaUsuario.length > 0 && rotaUsuario[rotaUsuario.length-1] === i);
+                const isVisited = rotaUsuario.includes(i);
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 16, 0, Math.PI * 2);
+                
+                if (isCurrent && !jogoFinalizado) {
+                    ctx.fillStyle = '#ff9800'; // Laranja para o atual
+                } else if (isStart) {
+                    ctx.fillStyle = '#1565c0'; // Azul para o início
+                } else if (isVisited) {
+                    ctx.fillStyle = '#009688'; // Verde para visitados
+                } else {
+                    ctx.fillStyle = '#cfd8dc'; // Cinza para não visitados
+                }
+                
+                ctx.fill();
+                ctx.strokeStyle = '#263238';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Letras
+                ctx.fillStyle = (isVisited || isStart) ? '#fff' : '#333';
+                ctx.font = 'bold 16px Roboto Mono';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(p.label, p.x, p.y);
+            }
+        }
+
+        canvas.addEventListener('click', (evt) => {
+            if (jogoFinalizado) return;
+
+            const pos = getMousePos(evt);
+            
+            // Verifica se clicou em algum ponto
+            for (let i = 0; i < pontos.length; i++) {
+                const dist = calcularDistancia(pos, pontos[i]);
+                if (dist <= 25) { // Raio de clique
+                    lidarComCliquePonto(i);
+                    break;
+                }
+            }
+        });
+
+        function lidarComCliquePonto(indice) {
+            const indexNaRota = rotaUsuario.indexOf(indice);
+
+            // Primeiro clique de todos
+            if (rotaUsuario.length === 0) {
+                rotaUsuario.push(indice);
+            } 
+            // Se clicou no último adicionado, ignora
+            else if (rotaUsuario[rotaUsuario.length - 1] === indice) {
+                return;
+            }
+            // Se clicou no ponto inicial
+            else if (rotaUsuario[0] === indice) {
+                // Só pode fechar se visitou todos
+                if (rotaUsuario.length === NUM_CIDADES) {
+                    rotaUsuario.push(indice); // Fecha o ciclo
+                    finalizarJogo();
+                } else {
+                    alert("Você precisa visitar todas as fazendas antes de voltar para a base!");
+                }
+            }
+            // Se clicou em um ponto que já foi visitado (e não é o inicial)
+            else if (indexNaRota !== -1) {
+                alert("Você já visitou esta fazenda! O caminhão não pode repetir rotas.");
+            }
+            // Se clicou num ponto novo
+            else {
+                rotaUsuario.push(indice);
+            }
+
+            atualizarPainel();
+            desenhar();
+        }
+
+        function desfazerPasso() {
+            if (rotaUsuario.length > 0 && !jogoFinalizado) {
+                rotaUsuario.pop();
+                atualizarPainel();
+                desenhar();
+            }
+        }
+
+        function limparRota() {
+            rotaUsuario = [];
+            jogoFinalizado = false;
+            document.getElementById('mensagem-vitoria').style.display = 'none';
+            document.getElementById('btn-otima').disabled = true;
+            document.getElementById('box-melhor').style.display = 'none';
+            atualizarPainel();
+            desenhar();
+        }
+
+        function atualizarPainel() {
+            // Conversão simbólica: 1 px = 1.5 km
+            const distAtual = Math.round(calcularDistanciaRota(rotaUsuario) * 1.5);
+            document.getElementById('dist-atual').innerText = distAtual + " km";
+            
+            // Progresso único (desconsidera a volta ao início na contagem de Nós)
+            const visitados = new Set(rotaUsuario).size;
+            document.getElementById('progresso-nos').innerText = `${visitados}/${NUM_CIDADES}`;
+
+            document.getElementById('btn-desfazer').disabled = (rotaUsuario.length === 0 || jogoFinalizado);
+        }
+
+        function finalizarJogo() {
+            jogoFinalizado = true;
+            document.getElementById('btn-otima').disabled = false;
+            
+            const distUsuario = Math.round(calcularDistanciaRota(rotaUsuario) * 1.5);
+            const distIA = Math.round(distOtima * 1.5);
+
+            const msgDiv = document.getElementById('mensagem-vitoria');
+            msgDiv.style.display = 'block';
+
+            if (distUsuario <= distIA) {
+                msgDiv.innerHTML = `<i class="fas fa-trophy"></i> Brilhante! Você encontrou a rota matematicamente perfeita de ${distUsuario} km!`;
+                msgDiv.style.color = '#1565c0';
+                msgDiv.style.borderColor = '#90caf9';
+            } else {
+                msgDiv.innerHTML = `Boa tentativa! Sua rota deu ${distUsuario} km. Será que a Inteligência Artificial faria melhor? Clique no botão "Ver Rota da IA" para descobrir.`;
+                msgDiv.style.color = '#e65100';
+                msgDiv.style.borderColor = '#ffcc80';
+            }
+        }
+
+        function mostrarRotaOtima() {
+            document.getElementById('box-melhor').style.display = 'block';
+            document.getElementById('dist-otima').innerText = Math.round(distOtima * 1.5) + " km";
+            desenhar();
+        }
+
+        // --- Algoritmo de Força Bruta para encontrar a rota ótima ---
+        function permutator(inputArr) {
+            let result = [];
+            function permute(arr, m = []) {
+                if (arr.length === 0) {
+                    result.push(m);
+                } else {
+                    for (let i = 0; i < arr.length; i++) {
+                        let curr = arr.slice();
+                        let next = curr.splice(i, 1);
+                        permute(curr.slice(), m.concat(next));
+                    }
+                }
+            }
+            permute(inputArr);
+            return result;
+        }
+
+        function calcularRotaOtima() {
+            // Arrays de índices [1, 2, 3, 4, 5, 6] (O ponto 0 é sempre o início para evitar permutações redundantes de ciclos)
+            let indices = [];
+            for (let i = 1; i < NUM_CIDADES; i++) indices.push(i);
+            
+            let permutacoes = permutator(indices);
+            
+            let minCusto = Infinity;
+            let melhorRota = [];
+
+            permutacoes.forEach(perm => {
+                // Monta o ciclo: 0 -> perm -> 0
+                let rotaTeste = [0, ...perm, 0];
+                let custo = calcularDistanciaRota(rotaTeste);
+                
+                if (custo < minCusto) {
+                    minCusto = custo;
+                    melhorRota = rotaTeste;
+                }
+            });
+
+            rotaOtima = melhorRota;
+            distOtima = minCusto;
+        }
+
+        // Inicia o jogo
+        window.onload = gerarNovoMapa;
+    </script>
+</body>
+</html>
