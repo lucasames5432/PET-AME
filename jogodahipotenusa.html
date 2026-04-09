@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         :root {
@@ -80,6 +81,13 @@
         .game-btn:hover { background: var(--accent-secondary); transform: translateY(-2px); }
         .pergunta-box { font-size: 1.1rem; margin: 20px 0; color: var(--text-primary); font-weight: 600; }
         
+        /* Estilo para a explicação (Padrão dos jogos) */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; color: var(--text-primary); }
+        .explicacao-grafico ul { margin-left: 20px; color: var(--text-primary); }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.6; }
+
         /* Responsividade para celular */
         @media (max-width: 768px) {
             .navbar-container { flex-direction: column; gap: 10px; }
@@ -89,6 +97,7 @@
             #output_grafico { min-height: 280px; }
             .pergunta-box { font-size: 1rem; }
             .game-btn { padding: 10px 20px; font-size: 0.9rem; }
+            .explicacao-grafico { padding: 18px; }
         }
 
         @media (max-width: 480px) {
@@ -113,25 +122,48 @@
         </div>
     </nav>
 
-    <!-- Espaçador invisível para empurrar o conteúdo para baixo -->
     <div class="spacer"></div>
 
     <main>
         <section class="section">
             <div class="game-container">
-                <h2 style="font-family: var(--fonte-secundaria); color: var(--text-primary);">Relações Métricas</h2>
+                <h2 style="font-family: var(--fonte-secundaria); color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                    <i class="fas fa-ruler-triangle"></i> Laboratório de Relações Métricas
+                </h2>
+                
+                <p style="text-align: justify; line-height: 1.6; color: var(--text-primary); margin-bottom: 25px; padding: 0 10px;">
+                    As <b>relações métricas no triângulo retângulo</b> são equações matemáticas que conectam as medidas dos seus lados, da altura e das projeções dos catetos sobre a hipotenusa. Neste experimento, focaremos na relação da altura. Tente calcular a altura (\(h\)) utilizando as projeções dadas! Se precisar de ajuda, consulte o quadro de fórmulas abaixo do exercício.
+                </p>
+
                 <div id="pergunta" class="pergunta-box">Aguardando o Python...</div>
                 
-                <button id="btn-gerar" class="game-btn" py-click="gerar_novo_exercicio">Gerar Novo Exercício</button>
-                <button id="btn-resposta" class="game-btn" style="background: #90a4ae;" py-click="mostrar_resposta">Ver Resposta</button>
+                <button id="btn-gerar" class="game-btn" py-click="gerar_novo_exercicio"><i class="fas fa-sync-alt"></i> Gerar Novo Exercício</button>
+                <button id="btn-resposta" class="game-btn" style="background: #90a4ae;" py-click="mostrar_resposta"><i class="fas fa-eye"></i> Ver Resposta</button>
 
                 <div id="output_grafico">
                     <div id="loader"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Montando laboratório...</p></div>
                 </div>
                 <div id="explicacao" style="margin-top: 15px; font-weight: 600; color: #38703b;"></div>
+
+                <div class="explicacao-grafico">
+                    <h3><i class="fas fa-book-open"></i> Guia Completo de Fórmulas</h3>
+                    <p>Em um triângulo retângulo onde <b>a</b> é a hipotenusa, <b>b</b> e <b>c</b> são os catetos, <b>h</b> é a altura relativa à hipotenusa, e <b>m</b> e <b>n</b> são as projeções dos catetos, aplicam-se as seguintes relações principais:</p>
+                    <ul>
+                        <li><strong>Altura e Projeções:</strong> \( h^2 = m \cdot n \) <br><span style="font-size: 0.9em; color: #555;">O quadrado da altura é igual ao produto das projeções dos catetos.</span></li>
+                        <li><strong>Catetos e Projeções:</strong> \( b^2 = a \cdot m \) e \( c^2 = a \cdot n \) <br><span style="font-size: 0.9em; color: #555;">O quadrado de um cateto é igual ao produto da hipotenusa pela sua projeção correspondente.</span></li>
+                        <li><strong>Produto dos Lados:</strong> \( a \cdot h = b \cdot c \) <br><span style="font-size: 0.9em; color: #555;">O produto da hipotenusa pela altura é igual ao produto dos catetos.</span></li>
+                        <li><strong>Soma das Projeções:</strong> \( a = m + n \) <br><span style="font-size: 0.9em; color: #555;">A hipotenusa é a soma exata das duas projeções.</span></li>
+                        <li><strong>Teorema de Pitágoras:</strong> \( a^2 = b^2 + c^2 \) <br><span style="font-size: 0.9em; color: #555;">O quadrado da hipotenusa é igual à soma dos quadrados dos catetos.</span></li>
+                    </ul>
+                </div>
+
             </div>
         </section>
     </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 20px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Matemática e Programação
+    </footer>
 
     <py-config>
         packages = ["matplotlib", "numpy"]
