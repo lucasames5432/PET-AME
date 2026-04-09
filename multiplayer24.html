@@ -53,16 +53,21 @@
         <div class="container" id="tela-jogo" style="display:none;">
             <div id="status-info">Aguardando jogadores...</div>
             <div class="mesa" id="mesa-cartas"></div>
+            
             <div id="controles">
                 <button class="btn btn-red" id="btn-bati" onclick="bater()">BATI!</button>
-                <button class="btn btn-gray" id="btn-desisto" onclick="desistir()">DESISTO</button>
             </div>
+
+            <div id="area-escolha-duvida" style="display:none; margin-top:15px;">
+            </div>
+
             <div id="area-solucao" style="display:none; margin-top:15px;">
                 <p><strong>Sua Expressão:</strong></p>
                 <input type="text" id="input-conta" placeholder="Ex: (10+2)*(8/4)">
                 <br>
-                <button class="btn" id="btn-validar" onclick="verificarConta()">Validar</button>
+                <button class="btn" id="btn-validar" onclick="verificarConta()">Validar Conta</button>
             </div>
+
             <div id="revelacao-solucoes">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <strong style="color:#1565c0;">💡 Soluções do Banco:</strong>
@@ -92,7 +97,8 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let meuNome = "", salaID = "", cartasAtuais = [], rodadaFinalizada = false, jaRespondeu = false;
+        let meuNome = "", salaID = "", cartasAtuais = [], dataAtual = null;
+        let timerInterval = null;
 
         async function entrarNaSala() {
             meuNome = document.getElementById('nome-usuario').value.trim();
@@ -109,7 +115,7 @@
             document.getElementById('tela-jogo').style.display = 'block';
             document.getElementById('barra-ranking').style.display = 'flex';
 
-            db.ref(`salas/${salaID}/jogadores/${meuNome}`).set({ pontos: 0, pronto: false });
+            db.ref(`salas/${salaID}/jogadores/${meuNome}`).set({ pontos: 0, bateu: false });
 
             db.ref('salas/' + salaID).on('value', (snapshot) => {
                 const data = snapshot.val();
@@ -119,78 +125,108 @@
         }
 
         function gerenciarFluxoJogo(data) {
+            dataAtual = data;
             const lista = document.getElementById('placar-lista');
             lista.innerHTML = "";
-            const jogadoresEntries = Object.entries(data.jogadores || {});
+            const jogadores = data.jogadores || {};
+            const jogadoresEntries = Object.entries(jogadores);
             const jogadoresOrdenados = jogadoresEntries.sort((a,b) => b[1].pontos - a[1].pontos);
-            let prontos = 0;
+            
+            const totalPlayers = jogadoresEntries.length;
+            const bateuCount = Object.values(jogadores).filter(j => j.bateu).length;
+            const euBati = jogadores[meuNome]?.bateu;
 
             jogadoresOrdenados.forEach(([nome, info]) => {
-                if(info.pronto) prontos++;
-                lista.innerHTML += `<li class="jogador-item"><span>${nome} <span class="status-badge ${info.pronto ? 'status-pronto' : ''}">${info.pronto ? 'OK' : '...'}</span></span><span class="pontos">${info.pontos} pts</span></li>`;
+                lista.innerHTML += `<li class="jogador-item"><span>${nome} <span class="status-badge ${info.bateu ? 'status-pronto' : ''}">${info.bateu ? 'Bateu' : '...'}</span></span><span class="pontos">${info.pontos} pts</span></li>`;
             });
 
-            if(!data.cartas && meuNome === jogadoresOrdenados[0][0]) setTimeout(proximaRodada, 1000);
-
-            if(data.cartas && JSON.stringify(cartasAtuais) !== JSON.stringify(data.cartas)) {
+            // Gerenciamento de Renderização de Cartas
+            if (data.cartas && JSON.stringify(cartasAtuais) !== JSON.stringify(data.cartas)) {
                 cartasAtuais = data.cartas;
-                rodadaFinalizada = false;
-                jaRespondeu = false;
                 renderizarCartas(data.cartas);
-                document.getElementById('revelacao-solucoes').style.display = 'none';
-                document.getElementById('area-solucao').style.display = 'none';
-                document.getElementById('btn-bati').disabled = false;
-                document.getElementById('btn-desisto').disabled = false;
-                document.getElementById('btn-validar').disabled = false;
                 document.getElementById('input-conta').value = "";
-                document.getElementById('vencedor-info').innerHTML = "";
             }
 
-            if(data.status === "bloqueado") {
-                document.getElementById('status-info').innerText = `${data.quemBateu} resolvendo...`;
-                document.getElementById('btn-bati').disabled = true;
-                if(data.quemBateu === meuNome && !jaRespondeu) {
-                    document.getElementById('area-solucao').style.display = 'block';
-                }
-            } else if (!rodadaFinalizada) {
-                document.getElementById('status-info').innerText = "Valendo 24!";
-            }
-
-            if((data.status === "terminada" || (prontos >= jogadoresEntries.length && jogadoresEntries.length > 0)) && !rodadaFinalizada) {
-                finalizarRodada(data);
-            }
-        }
-
-        function finalizarRodada(data) {
-            rodadaFinalizada = true;
-            document.getElementById('status-info').innerText = "🏁 Rodada Finalizada!";
-            document.getElementById('btn-bati').disabled = true;
-            document.getElementById('btn-desisto').disabled = true;
+            // Oculta todas as áreas dinâmicas primeiro
+            document.getElementById('controles').style.display = 'none';
+            document.getElementById('area-escolha-duvida').style.display = 'none';
             document.getElementById('area-solucao').style.display = 'none';
-            
-            mostrarPossibilidades(data.cartas);
+            document.getElementById('revelacao-solucoes').style.display = 'none';
+            if (data.fase !== 'respondendo_duvida') clearInterval(timerInterval);
 
-            if(data.ultimaSolucao) {
-                document.getElementById('vencedor-info').innerHTML = 
-                    `<i class="fas fa-trophy"></i> Vencedor: ${data.quemGanhou}<br>` +
-                    `<i class="fas fa-calculator"></i> Solução: ${data.ultimaSolucao} = 24`;
-            } else {
-                document.getElementById('vencedor-info').innerHTML = "Ninguém acertou esta rodada.";
-            }
-
-            let segundos = 10;
-            const timerEl = document.getElementById('timer-proxima');
-            const intervalo = setInterval(() => {
-                timerEl.innerText = `Próxima em ${segundos}s`;
-                segundos--;
-                if(segundos < 0) {
-                    clearInterval(intervalo);
-                    db.ref(`salas/${salaID}/jogadores`).once('value', snap => {
-                        const jogs = Object.entries(snap.val()).sort((a,b)=>b[1].pontos - a[1].pontos);
-                        if(meuNome === jogs[0][0]) proximaRodada();
-                    });
+            // FLUXO DO JOGO - FASE: INICIO
+            if (!data.fase || data.fase === 'inicio') {
+                document.getElementById('status-info').innerText = "Aguardando iniciar...";
+                if (meuNome === jogadoresOrdenados[0][0] && totalPlayers > 1) {
+                    setTimeout(proximaRodada, 2000);
+                } else if (totalPlayers <= 1) {
+                    document.getElementById('status-info').innerText = "Aguardando mais jogadores...";
                 }
-            }, 1000);
+            }
+            // FASE: RESOLVENDO (Todos tentam bater)
+            else if (data.fase === 'resolvendo') {
+                if (!euBati) {
+                    document.getElementById('status-info').innerText = "Valendo 24!";
+                    document.getElementById('controles').style.display = 'block';
+                    document.getElementById('btn-bati').disabled = false;
+                } else {
+                    document.getElementById('status-info').innerText = "Você bateu! Aguardando os outros...";
+                }
+
+                // Verifica se sobrou apenas 1 jogador que não bateu
+                if (totalPlayers > 1 && bateuCount === totalPlayers - 1) {
+                    const ultimo = Object.keys(jogadores).find(k => !jogadores[k].bateu);
+                    if (meuNome === ultimo) {
+                        db.ref(`salas/${salaID}`).update({ fase: 'escolhendo_duvida', quemDuvida: meuNome });
+                    }
+                } 
+                // Modo Treino (1 Jogador)
+                else if (totalPlayers === 1 && bateuCount === 1) {
+                    db.ref(`salas/${salaID}`).update({ fase: 'resultado', msgResultado: "Você bateu no modo treino!" });
+                }
+            }
+            // FASE: ESCOLHENDO DUVIDA (O último jogador escolhe)
+            else if (data.fase === 'escolhendo_duvida') {
+                if (meuNome === data.quemDuvida) {
+                    document.getElementById('status-info').innerText = "Você foi o último! De quem você duvida?";
+                    const divEscolha = document.getElementById('area-escolha-duvida');
+                    divEscolha.style.display = 'flex';
+                    divEscolha.innerHTML = "";
+                    Object.keys(jogadores).forEach(nome => {
+                        if (jogadores[nome].bateu) {
+                            divEscolha.innerHTML += `<button class="btn btn-red" onclick="duvidarDe('${nome}')">Duvidar de ${nome}</button>`;
+                        }
+                    });
+                } else {
+                    document.getElementById('status-info').innerText = `${data.quemDuvida} está escolhendo quem vai provar!`;
+                }
+            }
+            // FASE: RESPONDENDO DUVIDA (15 Segundos)
+            else if (data.fase === 'respondendo_duvida') {
+                if (meuNome === data.alvoDuvida) {
+                    document.getElementById('area-solucao').style.display = 'block';
+                    document.getElementById('btn-validar').disabled = false;
+                }
+                iniciarCronometro(data.tempoFim);
+            }
+            // FASE: RESULTADO E RESET
+            else if (data.fase === 'resultado') {
+                document.getElementById('status-info').innerText = "🏁 Rodada Finalizada!";
+                document.getElementById('vencedor-info').innerHTML = data.msgResultado + (data.ultimaSolucao ? `<br><br><i class="fas fa-calculator"></i> Solução aceita: ${data.ultimaSolucao}=24` : "");
+                mostrarPossibilidades(data.cartas);
+                document.getElementById('revelacao-solucoes').style.display = 'block';
+
+                let segundos = 8;
+                const timerEl = document.getElementById('timer-proxima');
+                const inter = setInterval(() => {
+                    timerEl.innerText = `Próxima em ${segundos}s`;
+                    segundos--;
+                    if(segundos < 0) {
+                        clearInterval(inter);
+                        if (meuNome === jogadoresOrdenados[0][0]) proximaRodada();
+                    }
+                }, 1000);
+            }
         }
 
         function proximaRodada() {
@@ -199,90 +235,99 @@
                 const data = snap.val();
                 const updates = {};
                 if(data.jogadores) {
-                    for(let n in data.jogadores) updates[`jogadores/${n}/pronto`] = false;
+                    for(let n in data.jogadores) updates[`jogadores/${n}/bateu`] = false;
                 }
                 updates['cartas'] = mao;
-                updates['status'] = "jogando";
-                updates['quemBateu'] = "";
+                updates['fase'] = "resolvendo";
+                updates['quemDuvida'] = "";
+                updates['alvoDuvida'] = "";
+                updates['msgResultado'] = "";
                 updates['ultimaSolucao'] = "";
-                updates['quemGanhou'] = "";
                 db.ref(`salas/${salaID}`).update(updates);
             });
         }
 
         function bater() { 
-            db.ref('salas/' + salaID).update({ status: "bloqueado", quemBateu: meuNome }); 
-        }
-
-        function desistir() {
-            jaRespondeu = true;
-            db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ pronto: true });
-        }
-
-       function verificarConta() {
-    const btn = document.getElementById('btn-validar');
-    let contaRaw = document.getElementById('input-conta').value;
-    btn.disabled = true;
-
-    // 1. LIMPEZA E TRADUÇÃO (Prevenção de erros de digitação)
-    let conta = contaRaw.replace(/×/g, "*")
-                        .replace(/÷/g, "/")
-                        .replace(/,/g, ".")
-                        .replace(/\s+/g, ""); // Remove espaços
-
-    try {
-        // 2. SEGURANÇA (Só permite números e operadores)
-        if (/[^0-9\+\-\*\/\(\)\.]/.test(conta)) {
-            throw "❌ Caractere inválido! Use apenas números e sinais (+ - * /)";
-        }
-
-        // 3. CONFERÊNCIA DE CARTAS (O coração do jogo)
-        const numsDigitados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
-        const mesaOrdenada = [...cartasAtuais].sort((a,b)=>a-b);
-
-        if (numsDigitados.length !== 4) {
-            throw "❌ Você precisa usar as 4 cartas da mesa!";
-        }
-
-        if (JSON.stringify(numsDigitados) !== JSON.stringify(mesaOrdenada)) {
-            throw "❌ Os números digitados não batem com as cartas da mesa!";
-        }
-
-        // 4. CÁLCULO
-        const resultado = eval(conta);
-        
-        if (Math.abs(resultado - 24) < 0.01) {
-            jaRespondeu = true;
-            db.ref(`salas/${salaID}/jogadores`).once('value', snap => {
-                const total = Object.keys(snap.val()).length;
-                
-                // Grava a vitória e o histórico
-                db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ 
-                    pronto: true, 
-                    pontos: firebase.database.ServerValue.increment(total) 
-                });
-                
-                db.ref(`salas/${salaID}`).update({ 
-                    status: "terminada", 
-                    quemBateu: "", 
-                    ultimaSolucao: contaRaw, 
-                    quemGanhou: meuNome 
-                });
+            // O jogador ganha 1 ponto imediatamente ao clicar em BATI
+            db.ref(`salas/${salaID}/jogadores/${meuNome}`).update({ 
+                bateu: true, 
+                pontos: firebase.database.ServerValue.increment(1) 
             });
-        } else {
-            alert(`❌ Quase! Sua conta deu ${resultado.toFixed(1)}. Tente chegar em 24!`);
-            btn.disabled = false;
-            // Libera a sala para outros tentarem se ele errou
-            db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
         }
 
-    } catch(e) { 
-        alert(e); 
-        btn.disabled = false;
-        // Se deu erro de sintaxe, libera a sala também
-        db.ref(`salas/${salaID}`).update({ status: "jogando", quemBateu: "" });
-    }
-}
+        function duvidarDe(alvo) {
+            db.ref(`salas/${salaID}`).update({
+                fase: 'respondendo_duvida',
+                alvoDuvida: alvo,
+                tempoFim: Date.now() + 15000 // 15 segundos
+            });
+        }
+
+        function iniciarCronometro(tempoFim) {
+            clearInterval(timerInterval);
+            const statusEl = document.getElementById('status-info');
+            const ehOAlvo = (meuNome === dataAtual.alvoDuvida);
+
+            timerInterval = setInterval(() => {
+                const rest = Math.max(0, Math.floor((tempoFim - Date.now()) / 1000));
+                statusEl.innerText = ehOAlvo ? `⏱️ PROVE SUA SOLUÇÃO! (${rest}s)` : `⏱️ ${dataAtual.alvoDuvida} provando... (${rest}s)`;
+
+                if (rest === 0) {
+                    clearInterval(timerInterval);
+                    if (ehOAlvo) document.getElementById('btn-validar').disabled = true;
+                    // Quem controla a punição do timeout é o duvidador para evitar concorrência no Firebase
+                    if (meuNome === dataAtual.quemDuvida) {
+                        falharDuvida("Tempo esgotado");
+                    }
+                }
+            }, 500);
+        }
+
+        function falharDuvida(motivo) {
+            if (dataAtual.fase !== 'respondendo_duvida') return;
+            const updates = {};
+            // Alvo perde 1 ponto (zera o ponto ganho na rodada), Duvidador ganha 2
+            updates[`jogadores/${dataAtual.alvoDuvida}/pontos`] = firebase.database.ServerValue.increment(-1);
+            updates[`jogadores/${dataAtual.quemDuvida}/pontos`] = firebase.database.ServerValue.increment(2);
+            updates[`fase`] = 'resultado';
+            updates[`msgResultado`] = `❌ ${dataAtual.alvoDuvida} falhou (${motivo}). <b>${dataAtual.quemDuvida}</b> roubou os 2 pontos!`;
+            db.ref(`salas/${salaID}`).update(updates);
+        }
+
+        function verificarConta() {
+            const btn = document.getElementById('btn-validar');
+            let contaRaw = document.getElementById('input-conta').value;
+            btn.disabled = true;
+
+            let conta = contaRaw.replace(/×/g, "*").replace(/÷/g, "/").replace(/,/g, ".").replace(/\s+/g, "");
+
+            try {
+                if (/[^0-9\+\-\*\/\(\)\.]/.test(conta)) throw "Caractere inválido";
+                
+                const numsDigitados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
+                const mesaOrdenada = [...cartasAtuais].sort((a,b)=>a-b);
+
+                if (numsDigitados.length !== 4) throw "Não usou 4 cartas";
+                if (JSON.stringify(numsDigitados) !== JSON.stringify(mesaOrdenada)) throw "Cartas incorretas";
+
+                const resultado = eval(conta);
+                
+                if (Math.abs(resultado - 24) < 0.01) {
+                    // SUCESSO: Alvo ganha +1 extra
+                    const updates = {};
+                    updates[`jogadores/${dataAtual.alvoDuvida}/pontos`] = firebase.database.ServerValue.increment(1);
+                    updates[`fase`] = 'resultado';
+                    updates[`msgResultado`] = `✅ ${dataAtual.alvoDuvida} provou a conta e ganhou +1 ponto extra!`;
+                    updates[`ultimaSolucao`] = contaRaw;
+                    db.ref(`salas/${salaID}`).update(updates);
+                } else {
+                    throw `Conta deu ${resultado.toFixed(1)}`;
+                }
+            } catch(e) { 
+                // Se errar a matemática, falha na hora
+                falharDuvida(`Calculou errado: ${e}`);
+            }
+        }
 
         function renderizarCartas(cartas) {
             const mesa = document.getElementById('mesa-cartas');
@@ -295,10 +340,9 @@
 
         function mostrarPossibilidades(mao) {
             const lista = document.getElementById('lista-possibilidades');
-            const chave = "[" + mao.join(", ") + "]";
-            const solucoes = (typeof bancoSolucoes !== 'undefined') ? (bancoSolucoes[chave] || ["Nenhuma"]) : ["Erro banco"];
+            const chave = "[" + [...mao].sort((a,b)=>a-b).join(", ") + "]";
+            const solucoes = (typeof bancoSolucoes !== 'undefined') ? (bancoSolucoes[chave] || ["Nenhuma detectada"]) : ["Carregando..."];
             lista.innerHTML = solucoes.slice(0, 3).map(s => `<li><i class="fas fa-lightbulb"></i> ${s} = 24</li>`).join("");
-            document.getElementById('revelacao-solucoes').style.display = 'block';
         }
     </script>
 </body>
