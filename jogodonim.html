@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do NIM | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        /* Área do Jogo */
+        .game-area { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .status-panel { background: #e8f5e9; padding: 15px; border-radius: 10px; font-size: 1.2rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 20px; border-left: 5px solid var(--accent-primary); }
+
+        .nim-board { display: flex; flex-direction: column; gap: 20px; align-items: center; margin: 30px 0; }
+        
+        .nim-row { display: flex; gap: 15px; align-items: center; padding: 10px 20px; background: #fafafa; border-radius: 15px; border: 2px solid #eee; min-width: 300px; justify-content: center; }
+        .row-label { font-family: var(--fonte-secundaria); font-weight: bold; color: #78909c; width: 30px; }
+
+        /* Desenho do Palito (Fósforo) */
+        .stick { 
+            width: 18px; 
+            height: 70px; 
+            background: linear-gradient(to right, #d7ccc8 0%, #bcaaa4 100%);
+            border-radius: 0 0 5px 5px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        .stick::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -2px;
+            width: 22px;
+            height: 15px;
+            background: #d32f2f;
+            border-radius: 50% 50% 40% 40%;
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stick:hover, .stick.hovered { transform: translateY(-10px); filter: brightness(1.1); }
+        .stick.selected { transform: translateY(-15px); filter: brightness(1.2); box-shadow: 0 0 10px var(--accent-primary); border: 2px solid var(--accent-primary); }
+        
+        .game-btn { 
+            background: var(--accent-primary); color: white; border: none; padding: 15px 30px; 
+            border-radius: 25px; cursor: pointer; font-family: var(--fonte-secundaria); 
+            transition: 0.3s; margin: 10px; font-weight: 600; font-size: 1.1rem;
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
+        .game-btn:disabled { background: #cfd8dc; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .btn-restart { background: #546e7a; }
+        .btn-restart:hover { background: #37474f; }
+
+        /* Explicação Didática */
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 30px; border-left: 5px solid var(--text-secondary); text-align: left; }
+        .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
+        
+        .destaque-math { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; font-family: var(--fonte-secundaria); font-size: 1.1rem; text-align: center; margin: 15px 0; color: #1565c0; }
+
+        @media (max-width: 768px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .nim-row { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-bars-staggered"></i> O Jogo do NIM</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                O <b>NIM</b> é um dos jogos mais estudados na Teoria dos Jogos Combinatórios. A regra é simples: temos 3 fileiras com palitos. Em cada turno, um jogador pode escolher <b>uma única fileira</b> e retirar <b>quantos palitos quiser</b> dela (no mínimo 1). 
+                <br><br>
+                <b>Objetivo:</b> Quem retirar o último palito do tabuleiro ganha o jogo! Você consegue vencer a máquina?
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div id="status-display" class="status-panel">
+                Sua vez! Clique nos palitos que deseja remover.
+            </div>
+
+            <div class="nim-board" id="board">
+                </div>
+
+            <div>
+                <button id="btn-confirmar" class="game-btn" onclick="confirmarJogada()" disabled>
+                    <i class="fas fa-check"></i> Confirmar Jogada
+                </button>
+                <button class="game-btn btn-restart" onclick="iniciarJogo()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+            </div>
+
+            <div class="explicacao-grafico">
+                <h3><i class="fas fa-brain"></i> A Matemática por trás do NIM</h3>
+                <p>Parece um jogo de sorte, mas o NIM é pura matemática! Ele é a base da <b>Teoria dos Jogos Combinatórios</b> e tem uma ligação direta com o <b>Sistema de Numeração Binário</b> (o mesmo usado no Adivinho Indiscreto).</p>
+                
+                <p>A estratégia perfeita para vencer (ou saber se você já perdeu) envolve a operação lógica <b>XOR</b> (Ou Exclusivo), que neste contexto chamamos de <b>Soma de Nim</b> (&oplus;). Funciona assim: você converte a quantidade de palitos de cada fileira para binário e alinha os números. Se a soma dos "1s" em cada coluna for par, o resultado é 0; se for ímpar, o resultado é 1.</p>
+
+                <p>Se as fileiras têm <b>3, 4 e 5</b> palitos, fazemos a conversão:</p>
+                <div class="destaque-math">
+                    3 = 011<sub>2</sub><br>
+                    4 = 100<sub>2</sub><br>
+                    5 = 101<sub>2</sub><br>
+                    -----------------<br>
+                    Soma Nim = 010<sub>2</sub> = 2
+                </div>
+
+                <ul>
+                    <li><b>Soma de Nim = 0 (Posição Perdedora):</b> Qualquer jogada que você fizer vai tirar a soma do zero. Se o seu oponente jogar perfeitamente a partir daqui, você vai perder.</li>
+                    <li><b>Soma de Nim ≠ 0 (Posição Vencedora):</b> Sempre existe uma jogada que faz a Soma de Nim virar 0, "passando a bomba" para o oponente.</li>
+                </ul>
+
+                <p>A Inteligência Artificial deste jogo calcula a Soma de Nim em milissegundos. Se você der a menor brecha, ela vai calcular o movimento exato para zerar a soma e te derrotar!</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Laboratório de Teoria dos Jogos
+    </footer>
+
+    <script>
+        let filas = [3, 4, 5];
+        let linhaSelecionada = null;
+        let quantidadeSelecionada = 0;
+        let turnoJogador = true;
+        let jogoAcabou = false;
+
+        function iniciarJogo() {
+            filas = [3, 4, 5];
+            linhaSelecionada = null;
+            quantidadeSelecionada = 0;
+            turnoJogador = true;
+            jogoAcabou = false;
+            atualizarStatus("Sua vez! Clique nos palitos que deseja remover.", "#388e3c", "#e8f5e9");
+            renderizarTabuleiro();
+        }
+
+        function atualizarStatus(texto, corTexto, corFundo) {
+            const painel = document.getElementById('status-display');
+            painel.innerText = texto;
+            painel.style.color = corTexto;
+            painel.style.backgroundColor = corFundo;
+            painel.style.borderColor = corTexto;
+        }
+
+        function renderizarTabuleiro() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            document.getElementById('btn-confirmar').disabled = (quantidadeSelecionada === 0 || !turnoJogador);
+
+            filas.forEach((qtd, i) => {
+                const linhaDiv = document.createElement('div');
+                linhaDiv.className = 'nim-row';
+                
+                const label = document.createElement('div');
+                label.className = 'row-label';
+                label.innerText = `L${i+1}`;
+                linhaDiv.appendChild(label);
+
+                for(let p = 0; p < qtd; p++) {
+                    const palito = document.createElement('div');
+                    palito.className = 'stick';
+                    
+                    // Se esta é a linha selecionada e o palito está na área de remoção (da direita para a esquerda)
+                    if (linhaSelecionada === i && p >= (qtd - quantidadeSelecionada)) {
+                        palito.classList.add('selected');
+                    }
+
+                    if (turnoJogador && !jogoAcabou) {
+                        palito.onmouseover = () => {
+                            if(linhaSelecionada === null || linhaSelecionada === i) {
+                                destacarPalitos(i, qtd - p);
+                            }
+                        };
+                        palito.onmouseout = () => {
+                            removerDestaques();
+                        };
+                        palito.onclick = () => {
+                            selecionarJogada(i, qtd - p);
+                        };
+                    }
+
+                    linhaDiv.appendChild(palito);
+                }
+                
+                if(qtd === 0) {
+                    const vazio = document.createElement('span');
+                    vazio.style.color = '#ccc';
+                    vazio.style.fontStyle = 'italic';
+                    vazio.innerText = 'Vazia';
+                    linhaDiv.appendChild(vazio);
+                }
+
+                board.appendChild(linhaDiv);
+            });
+        }
+
+        function destacarPalitos(linha, qtd) {
+            const board = document.getElementById('board');
+            const rowDiv = board.children[linha];
+            const sticks = rowDiv.querySelectorAll('.stick');
+            const total = sticks.length;
+            
+            sticks.forEach((s, index) => {
+                if (index >= total - qtd) s.classList.add('hovered');
+                else s.classList.remove('hovered');
+            });
+        }
+
+        function removerDestaques() {
+            document.querySelectorAll('.stick').forEach(s => s.classList.remove('hovered'));
+        }
+
+        function selecionarJogada(linha, qtd) {
+            linhaSelecionada = linha;
+            quantidadeSelecionada = qtd;
+            renderizarTabuleiro();
+        }
+
+        function confirmarJogada() {
+            if (linhaSelecionada === null || quantidadeSelecionada === 0) return;
+            
+            filas[linhaSelecionada] -= quantidadeSelecionada;
+            linhaSelecionada = null;
+            quantidadeSelecionada = 0;
+            turnoJogador = false;
+            renderizarTabuleiro();
+
+            if (verificarVitoria("Você")) return;
+
+            atualizarStatus("O computador está calculando a Soma de Nim...", "#e65100", "#fff3e0");
+            setTimeout(jogadaComputador, 1500);
+        }
+
+        function jogadaComputador() {
+            // Calcula a Soma de Nim (XOR)
+            let nimSum = filas.reduce((a, b) => a ^ b, 0);
+            let jogou = false;
+
+            if (nimSum !== 0) {
+                // Existe uma jogada vencedora (zerar o Nim-sum)
+                for (let i = 0; i < filas.length; i++) {
+                    let alvo = filas[i] ^ nimSum;
+                    if (alvo < filas[i]) {
+                        let removidos = filas[i] - alvo;
+                        filas[i] = alvo;
+                        jogou = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!jogou) {
+                // Computador está numa posição perdedora (Nim-sum == 0). Tira palitos aleatórios para tentar induzir o erro.
+                let linhasValidas = filas.map((qtd, i) => ({qtd, i})).filter(l => l.qtd > 0);
+                let escolha = linhasValidas[Math.floor(Math.random() * linhasValidas.length)];
+                let remover = Math.floor(Math.random() * escolha.qtd) + 1;
+                filas[escolha.i] -= remover;
+            }
+
+            if (!verificarVitoria("O Computador")) {
+                turnoJogador = true;
+                atualizarStatus("Sua vez! Cuidado com os cálculos...", "#388e3c", "#e8f5e9");
+                renderizarTabuleiro();
+            }
+        }
+
+        function verificarVitoria(quem) {
+            let totalPalitos = filas.reduce((a, b) => a + b, 0);
+            if (totalPalitos === 0) {
+                jogoAcabou = true;
+                if (quem === "Você") {
+                    atualizarStatus("🎉 Parabéns! Você venceu a máquina calculando a Soma de Nim!", "#1565c0", "#e3f2fd");
+                } else {
+                    atualizarStatus("💻 O Computador zerou o Nim-sum e venceu o jogo!", "#c62828", "#ffebee");
+                }
+                renderizarTabuleiro();
+                return true;
+            }
+            return false;
+        }
+
+        window.onload = iniciarJogo;
+    </script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivinho Indiscreto | PET-AME</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #f1f8e9;
+            --bg-card: #ffffff;
+            --bg-navbar: rgba(220, 240, 220, 0.95);
+            --text-primary: #263238;
+            --text-secondary: #388e3c;
+            --accent-primary: #009688;
+            --fonte-principal: 'Poppins', sans-serif;
+            --fonte-secundaria: 'Roboto Mono', monospace;
+        }
+
+        body { font-family: var(--fonte-principal); background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 0; }
+        
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1100px; margin: 0 auto; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .navbar-logo { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
+        .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .spacer { width: 100%; height: 80px; }
+
+        main { padding-bottom: 50px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
+
+        .game-area { background: var(--bg-card); padding: 30px 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        .adivinho-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .coluna-cartela {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .coluna-cartela.selected {
+            border-color: var(--accent-primary);
+            background: #e0f2f1;
+            box-shadow: 0 4px 10px rgba(0,150,136,0.2);
+            transform: translateY(-5px);
+        }
+
+        .luz { color: #ccc; font-size: 1.8rem; margin-bottom: 10px; transition: 0.3s; }
+        .coluna-cartela.selected .luz { color: #fbc02d; text-shadow: 0 0 15px rgba(251, 192, 45, 0.8); }
+
+        .num-header { 
+            font-weight: 700; 
+            font-size: 1.3rem; 
+            color: var(--text-secondary); 
+            border-bottom: 2px solid #ddd; 
+            width: 100%;
+            margin-bottom: 10px; 
+            padding-bottom: 5px;
+        }
+        
+        .coluna-cartela.selected .num-header { border-color: var(--accent-primary); }
+
+        .numeros-lista { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 5px; 
+            font-family: var(--fonte-secundaria); 
+            font-size: 0.95rem; 
+            color: #555;
+            width: 100%;
+        }
+
+        .btn-selecionar { 
+            margin-top: 15px; 
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 20px; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            background: #e0e0e0; 
+            color: #555; 
+            transition: 0.3s;
+            font-family: var(--fonte-principal);
+        }
+        
+        .coluna-cartela.selected .btn-selecionar { 
+            background: var(--accent-primary); 
+            color: white; 
+        }
+
+        .game-btn { 
+            background: var(--accent-primary); 
+            color: white; 
+            border: none; 
+            padding: 15px 40px; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-family: var(--fonte-secundaria); 
+            transition: 0.3s; 
+            margin: 10px; 
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,150,136,0.3); }
+
+        .game-btn-reset {
+            background: #546e7a;
+        }
+        .game-btn-reset:hover {
+            background: #37474f;
+        }
+
+        .resultado-box {
+            display: none;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border-left: 6px solid var(--text-secondary);
+            text-align: left;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .resultado-box h3 { color: var(--text-secondary); margin-top: 0; font-size: 1.8rem; text-align: center; }
+        .numero-destaque { font-size: 3rem; color: var(--accent-primary); font-weight: 800; text-align: center; margin: 10px 0; }
+        
+        .explicacao-didatica p { line-height: 1.7; margin-bottom: 12px; color: var(--text-primary); }
+        .explicacao-didatica ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-didatica li { margin-bottom: 8px; line-height: 1.6; }
+        .formula-box { background: white; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; text-align: center; font-family: var(--fonte-secundaria); font-size: 1.1rem; margin: 20px 0;}
+
+        @media (max-width: 900px) {
+            .adivinho-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .navbar-container { flex-direction: column; gap: 10px; }
+            .spacer { height: 130px; }
+            .adivinho-grid { grid-template-columns: repeat(2, 1fr); }
+            .numeros-lista { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo"><img src="./logopet.png" alt="Logo PET"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="jogos.html">Laboratório</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-magic"></i> O Adivinho Indiscreto</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                O jogo <b>Adivinho Indiscreto</b> é uma ferramenta lúdica incrível para introduzir o <b>Sistema de Numeração Binário</b>. As regras são simples:
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Pense em um número inteiro de <b>1 a 63</b>. Não conte para ninguém!</li>
+                    <li>Analise as 6 colunas abaixo com atenção.</li>
+                    <li>Clique em <b>"Está aqui!"</b> em todas as colunas onde o número que você pensou aparece.</li>
+                    <li>Quando terminar de marcar todas as colunas corretas, clique no botão mágico no final da página.</li>
+                </ul>
+            </p>
+        </section>
+
+        <div class="game-area">
+            <div class="adivinho-grid" id="grid-colunas">
+                </div>
+
+            <button id="btn-adivinhar" class="game-btn" onclick="adivinharNumero()">
+                <i class="fas fa-hat-wizard"></i> Adivinhar Número!
+            </button>
+            <button id="btn-reset" class="game-btn game-btn-reset" onclick="reiniciarJogo()" style="display:none;">
+                <i class="fas fa-redo"></i> Jogar Novamente
+            </button>
+
+            <div id="area-resultado" class="resultado-box">
+                <h3>O número que você pensou foi...</h3>
+                <div class="numero-destaque" id="numero-adivinhado">--</div>
+                
+                <div class="explicacao-didatica" id="texto-explicacao">
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
+        PET-AME UNESPAR - Campo Mourão | Laboratório de Ensino de Matemática
+    </footer>
+
+    <script>
+        // Valores iniciais das 6 colunas (Potências de 2)
+        const headers = [32, 16, 8, 4, 2, 1];
+        const colunasData = { 32: [], 16: [], 8: [], 4: [], 2: [], 1: [] };
+
+        // Preenchendo as colunas usando lógica binária (bitwise AND)
+        for(let i = 1; i <= 63; i++) {
+            if(i & 32) colunasData[32].push(i);
+            if(i & 16) colunasData[16].push(i);
+            if(i & 8) colunasData[8].push(i);
+            if(i & 4) colunasData[4].push(i);
+            if(i & 2) colunasData[2].push(i);
+            if(i & 1) colunasData[1].push(i);
+        }
+
+        // Estado do jogo
+        let colunasSelecionadas = [];
+
+        function inicializarGrid() {
+            const grid = document.getElementById('grid-colunas');
+            grid.innerHTML = '';
+
+            headers.forEach(header => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'coluna-cartela';
+                colDiv.id = `col-${header}`;
+                
+                // Formata os números em duas colunas internas
+                let numerosHtml = '<div class="numeros-lista">';
+                colunasData[header].forEach(num => {
+                    numerosHtml += `<span>${num}</span>`;
+                });
+                numerosHtml += '</div>';
+
+                colDiv.innerHTML = `
+                    <i class="fas fa-lightbulb luz"></i>
+                    <div class="num-header">${header}</div>
+                    ${numerosHtml}
+                    <button class="btn-selecionar" onclick="toggleColuna(${header})">
+                        <i class="fas fa-check-circle"></i> Está aqui!
+                    </button>
+                `;
+                grid.appendChild(colDiv);
+            });
+        }
+
+        function toggleColuna(valor) {
+            const colDiv = document.getElementById(`col-${valor}`);
+            const btn = colDiv.querySelector('.btn-selecionar');
+            
+            if(colunasSelecionadas.includes(valor)) {
+                colunasSelecionadas = colunasSelecionadas.filter(v => v !== valor);
+                colDiv.classList.remove('selected');
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Está aqui!';
+            } else {
+                colunasSelecionadas.push(valor);
+                colDiv.classList.add('selected');
+                btn.innerHTML = '<i class="fas fa-times-circle"></i> Remover';
+            }
+        }
+
+        function adivinharNumero() {
+            if(colunasSelecionadas.length === 0) {
+                alert("Por favor, selecione pelo menos uma coluna onde o seu número aparece!");
+                return;
+            }
+
+            // A mágica: soma os cabeçalhos das colunas selecionadas
+            const numeroAdivinhado = colunasSelecionadas.reduce((a, b) => a + b, 0);
+
+            document.getElementById('numero-adivinhado').innerText = numeroAdivinhado;
+            document.getElementById('area-resultado').style.display = 'block';
+            document.getElementById('btn-adivinhar').style.display = 'none';
+            document.getElementById('btn-reset').style.display = 'inline-block';
+
+            gerarExplicacaoDidatica(numeroAdivinhado);
+            
+            // Rola a tela suavemente para o resultado
+            setTimeout(() => {
+                document.getElementById('area-resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        function gerarExplicacaoDidatica(numero) {
+            // Ordena as seleções em ordem decrescente para bater com a fórmula visual
+            const selecoesOrd = colunasSelecionadas.sort((a,b) => b - a);
+            const somaVisual = selecoesOrd.join(" + ");
+            
+            // Monta a string binária e a fórmula de potências
+            let binarioStr = "";
+            let formulaPotencias = "";
+            let potenciasUsadas = [];
+
+            headers.forEach((header, index) => {
+                const expoente = 5 - index; // 32 é 2^5, 16 é 2^4...
+                if(colunasSelecionadas.includes(header)) {
+                    binarioStr += "1";
+                    formulaPotencias += `(1 &times; 2<sup>${expoente}</sup>) + `;
+                    potenciasUsadas.push(`2<sup>${expoente}</sup>`);
+                } else {
+                    binarioStr += "0";
+                    formulaPotencias += `(0 &times; 2<sup>${expoente}</sup>) + `;
+                }
+            });
+            
+            // Remove o último " + " da fórmula
+            formulaPotencias = formulaPotencias.slice(0, -3);
+
+            const textoHtml = `
+                <p><strong>Como o computador adivinhou?</strong></p>
+                <p>A "adivinhação" é feita simplesmente <strong>somando-se os primeiros números das colunas que você marcou</strong> (as colunas onde as luzes acenderam).</p>
+                
+                <div class="formula-box">
+                    ${somaVisual} = <strong>${numero}</strong>
+                </div>
+
+                <p>Há muito mais matemática por trás desse jogo! Ele está diretamente relacionado ao <strong>Sistema de Numeração Binário</strong> (Base 2). Os primeiros números de cada coluna (32, 16, 8, 4, 2, 1) são, na verdade, potências de base 2:</p>
+                <ul>
+                    <li>32 = 2<sup>5</sup></li>
+                    <li>16 = 2<sup>4</sup></li>
+                    <li>8 = 2<sup>3</sup></li>
+                    <li>4 = 2<sup>2</sup></li>
+                    <li>2 = 2<sup>1</sup></li>
+                    <li>1 = 2<sup>0</sup></li>
+                </ul>
+
+                <p>De acordo com o <strong>Teorema 1</strong> da Aritmética, todo número inteiro não negativo pode ser escrito de forma única como soma de potências de 2. Ao selecionar as colunas, você indicou exatamente quais potências formam o seu número!</p>
+                
+                <p>Quando reescrevemos o seu número (${numero}) no sistema binário, transformamos a sua escolha na seguinte equação matemática:</p>
+                
+                <div class="formula-box">
+                    ${numero} = ${formulaPotencias}
+                </div>
+
+                <p>Em linguagem de máquina (binário), onde '1' significa 'luz acesa' (coluna selecionada) e '0' significa 'luz apagada' (coluna ignorada), o número que você pensou é representado como <strong>${binarioStr}</strong> na Base 2.</p>
+            `;
+
+            document.getElementById('texto-explicacao').innerHTML = textoHtml;
+        }
+
+        function reiniciarJogo() {
+            colunasSelecionadas = [];
+            document.getElementById('area-resultado').style.display = 'none';
+            document.getElementById('btn-adivinhar').style.display = 'inline-block';
+            document.getElementById('btn-reset').style.display = 'none';
+            
+            const colunas = document.querySelectorAll('.coluna-cartela');
+            colunas.forEach(col => {
+                col.classList.remove('selected');
+                col.querySelector('.btn-selecionar').innerHTML = '<i class="fas fa-check-circle"></i> Está aqui!';
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicia o jogo ao carregar a página
+        window.onload = inicializarGrid;
+    </script>
+</body>
+</html>
