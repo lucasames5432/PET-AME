@@ -108,7 +108,7 @@
 
         .feedback-pegs {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr); /* Ajustado para caber os 5 pinos */
             gap: 4px;
             background: #e0e0e0;
             padding: 5px;
@@ -218,7 +218,7 @@
         <section class="card">
             <h2 class="section-title"><i class="fas fa-unlock-keyhole"></i> O Jogo da Senha (Mastermind)</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                O computador criou uma <b>senha secreta</b> composta por 4 cores. Seu objetivo é adivinhar a sequência exata em até 10 tentativas, utilizando Lógica Dedutiva. As cores podem se repetir!
+                O computador criou uma <b>senha secreta</b> composta por 5 cores. Seu objetivo é adivinhar a sequência exata em até 12 tentativas, utilizando Lógica Dedutiva. As cores <b>NÃO</b> se repetem!
                 <br><br>
                 <b>Dicas a cada tentativa:</b>
                 <ul style="margin-left: 20px;">
@@ -230,13 +230,13 @@
 
         <div class="game-area">
             <div id="status-display" class="status-panel">
-                Tentativa 1 de 10. Selecione 4 cores!
+                Tentativa 1 de 12. Selecione 5 cores!
             </div>
 
             <div id="secret-reveal" class="secret-reveal">
                 <div>A SENHA ERA:</div>
                 <div class="guess-slots" id="secret-slots">
-                    <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+                    <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
                 </div>
             </div>
 
@@ -266,18 +266,18 @@
                 <h3><i class="fas fa-chart-pie"></i> A Matemática do Mastermind</h3>
                 <p>O <i>Mastermind</i> (ou Jogo da Senha) é uma excelente forma prática de estudar <b>Análise Combinatória</b> e <b>Teoria da Informação</b>. Quando o jogo começa, você não tem nenhuma pista. Quantas possibilidades existem?</p>
                 
-                <p>O jogo possui <b>6 cores disponíveis</b> e a senha tem <b>4 posições</b>. Como as cores podem se repetir (uma senha pode ser Azul-Azul-Azul-Azul), usamos o Princípio Fundamental da Contagem (Arranjo com Repetição):</p>
+                <p>Nesta versão avançada, o jogo possui <b>8 cores disponíveis</b> e a senha tem <b>5 posições</b>. Como as cores NÃO podem se repetir, usamos o Princípio Fundamental da Contagem (também conhecido como Arranjo Simples):</p>
 
                 <div class="destaque-math">
-                    Possibilidades = 6 &times; 6 &times; 6 &times; 6 = 6<sup>4</sup> = <b>1.296 senhas possíveis</b>
+                    Possibilidades = 8 &times; 7 &times; 6 &times; 5 &times; 4 = <b>6.720 senhas possíveis</b>
                 </div>
 
-                <p>Isso significa que a sua chance de acertar a senha chutando aleatoriamente na primeira tentativa é de apenas $1 / 1296$ (aproximadamente $0,077\%$).</p>
+                <p>Isso significa que a sua chance de acertar a senha chutando aleatoriamente na primeira tentativa é de apenas \(1 / 6720\) (aproximadamente \(0,014\%\)).</p>
 
                 <h4>O poder da Lógica Dedutiva</h4>
-                <p>A cada tentativa que você faz, os pinos pretos e brancos funcionam como <b>restrições do espaço amostral</b>. Se você jogar 4 cores iguais e não receber nenhum pino, você acabou de eliminar matematicamente milhares de combinações da sua lista mental, reduzindo drasticamente o número de possibilidades restantes.</p>
+                <p>A cada tentativa que você faz, os pinos pretos e brancos funcionam como <b>restrições do espaço amostral</b>. Se você jogar 5 cores e não receber nenhum pino, você acabou de eliminar matematicamente milhares de combinações da sua lista mental, reduzindo drasticamente o número de possibilidades restantes.</p>
 
-                <p><b>Curiosidade Algorítmica:</b> Em 1977, o famoso cientista da computação Donald Knuth provou matematicamente que é possível adivinhar <i>qualquer</i> senha do Mastermind em <b>5 tentativas ou menos</b>, usando um algoritmo chamado <i>Minimax</i>, que escolhe sempre a jogada que elimina a maior quantidade possível de senhas erradas no pior cenário.</p>
+                <p><b>Curiosidade Algorítmica:</b> Em 1977, o famoso cientista da computação Donald Knuth provou matematicamente que é possível adivinhar <i>qualquer</i> senha do Mastermind tradicional em 5 tentativas ou menos, usando um algoritmo chamado <i>Minimax</i>, que escolhe sempre a jogada que elimina a maior quantidade possível de senhas erradas no pior cenário.</p>
             </div>
         </div>
     </main>
@@ -287,10 +287,15 @@
     </footer>
 
     <script>
-        // Configurações do Jogo
-        const COLORS = ['#f44336', '#2196f3', '#4caf50', '#ffeb3b', '#9c27b0', '#ff9800']; // Vermelho, Azul, Verde, Amarelo, Roxo, Laranja
-        const CODE_LENGTH = 4;
-        const MAX_ATTEMPTS = 10;
+        // Configurações do Jogo (8 cores)
+        const COLORS = ['#f44336', '#2196f3', '#4caf50', '#ffeb3b', '#9c27b0', '#ff9800', '#00bcd4', '#e91e63']; 
+        
+        const CODE_LENGTH = 5; // 5 posições
+
+        // ============================================================
+        // CONFIGURAÇÃO FÁCIL: ALTERE O NÚMERO DE TENTATIVAS ABAIXO 
+        // ============================================================
+        const MAX_ATTEMPTS = 15 
         
         let secretCode = [];
         let currentGuess = [];
@@ -298,10 +303,14 @@
         let gameActive = false;
 
         function iniciarJogo() {
-            // Gerar Código Secreto (permite repetidas)
+            // Gerar Código Secreto (SEM repetição)
             secretCode = [];
+            let coresDisponiveis = [0, 1, 2, 3, 4, 5, 6, 7];
+            
             for (let i = 0; i < CODE_LENGTH; i++) {
-                secretCode.push(Math.floor(Math.random() * COLORS.length));
+                let randomIndex = Math.floor(Math.random() * coresDisponiveis.length);
+                secretCode.push(coresDisponiveis[randomIndex]);
+                coresDisponiveis.splice(randomIndex, 1); // Remove a cor para não repetir
             }
 
             currentGuess = [];
@@ -309,7 +318,7 @@
             gameActive = true;
 
             document.getElementById('secret-reveal').style.display = 'none';
-            document.getElementById('status-display').innerText = `Tentativa 1 de ${MAX_ATTEMPTS}. Selecione 4 cores!`;
+            document.getElementById('status-display').innerText = `Tentativa 1 de ${MAX_ATTEMPTS}. Selecione 5 cores!`;
             document.getElementById('status-display').style.color = 'var(--text-secondary)';
             document.getElementById('status-display').style.backgroundColor = '#e8f5e9';
             document.getElementById('status-display').style.borderColor = 'var(--accent-primary)';
@@ -324,6 +333,7 @@
             COLORS.forEach((color, index) => {
                 const btn = document.createElement('div');
                 btn.className = 'color-btn';
+                btn.id = `btn-cor-${index}`;
                 btn.style.backgroundColor = color;
                 btn.onclick = () => selecionarCor(index);
                 picker.appendChild(btn);
@@ -358,7 +368,15 @@
         function selecionarCor(colorIndex) {
             if (!gameActive || currentGuess.length >= CODE_LENGTH) return;
             
+            // Bloqueia se o jogador tentar colocar a mesma cor na mesma tentativa
+            if (currentGuess.includes(colorIndex)) return;
+            
             currentGuess.push(colorIndex);
+            
+            // Dá um efeito visual de que a cor já foi usada nesta rodada
+            document.getElementById(`btn-cor-${colorIndex}`).style.opacity = '0.3';
+            document.getElementById(`btn-cor-${colorIndex}`).style.cursor = 'not-allowed';
+
             atualizarLinhaAtual();
             atualizarBotoes();
         }
@@ -366,7 +384,12 @@
         function apagarCor() {
             if (!gameActive || currentGuess.length === 0) return;
             
-            currentGuess.pop();
+            let corRemovida = currentGuess.pop();
+            
+            // Restaura o botão da cor removida
+            document.getElementById(`btn-cor-${corRemovida}`).style.opacity = '1';
+            document.getElementById(`btn-cor-${corRemovida}`).style.cursor = 'pointer';
+
             atualizarLinhaAtual();
             atualizarBotoes();
         }
@@ -396,6 +419,12 @@
 
             const feedback = calcularFeedback(currentGuess, secretCode);
             renderizarFeedback(currentRow, feedback);
+
+            // Restaura visual de todas as cores para a próxima rodada
+            for(let c = 0; c < COLORS.length; c++) {
+                document.getElementById(`btn-cor-${c}`).style.opacity = '1';
+                document.getElementById(`btn-cor-${c}`).style.cursor = 'pointer';
+            }
 
             if (feedback.black === CODE_LENGTH) {
                 finalizarJogo(true);
@@ -477,7 +506,7 @@
                 statusPanel.style.borderColor = '#e53935';
             }
 
-            // Revelar a senha
+            // Revelar a senha (Agora com os 5 slots corretamente atualizados)
             const secretSlots = document.getElementById('secret-slots').getElementsByClassName('slot');
             for (let i = 0; i < CODE_LENGTH; i++) {
                 secretSlots[i].style.backgroundColor = COLORS[secretCode[i]];
