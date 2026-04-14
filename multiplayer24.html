@@ -209,7 +209,7 @@
             document.getElementById('revelacao-solucoes').style.display = 'none';
             
             // Só cancela o intervalo se não estiver nas fases de timer
-            if (data.fase !== 'respondendo_duvida' && data.fase !== 'escolhendo_duvida') {
+            if (data.fase !== 'respondendo_duvida' && data.fase !== 'escolhendo_duvida' && data.fase !== 'resolvendo') {
                 clearInterval(timerInterval);
             }
 
@@ -225,12 +225,12 @@
             // FASE: RESOLVENDO (Todos tentam bater)
             else if (data.fase === 'resolvendo') {
                 if (!euBati) {
-                    document.getElementById('status-info').innerText = "Valendo 24!";
                     document.getElementById('controles').style.display = 'block';
                     document.getElementById('btn-bati').disabled = false;
-                } else {
-                    document.getElementById('status-info').innerText = "Você bateu! Aguardando os outros...";
                 }
+
+                // Inicia o cronômetro visual de 3 minutos
+                iniciarCronometroRodada(data.tempoFimRodada);
 
                 // Verifica se sobrou apenas 1 jogador que não bateu
                 if (totalPlayers > 1 && bateuCount === totalPlayers - 1) {
@@ -262,7 +262,7 @@
                 }
                 iniciarCronometroEscolha(data.tempoFimDuvida);
             }
-            // FASE: RESPONDENDO DUVIDA (15 Segundos)
+            // FASE: RESPONDENDO DUVIDA (30 Segundos)
             else if (data.fase === 'respondendo_duvida') {
                 if (meuNome === data.alvoDuvida) {
                     document.getElementById('area-solucao').style.display = 'block';
@@ -304,6 +304,7 @@
                 updates['alvoDuvida'] = "";
                 updates['msgResultado'] = "";
                 updates['ultimaSolucao'] = "";
+                updates['tempoFimRodada'] = Date.now() + 180000; // Define o timer de 3 minutos (180.000 ms)
                 db.ref(`salas/${salaID}`).update(updates);
             });
         }
@@ -319,8 +320,42 @@
             db.ref(`salas/${salaID}`).update({
                 fase: 'respondendo_duvida',
                 alvoDuvida: alvo,
-                tempoFim: Date.now() + 15000 
+                tempoFim: Date.now() + 30000 
             });
+        }
+
+        function iniciarCronometroRodada(tempoFim) {
+            clearInterval(timerInterval);
+            const statusEl = document.getElementById('status-info');
+            const euBati = dataAtual.jogadores[meuNome]?.bateu;
+            
+            // Fallback preventivo caso a sala não tenha essa propriedade ainda
+            if (!tempoFim) tempoFim = Date.now() + 180000; 
+
+            timerInterval = setInterval(() => {
+                const rest = Math.max(0, Math.floor((tempoFim - Date.now()) / 1000));
+                const min = Math.floor(rest / 60);
+                const sec = (rest % 60).toString().padStart(2, '0');
+                
+                statusEl.innerText = !euBati 
+                    ? `Valendo 24! ⏳ ${min}:${sec}` 
+                    : `Você bateu! Aguardando os outros... ⏳ ${min}:${sec}`;
+
+                if (rest === 0) {
+                    clearInterval(timerInterval);
+                    if (document.getElementById('controles').style.display === 'block') {
+                        document.getElementById('btn-bati').disabled = true; // Impede clique atrasado
+                    }
+
+                    // Apenas o criador da sala avança o jogo para evitar bugs de duplicação
+                    if (meuNome === dataAtual.criador && dataAtual.fase === 'resolvendo') {
+                        db.ref(`salas/${salaID}`).update({
+                            fase: 'resultado',
+                            msgResultado: `⏳ O tempo limite de 3 minutos esgotou! Quem bateu garantiu seus pontos.`
+                        });
+                    }
+                }
+            }, 500);
         }
 
         function iniciarCronometroEscolha(tempoFim) {
