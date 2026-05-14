@@ -134,6 +134,28 @@
         }
         .game-btn:hover { background: #00796b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,150,136,0.3); }
 
+        /* Estilos adicionados para o campo de teste */
+        .area-teste {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 1px solid #ffe0b2;
+        }
+
+        .input-teste {
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            font-family: var(--fonte-secundaria);
+        }
+
         @media (max-width: 768px) {
             .navbar-container { flex-direction: column; gap: 10px; }
             .spacer { height: 130px; }
@@ -185,6 +207,18 @@
                 </div>
             </div>
 
+            <!-- Adicionado: Área de Teste de Equação -->
+            <div class="area-teste" id="area-teste" style="display: none;">
+                <h4 style="margin-top: 0; color: #e65100; font-family: var(--fonte-secundaria);"><i class="fas fa-calculator"></i> Teste sua expressão</h4>
+                <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">Use ( ), +, -, *, /</p>
+                <input type="text" id="input-conta" class="input-teste" placeholder="Ex: (10+2)*(8/4)">
+                <br>
+                <button class="game-btn" onclick="verificarConta()" style="padding: 10px 20px; font-size: 1rem; background-color: #ef6c00;">
+                    <i class="fas fa-check-circle"></i> Verificar Resultado
+                </button>
+                <div id="resultado-teste" style="margin-top: 15px; font-size: 1.1rem;"></div>
+            </div>
+
             <button id="btn-sortear" class="game-btn" onclick="sortearCartas()">
                 <i class="fas fa-random"></i> Sortear Nova Mão
             </button>
@@ -209,6 +243,7 @@
     <script>
         const naipes = ['H', 'D', 'C', 'S'];
         let maoAtualString = ""; 
+        let maoAtualArray = []; // Adicionado para a validação
 
         function numeroParaLetra(num) {
             if (num === 1) return 'A';
@@ -221,6 +256,9 @@
 
         function sortearCartas() {
             document.getElementById('area-solucoes').style.display = 'none';
+            document.getElementById('area-teste').style.display = 'block'; // Mostra a área de teste
+            document.getElementById('input-conta').value = ''; // Limpa o input
+            document.getElementById('resultado-teste').innerHTML = ''; // Limpa o resultado
 
             if (typeof maosValidas === 'undefined') {
                 alert("O arquivo 'banco_solucoes.js' não foi encontrado!");
@@ -228,6 +266,7 @@
             }
 
             const maoSorteada = maosValidas[Math.floor(Math.random() * maosValidas.length)];
+            maoAtualArray = [...maoSorteada]; // Salva a mão como array para validar depois
             maoAtualString = "[" + maoSorteada.join(", ") + "]";
             
             const slots = document.querySelectorAll('.card-slot');
@@ -254,6 +293,48 @@
                     }, 100 * index); 
                 });
             }, 300);
+        }
+
+        // Função adicionada: Validar a conta do usuário
+        function verificarConta() {
+            if (maoAtualArray.length === 0) {
+                alert("Por favor, sorteie uma mão de cartas primeiro!");
+                return;
+            }
+
+            let contaRaw = document.getElementById('input-conta').value;
+            const resultadoDiv = document.getElementById('resultado-teste');
+
+            if (!contaRaw.trim()) {
+                resultadoDiv.innerHTML = `<span style="color: #d32f2f;"><i class="fas fa-exclamation-triangle"></i> Digite uma expressão!</span>`;
+                return;
+            }
+
+            // Limpa a string digitada
+            let conta = contaRaw.replace(/×/g, "*").replace(/÷/g, "/").replace(/,/g, ".").replace(/\s+/g, "");
+
+            try {
+                // Bloqueia caracteres não matemáticos
+                if (/[^0-9\+\-\*\/\(\)\.]/.test(conta)) throw "Caractere inválido detectado na expressão.";
+                
+                // Extrai os números e compara com a mesa
+                const numsDigitados = (conta.match(/\d+/g) || []).map(Number).sort((a,b)=>a-b);
+                const mesaOrdenada = [...maoAtualArray].sort((a,b)=>a-b);
+
+                if (numsDigitados.length !== 4) throw "Você deve usar exatamente as 4 cartas (nenhuma a mais, nenhuma a menos).";
+                if (JSON.stringify(numsDigitados) !== JSON.stringify(mesaOrdenada)) throw "Você usou números diferentes dos que estão nas cartas sorteadas.";
+
+                // Realiza o cálculo
+                const resultado = eval(conta);
+                
+                if (Math.abs(resultado - 24) < 0.01) {
+                    resultadoDiv.innerHTML = `<span style="color: #2e7d32; font-weight: bold;"><i class="fas fa-check-circle"></i> Parabéns! A sua expressão resultou exatamente em 24!</span>`;
+                } else {
+                    throw `A sua expressão resultou em ${resultado.toFixed(2).replace('.00', '')}, e não em 24.`;
+                }
+            } catch(e) { 
+                resultadoDiv.innerHTML = `<span style="color: #d32f2f; font-weight: bold;"><i class="fas fa-times-circle"></i> Erro: ${e}</span>`;
+            }
         }
 
         function mostrarSolucoes() {

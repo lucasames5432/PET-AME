@@ -35,7 +35,22 @@
         .navbar { position: fixed; top: 0; width: 100%; background: var(--bg-navbar); backdrop-filter: blur(8px); z-index: 1000; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
         .navbar-container { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1080px; margin: 0 auto; }
         .nav-links { display: flex; list-style: none; gap: 20px; }
-        .nav-links a { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.88rem; }
+        
+        /* ALTERAÇÃO: Aumento do tamanho dos botões do topo */
+        .nav-links a { 
+            color: var(--text-primary); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 1.2rem; /* Tamanho da fonte aumentado */
+            padding: 8px 15px; /* Espaço para parecer um botão clicável */
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
         .navbar-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-secondary); overflow: hidden; }
         .navbar-logo img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -98,6 +113,7 @@
             .pergunta-box { font-size: 1rem; }
             .game-btn { padding: 10px 20px; font-size: 0.9rem; }
             .explicacao-grafico { padding: 18px; }
+            .nav-links a { font-size: 1.1rem; padding: 6px 12px; }
         }
 
         @media (max-width: 480px) {
@@ -131,8 +147,9 @@
                     <i class="fas fa-ruler-triangle"></i> Laboratório de Relações Métricas
                 </h2>
                 
+                <!-- ALTERAÇÃO: Texto ajustado para refletir a nova variedade de questões -->
                 <p style="text-align: justify; line-height: 1.6; color: var(--text-primary); margin-bottom: 25px; padding: 0 10px;">
-                    As <b>relações métricas no triângulo retângulo</b> são equações matemáticas que conectam as medidas dos seus lados, da altura e das projeções dos catetos sobre a hipotenusa. Neste experimento, focaremos na relação da altura. Tente calcular a altura (\(h\)) utilizando as projeções dadas! Se precisar de ajuda, consulte o quadro de fórmulas abaixo do exercício.
+                    As <b>relações métricas no triângulo retângulo</b> são equações matemáticas que conectam as medidas dos seus lados, da altura e das projeções dos catetos sobre a hipotenusa. Neste experimento, tente calcular a medida desconhecida utilizando as informações fornecidas no gráfico! Se precisar de ajuda, consulte o quadro de fórmulas abaixo do exercício.
                 </p>
 
                 <div id="pergunta" class="pergunta-box">Aguardando o Python...</div>
@@ -179,28 +196,42 @@ from js import document
 
 current_ex = {}
 
-def criar_figura(m, n):
-    # CORREÇÃO DO ERRO: Fecha figuras anteriores para não pesar o navegador
+def criar_figura(m, n, tipo):
     plt.close('all') 
     
+    a = m + n
     h = math.sqrt(m * n)
+    b = math.sqrt(a * m)
+    c = math.sqrt(a * n)
     
-    # Criando figura com tamanho responsivo
     fig, ax = plt.subplots(figsize=(7, 5), facecolor='white', dpi=100)
     
-    # Coordenadas do triângulo
-    A, B, C = [0, h], [-n, 0], [m, 0]
+    A, B, C = [-n, 0], [m, 0], [0, h]
     
-    # Desenhando o triângulo
+    # Desenhando o triângulo e a altura
     ax.plot([A[0], B[0], C[0], A[0]], [A[1], B[1], C[1], A[1]], color='#38703b', lw=3)
-    
-    # Desenhando a altura
     ax.plot([0, 0], [0, h], color='red', linestyle='--', lw=2)
     
-    # Etiquetas (Labels) das medidas
-    ax.text(B[0]/2, -0.5, f"n = {n}", ha='center', fontsize=10, fontweight='bold')
-    ax.text(C[0]/2, -0.5, f"m = {m}", ha='center', fontsize=10, fontweight='bold')
-    ax.text(0.2, h/2, "h = ?", color='red', fontweight='bold', fontsize=10)
+    # ALTERAÇÃO: Desenhando as etiquetas baseadas no tipo de pergunta gerada
+    if tipo == 'h':
+        ax.text(-n/2, -0.5, f"n = {n}", ha='center', fontsize=10, fontweight='bold')
+        ax.text(m/2, -0.5, f"m = {m}", ha='center', fontsize=10, fontweight='bold')
+        ax.text(0.2, h/2, "h = ?", color='red', fontweight='bold', fontsize=10)
+    elif tipo == 'a':
+        ax.text(-n/2, -0.5, f"n = {n}", ha='center', fontsize=10, fontweight='bold')
+        ax.text(m/2, -0.5, f"m = {m}", ha='center', fontsize=10, fontweight='bold')
+        ax.text((m-n)/2, -1.2, "a = ?", color='red', fontweight='bold', fontsize=10)
+        ax.plot([-n, m], [-0.8, -0.8], color='red', lw=1)
+    elif tipo == 'b':
+        ax.text((m-n)/2, -1.2, f"a = {a}", ha='center', fontsize=10, fontweight='bold')
+        ax.plot([-n, m], [-0.8, -0.8], color='black', lw=1)
+        ax.text(m/2, -0.5, f"m = {m}", ha='center', fontsize=10, fontweight='bold')
+        ax.text(m/2 + 0.3, h/2 + 0.3, "b = ?", color='red', fontweight='bold', fontsize=10)
+    elif tipo == 'c':
+        ax.text((m-n)/2, -1.2, f"a = {a}", ha='center', fontsize=10, fontweight='bold')
+        ax.plot([-n, m], [-0.8, -0.8], color='black', lw=1)
+        ax.text(-n/2, -0.5, f"n = {n}", ha='center', fontsize=10, fontweight='bold')
+        ax.text(-n/2 - 0.5, h/2 + 0.3, "c = ?", color='red', fontweight='bold', fontsize=10)
     
     # Marcando os ângulos
     ax.scatter([0], [0], color='black', s=30, zorder=5)
@@ -217,24 +248,48 @@ def criar_figura(m, n):
     ax.set_aspect('equal')
     ax.axis('off')
     
-    # Ajustando os limites para centralizar
+    # Ajustando limites dinamicamente para os novos textos não cortarem
     ax.set_xlim(-n-1, m+1)
-    ax.set_ylim(-1, h+1)
+    ax.set_ylim(-2, h+1)
     
-    # Ajustando layout
     plt.tight_layout()
     return fig
 
 def gerar_novo_exercicio(event=None):
     global current_ex
     m, n = random.randint(2, 9), random.randint(2, 9)
+    
+    a = m + n
     h = math.sqrt(m * n)
+    b = math.sqrt(a * m)
+    c = math.sqrt(a * n)
+    
+    # ALTERAÇÃO: Sorteia um tipo de pergunta
+    tipos = ['h', 'a', 'b', 'c']
+    tipo = random.choice(tipos)
+    
+    if tipo == 'h':
+        pergunta = f"As projeções dos catetos medem {m} e {n}. Qual a medida da altura (h)?"
+        resposta = f"h ≈ {h:.2f}"
+        explicacao = f"Fórmula: h² = m * n → h² = {m} * {n} = {m*n} → h = √{m*n} ≈ {h:.2f}"
+    elif tipo == 'a':
+        pergunta = f"As projeções dos catetos medem {m} e {n}. Qual a medida da hipotenusa (a)?"
+        resposta = f"a = {a}"
+        explicacao = f"Fórmula: a = m + n → a = {m} + {n} = {a}"
+    elif tipo == 'b':
+        pergunta = f"A hipotenusa mede {a} e uma projeção mede {m}. Qual a medida do cateto correspondente (b)?"
+        resposta = f"b ≈ {b:.2f}"
+        explicacao = f"Fórmula: b² = a * m → b² = {a} * {m} = {a*m} → b = √{a*m} ≈ {b:.2f}"
+    elif tipo == 'c':
+        pergunta = f"A hipotenusa mede {a} e uma projeção mede {n}. Qual a medida do cateto correspondente (c)?"
+        resposta = f"c ≈ {c:.2f}"
+        explicacao = f"Fórmula: c² = a * n → c² = {a} * {n} = {a*n} → c = √{a*n} ≈ {c:.2f}"
     
     current_ex = {
-        'pergunta': f"As projeções sobre a hipotenusa medem {m} e {n}. Qual a altura (h)?",
-        'resposta': f"h ≈ {h:.2f}",
-        'explicacao': f"Fórmula: h² = m * n → h² = {m*n} → h = √{m*n} ≈ {h:.2f}",
-        'fig': criar_figura(m, n)
+        'pergunta': pergunta,
+        'resposta': resposta,
+        'explicacao': explicacao,
+        'fig': criar_figura(m, n, tipo)
     }
     
     document.getElementById("pergunta").innerText = current_ex['pergunta']
@@ -246,11 +301,9 @@ def gerar_novo_exercicio(event=None):
 
 def mostrar_resposta(event=None):
     if 'resposta' in current_ex:
-        # Corrigido: usando aspas simples para evitar conflito com aspas duplas do HTML
         explicacao_html = '<i class="fas fa-lightbulb"></i> Resposta: ' + current_ex['resposta'] + '<br><i class="fas fa-calculator"></i> ' + current_ex['explicacao']
         document.getElementById("explicacao").innerHTML = explicacao_html
 
-# Inicia automático
 gerar_novo_exercicio()
     </py-script>
 

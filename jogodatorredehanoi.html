@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Inclusão do MathJax para renderizar as fórmulas em LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         :root {
             --bg-main: #f1f8e9;
@@ -45,6 +49,10 @@
         .btn-resolucao { background: #546e7a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-top: 10px;}
         #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 25px; border-radius: 5px; margin-top: 15px; text-align: justify; line-height: 1.8; }
 
+        /* Alinhamento dos marcadores na explicação matemática */
+        #resolucao-conteudo ul { margin-left: 20px; padding-left: 15px; margin-bottom: 15px; }
+        #resolucao-conteudo li { margin-bottom: 8px; line-height: 1.5; }
+
         .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         
         #hanoi-canvas {
@@ -79,11 +87,13 @@
         .game-btn:disabled { background: #90a4ae; cursor: not-allowed; transform: none; }
         
         /* Estilo para a explicação do gráfico */
-        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); }
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); text-align: left; }
         .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
         .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
-        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        
+        /* Alinhamento dos marcadores no guia completo */
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; padding-left: 15px; }
         .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
         .explicacao-grafico .destaque { background: white; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px solid #d4e0d4; }
         
@@ -124,13 +134,15 @@
             <h2 class="section-title"><i class="fas fa-tower-cell"></i> Torre de Hanói</h2>
             <p style="text-align: justify; line-height: 1.6;">
                 A <b>Torre de Hanói</b> é um clássico problema matemático que consiste em mover todos os discos da primeira haste para a terceira, respeitando as regras:
-                <ul style="margin-left: 20px;">
-                    <li>Apenas um disco pode ser movido por vez.</li>
-                    <li>Um disco maior nunca pode ser colocado sobre um menor.</li>
-                </ul>
+            </p>
+            <ul style="margin-left: 20px; padding-left: 15px; margin-bottom: 20px; line-height: 1.6;">
+                <li>Apenas um disco pode ser movido por vez.</li>
+                <li>Um disco maior nunca pode ser colocado sobre um menor.</li>
+            </ul>
+            <p style="text-align: justify; line-height: 1.6;">
                 <b>Instrução:</b> Clique em uma haste para selecionar um disco, depois clique em outra haste para movê-lo. O objetivo é mover todos os discos para a haste da direita com o menor número de movimentos possível.
                 <br><br>
-                O número mínimo de movimentos para resolver com <b>n discos</b> é <b>2ⁿ - 1</b>.
+                O número mínimo de movimentos para resolver com <b>\(n\) discos</b> é <b>\(2^n - 1\)</b>.
             </p>
 
             <button class="btn-resolucao" onclick="toggleResolucao()">
@@ -151,27 +163,29 @@
                 <p><b>3. Solução Recursiva:</b><br>
                 A solução do problema pode ser descrita recursivamente:</p>
                 <ul>
-                    <li>Mover n-1 discos da haste A para a haste B (usando C como auxiliar).</li>
+                    <li>Mover \(n-1\) discos da haste A para a haste B (usando C como auxiliar).</li>
                     <li>Mover o disco maior da haste A para a haste C.</li>
-                    <li>Mover n-1 discos da haste B para a haste C (usando A como auxiliar).</li>
+                    <li>Mover \(n-1\) discos da haste B para a haste C (usando A como auxiliar).</li>
                 </ul>
                 
                 <p><b>4. Número Mínimo de Movimentos:</b><br>
-                A sequência de movimentos segue uma progressão geométrica. Seja M(n) o número mínimo de movimentos para n discos:</p>
+                A sequência de movimentos segue uma progressão geométrica. Seja \(M(n)\) o número mínimo de movimentos para \(n\) discos:</p>
                 <p>\[M(1) = 1\]</p>
                 <p>\[M(n) = 2 \cdot M(n-1) + 1\]</p>
                 <p>Resolvendo esta recorrência, obtemos:</p>
                 <p>\[M(n) = 2^n - 1\]</p>
                 
-                <p><b>5. Exemplos:</b><br>
-                - 1 disco: 2¹ - 1 = 1 movimento<br>
-                - 2 discos: 2² - 1 = 3 movimentos<br>
-                - 3 discos: 2³ - 1 = 7 movimentos<br>
-                - 4 discos: 2⁴ - 1 = 15 movimentos<br>
-                - 5 discos: 2⁵ - 1 = 31 movimentos</p>
+                <p><b>5. Exemplos:</b></p>
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li>- 1 disco: \(2^1 - 1 = 1\) movimento</li>
+                    <li>- 2 discos: \(2^2 - 1 = 3\) movimentos</li>
+                    <li>- 3 discos: \(2^3 - 1 = 7\) movimentos</li>
+                    <li>- 4 discos: \(2^4 - 1 = 15\) movimentos</li>
+                    <li>- 5 discos: \(2^5 - 1 = 31\) movimentos</li>
+                </ul>
                 
                 <p><b>6. Complexidade:</b><br>
-                O problema tem complexidade exponencial O(2ⁿ), o que significa que o número de movimentos dobra a cada disco adicional. Para 10 discos, são necessários 1023 movimentos!</p>
+                O problema tem complexidade exponencial \(\mathcal{O}(2^n)\), o que significa que o número de movimentos dobra a cada disco adicional. Para 10 discos, são necessários 1023 movimentos!</p>
             </div>
         </section>
 
@@ -215,10 +229,10 @@
                 </ul>
                 
                 <h4><i class="fas fa-chart-line"></i> 3. Número Mínimo de Movimentos</h4>
-                <p>O número mínimo de movimentos para resolver a Torre de Hanói com n discos é dado pela fórmula:</p>
-                <p style="text-align: center; font-family: monospace; font-size: 1.2rem; background: #f5f5f5; padding: 10px; border-radius: 8px;">
-                    M(n) = 2ⁿ - 1
-                </p>
+                <p>O número mínimo de movimentos para resolver a Torre de Hanói com \(n\) discos é dado pela fórmula:</p>
+                <div style="text-align: center; background: #f5f5f5; padding: 10px; border-radius: 8px; margin: 15px 0;">
+                    \[ M(n) = 2^n - 1 \]
+                </div>
                 <p>Isso significa que:</p>
                 <ul>
                     <li><strong>3 discos:</strong> 7 movimentos mínimos</li>
@@ -489,9 +503,13 @@
             resizeCanvas();
         }
         
+        // Ajustado para pedir renderização das equações quando abrir a explicação
         function toggleResolucao() {
             var div = document.getElementById("resolucao-conteudo");
             div.style.display = (div.style.display === "block") ? "none" : "block";
+            if (div.style.display === "block" && window.MathJax) {
+                MathJax.typeset();
+            }
         }
         
         init();

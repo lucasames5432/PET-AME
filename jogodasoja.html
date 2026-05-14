@@ -49,10 +49,6 @@
         .card { background: var(--bg-card); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
         .section-title { color: var(--text-secondary); border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--fonte-secundaria); }
 
-        /* Resolução Oculta */
-        .btn-resolucao { background: #546e7a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        #resolucao-conteudo { display: none; background: #fafafa; border-left: 5px solid var(--accent-primary); padding: 20px; border-radius: 5px; margin-top: 15px; }
-
         /* Área do Jogo */
         .game-area { background: var(--bg-card); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         #output_grafico { 
@@ -84,14 +80,15 @@
         .equation-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; color: white; font-weight: bold; margin-bottom: 5px; }
         
         /* Estilo para a explicação do gráfico */
-        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); }
+        .explicacao-grafico { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 15px; margin-top: 25px; border-left: 5px solid var(--text-secondary); text-align: left;}
         .explicacao-grafico h3 { color: var(--text-secondary); margin-top: 0; margin-bottom: 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
         .explicacao-grafico h4 { color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .explicacao-grafico p { line-height: 1.6; margin-bottom: 12px; text-align: justify; }
-        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; }
+        .explicacao-grafico ul { margin-left: 20px; margin-bottom: 15px; padding-left: 15px; }
         .explicacao-grafico li { margin-bottom: 8px; line-height: 1.5; }
         .explicacao-grafico .destaque { background: white; padding: 12px; border-radius: 8px; margin: 15px 0; border: 1px solid #d4e0d4; }
         .explicacao-grafico .cor-referencia { display: inline-block; width: 20px; height: 20px; border-radius: 3px; margin-right: 8px; vertical-align: middle; }
+        .caixa-matematica { background: white; padding: 20px; border-radius: 8px; border: 1px solid #d4e0d4; margin-bottom: 20px; font-family: var(--fonte-secundaria); font-size: 1rem; color: var(--text-primary); }
         
         /* Responsividade para celular */
         @media (max-width: 768px) {
@@ -129,50 +126,17 @@
         <section class="card">
             <h2 class="section-title"><i class="fas fa-tractor"></i> Desafio de Gestão Rural</h2>
             <p style="text-align: justify; line-height: 1.6;">
-                Um produtor rural de <b>Campo Mourão</b> detém uma propriedade de <b>100 hectares</b> e deseja realizar o plantio de <b>Soja (x)</b> e <b>Milho (y)</b>. Sua meta é maximizar o lucro total (\(Z\)), sabendo que a soja rende <b>R$ 500/ha</b> e o milho <b>R$ 400/ha</b>.
-                <br><br>
-                Ele deve respeitar limites severos de recursos:
-                <ul style="margin-left: 20px;">
-                    <li><b>Horas de Trator:</b> 3h para soja e 2h para milho (Total: 240h).</li>
-                    <li><b>Fertilizante:</b> 2kg para soja e 4kg para milho (Estoque: 320kg).</li>
-                    <li><b>Área Física:</b> Máximo de 100 hectares no total.</li>
-                </ul>
-                <strong>Instrução:</strong> Use o slider abaixo para encontrar a <b>Reta de Nível</b> que atinge o lucro máximo sem sair da zona verde.
+                Um produtor rural de <b>Campo Mourão</b> possui uma propriedade de <b>100 hectares</b> e deseja definir quantos hectares serão destinados ao cultivo de soja (\(x\)) e milho (\(y\)), com o objetivo de maximizar o lucro (\(Z\)) obtido com a produção. Para tanto, ele deve levar em consideração que cada hectare cultivado com soja gera um lucro estimado de R$ 500, enquanto para o milho, o lucro é de R$ 400 por hectare. Além disso, para realizar o plantio, são necessários alguns recursos agrícolas, cuja disponibilidade é limitada:
             </p>
-
-            <button class="btn-resolucao" onclick="toggleResolucao()">
-                <i class="fas fa-brain"></i> Ver Resolução Matemática
-            </button>
-
-           <div id="resolucao-conteudo">
-    <h4><b>Passo a Passo Matemático (Método dos Vértices)</b></h4>
-    
-    <p><b>1. Definir o Sistema:</b><br>
-    Identificamos as equações das restrições como igualdades para achar os pontos de cruzamento.</p>
-
-    <p><b>2. Resolver o Sistema Crítico:</b><br>
-    Cruzamento entre Trator (\(3x + 2y = 240\)) e Insumos (\(2x + 4y = 320\)):
-    <br>
-    \[
-    \begin{cases} 
-    3x + 2y = 240 \\ 
-    2x + 4y = 320 
-    \end{cases}
-    \]
-    Multiplicando a 1ª por -2, temos \(-6x - 4y = -480\). Somando com a 2ª, obtemos \(-4x = -160\), logo <b>x = 40</b>.
-    <br>
-    Substituindo x, encontramos <b>y = 60</b>.</p>
-
-    <p><b>3. Teste de Lucro nos Vértices:</b><br>
-    Calculamos o valor de \( Z = 500x + 400y \) nos pontos extremos da área verde:</p>
-    <ul style="list-style: none; padding-left: 20px;">
-        <li>🔹 Ponto (0, 80): \( Z = 32.000 \)</li>
-        <li>🔹 Ponto (80, 0): \( Z = 40.000 \)</li>
-        <li>✅ <b>Ponto (40, 60): \( Z = 44.000 \)</b></li>
-    </ul>
-    
-    <p><b>Conclusão:</b> A combinação que maximiza o lucro respeitando todos os limites é o plantio de <b>40ha de Soja</b> e <b>60ha de Milho</b>.</p>
-</div>
+            <ul style="margin-left: 20px; line-height: 1.6; margin-bottom: 20px;">
+                <li><b>Uso de trator:</b> Cada hectare de soja requer 3 horas de trator e cada hectare de milho requer 2 horas. O produtor dispõe de, no máximo, 240 horas de trator.</li>
+                <li><b>Fertilizante:</b> Cada hectare de soja consome 2 kg de fertilizante e cada hectare de milho consome 4 kg. O estoque disponível é de 320 kg.</li>
+                <li><b>Área disponível:</b> A área total cultivada não pode ultrapassar 100 hectares.</li>
+            </ul>
+            <p style="text-align: justify; line-height: 1.6;">
+                <strong>Determine graficamente a solução ótima do problema.</strong><br><br>
+                <strong>Instrução:</strong> Utilize o controle deslizante para mover a curva de nível da função lucro até a maior posição possível sem que ela deixe a região viável (destacada em verde). O ponto de contato corresponde à solução ótima do problema.
+            </p>
         </section>
 
         <div class="game-area">
@@ -195,63 +159,82 @@
             <div class="tech-legend">
                 <div>
                     <span class="equation-badge" style="background: #ef6c00;">Trator</span>
-                    <p style="font-size: 0.85rem;">\( 3x + 2y = 240 \): Determina o limite de horas operacionais.</p>
+                    <p style="font-size: 0.85rem;">\( 3x + 2y \le 240 \): Determina o limite de horas operacionais.</p>
                 </div>
                 <div>
                     <span class="equation-badge" style="background: #1565c0;">Insumos</span>
-                    <p style="font-size: 0.85rem;">\( 2x + 4y = 320 \): Limita a quantidade de fertilizante em estoque.</p>
+                    <p style="font-size: 0.85rem;">\( 2x + 4y \le 320 \): Limita a quantidade de fertilizante em estoque.</p>
                 </div>
             </div>
 
             <div class="explicacao-grafico">
-                <h3><i class="fas fa-chart-line"></i> Entendendo o Gráfico - Guia Completo</h3>
+                <h3><i class="fas fa-brain"></i> Explicação Matemática</h3>
                 
-                <p><strong>O gráfico acima representa visualmente o problema de otimização da produção rural.</strong> Nele, você pode explorar como diferentes combinações de plantio de Soja (eixo X) e Milho (eixo Y) afetam o lucro total, respeitando as limitações de recursos. Abaixo, explicamos detalhadamente cada elemento presente no gráfico:</p>
+                <p>Este gráfico representa uma aplicação da Programação Linear, técnica matemática amplamente utilizada em problemas de otimização e tomada de decisão. Por meio dela, é possível analisar restrições de recursos e determinar a melhor solução para maximizar ou minimizar uma determinada medida de interesse, como lucro, custo, tempo ou produção.</p>
+                
+                <p>Matematicamente, considerando as variáveis de decisão \(x\) e \(y\), que representam os hectares destinados aos plantios de soja e milho, respectivamente, o problema pode ser formulado como o seguinte Problema de Programação Linear (PPL):</p>
+                
+                <div class="caixa-matematica">
+                    <strong>Maximizar:</strong> <br>
+                    \( Z = 500x + 400y \) <br><br>
+                    <strong>Sujeito a:</strong> <br>
+                    \( 3x + 2y \le 240 \) &nbsp;&nbsp;&nbsp; <span style="font-size: 0.85em; color: #666;">(Restrição de Trator)</span><br>
+                    \( 2x + 4y \le 320 \) &nbsp;&nbsp;&nbsp; <span style="font-size: 0.85em; color: #666;">(Restrição de Fertilizante)</span><br>
+                    \( x + y \le 100 \) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 0.85em; color: #666;">(Restrição de Área)</span><br>
+                    \( x \ge 0, y \ge 0 \) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 0.85em; color: #666;">(Condição de não-negatividade)</span>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #d4e0d4; margin: 30px 0;">
+
+                <h3><i class="fas fa-chart-line"></i> Entendendo o Gráfico</h3>
+                
+                <p>O gráfico gerado representa visualmente o problema de otimização da produção rural acima. Nele, você pode explorar como diferentes combinações de plantio afetam o lucro total, respeitando as limitações de recursos. Abaixo, explicamos detalhadamente cada elemento presente:</p>
                 
                 <h4><i class="fas fa-chart-area"></i> 1. Área Viável (Região Verde)</h4>
-                <p>A área destacada em <strong style="color: #2e7d32;">verde</strong> representa todas as combinações possíveis de hectares de Soja (x) e Milho (y) que respeitam <strong>todas as restrições simultaneamente</strong>. Qualquer ponto dentro desta região verde é uma solução viável para o produtor. Os pontos fora dela violam pelo menos uma das restrições e não são possíveis de serem implementados na prática.</p>
+                <p>A área destacada em <strong style="color: #2e7d32;">verde</strong> representa todas as combinações possíveis de hectares de Soja (\(x\)) e Milho (\(y\)) que respeitam <strong>todas as restrições simultaneamente</strong>. Qualquer ponto dentro desta região verde é uma solução viável para o produtor. Os pontos fora dela violam pelo menos uma das restrições e não são possíveis de serem implementados na prática.</p>
                 
-                <h4><i class="fas fa-chart-line"></i> 2. Retas de Restrição (Linhas de Demarcação)</h4>
+                <h4><i class="fas fa-layer-group"></i> 2. Retas de Restrição (Linhas de Demarcação)</h4>
                 <p>Cada linha colorida representa um limite de recurso. As combinações de produção devem ficar abaixo ou acima destas linhas, dependendo da restrição:</p>
                 <ul>
-                    <li><strong><span style="color: #ef6c00;">🔶 Linha Laranja (3x + 2y = 240):</span></strong> Representa o limite de <strong>Horas de Trator</strong>. A região viável está abaixo desta linha, pois o total de horas utilizadas não pode ultrapassar 240 horas.</li>
-                    <li><strong><span style="color: #1565c0;">🔷 Linha Azul (2x + 4y = 320):</span></strong> Representa o limite de <strong>Fertilizante</strong>. A região viável está abaixo desta linha, já que o consumo de fertilizante não pode exceder 320 kg.</li>
-                    <li><strong><span style="color: #5d4037;">⛁ Linha Marrom (x + y = 100):</span></strong> Representa o limite de <strong>Área Total</strong> da propriedade. A região viável está abaixo desta linha, pois o produtor não pode plantar mais do que os 100 hectares disponíveis.</li>
+                    <li><strong><span style="color: #ef6c00;">🔶 Linha Laranja (\(3x + 2y = 240\)):</span></strong> Representa o limite de <strong>Horas de Trator</strong>. A região viável está abaixo desta linha, pois o total de horas não pode ultrapassar 240.</li>
+                    <li><strong><span style="color: #1565c0;">🔷 Linha Azul (\(2x + 4y = 320\)):</span></strong> Representa o limite de <strong>Fertilizante</strong>. A região viável está abaixo desta linha, já que o consumo não pode exceder 320 kg.</li>
+                    <li><strong><span style="color: #5d4037;">⛁ Linha Marrom (\(x + y = 100\)):</span></strong> Representa o limite de <strong>Área Total</strong>. A região viável está abaixo desta linha, pois não se pode plantar mais do que 100 hectares.</li>
                 </ul>
                 
-                <h4><i class="fas fa-bullseye"></i> 3. Pontos Vértices (Círculos Dourados)</h4>
-                <p>Os <strong style="color: #ffb74d;">pontos dourados</strong> indicam os <strong>vértices da região viável</strong>. Estes pontos são extremamente importantes porque, de acordo com o Teorema Fundamental da Programação Linear, a solução ótima (lucro máximo) sempre estará em um desses vértices. Os vértices identificados são:</p>
+                <h4><i class="fas fa-bullseye"></i> 3. Pontos Vértices (Círculos Amarelos)</h4>
+                <p>Os <strong style="color: #fbc02d;">pontos amarelos</strong> indicam os <strong>vértices da região viável</strong>. Estes pontos são extremamente importantes porque a solução ótima (lucro máximo) sempre estará em um desses vértices. Os vértices identificados são:</p>
                 <ul>
-                    <li><strong>(0,0):</strong> Plantar nada (lucro zero)</li>
-                    <li><strong>(0,80):</strong> Plantar apenas Milho (80 hectares)</li>
-                    <li><strong>(40,60):</strong> Plantar 40 hectares de Soja e 60 de Milho</li>
-                    <li><strong>(80,0):</strong> Plantar apenas Soja (80 hectares)</li>
+                    <li><strong>(0, 0):</strong> Plantar nada (lucro zero).</li>
+                    <li><strong>(0, 80):</strong> Plantar apenas Milho (80 hectares).</li>
+                    <li><strong>(80, 0):</strong> Plantar apenas Soja (80 hectares).</li>
+                    <li><strong>(40, 60):</strong> Plantar 40 hectares de Soja e 60 de Milho.<br>
+                        <span style="font-size: 0.9em; color: #555; display: block; margin-top: 5px;"><i>Como chegamos neste valor?</i> Este vértice é exatamente o ponto de cruzamento entre a restrição do Trator (\(3x + 2y = 240\)) e a dos Insumos (\(2x + 4y = 320\)). Resolvendo o sistema matemático com essas duas equações (por exemplo, multiplicando a primeira por -2 e somando com a segunda), obtemos \(-4x = -160\), logo \(x = 40\). Substituindo o valor de \(x\), encontramos \(y = 60\).</span>
+                    </li>
                 </ul>
                 
                 <h4><i class="fas fa-star-of-life"></i> 4. Ponto Ótimo (Estrela Verde)</h4>
-                <p>A <strong style="color: #2e7d32;">★ estrela verde</strong> marca o <strong>ponto de lucro máximo</strong> encontrado: <strong>(40 hectares de Soja, 60 hectares de Milho)</strong>, gerando um lucro total de <strong>R$ 44.000,00</strong>. Este é o ponto que você deve buscar alcançar movendo o slider da meta de lucro.</p>
+                <p>A <strong style="color: #2e7d32;">★ estrela verde</strong> marca o <strong>ponto de lucro máximo</strong> encontrado: <strong>(40, 60)</strong>, correspondendo a 40 hectares de Soja e 60 hectares de Milho, gerando um lucro total de <strong>R$ 44.000,00</strong>. Este é o ponto que você deve buscar alcançar movendo o slider da meta de lucro.</p>
                 
-                <h4><i class="fas fa-chart-line"></i> 5. Reta de Nível (Linha Vermelha)</h4>
+                <h4><i class="fas fa-ruler-combined"></i> 5. Reta de Nível (Linha Vermelha)</h4>
                 <p>A <strong style="color: #d32f2f;">linha vermelha</strong> representa a <strong>Reta de Nível do Lucro (Z)</strong> para o valor selecionado no slider. Conforme você arrasta o slider, esta linha se move:</p>
                 <ul>
-                    <li><strong>Z = R$ 44.000 (ótimo):</strong> A linha vermelha toca exatamente o ponto ótimo (estrela verde).</li>
-                    <li><strong>Z < R$ 44.000:</strong> A linha vermelha está completamente dentro da região verde - significa que você pode aumentar o lucro.</li>
-                    <li><strong>Z > R$ 44.000:</strong> A linha vermelha está fora da região verde - significa que esta meta de lucro é impossível de alcançar com os recursos disponíveis.</li>
+                    <li><strong>\(Z\) = R$ 44.000 (ótimo):</strong> A linha vermelha toca exatamente o vértice (40, 60) - o ponto da estrela verde.</li>
+                    <li><strong>\(Z\) < R$ 44.000:</strong> A linha vermelha está cruzando a região verde - significa que você ainda pode aumentar o lucro.</li>
+                    <li><strong>\(Z\) > R$ 44.000:</strong> A linha vermelha está totalmente fora da região verde - significa que esta meta de lucro é impossível de alcançar com os recursos atuais.</li>
                 </ul>
                 
                 <div class="destaque">
-                    <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> Para encontrar a solução ótima, mova o slider até que a linha vermelha esteja o mais distante possível da origem (ponto 0,0), mas ainda tocando a região verde. Você saberá que encontrou o máximo quando a linha vermelha tocar exatamente o vértice (40,60) - o ponto da estrela verde!
+                    <strong><i class="fas fa-lightbulb"></i> Dica Importante:</strong> Para encontrar a solução ótima na prática, mova o slider até que a linha vermelha esteja o mais distante possível da origem \((0, 0)\), mas ainda tocando a borda da região verde!
                 </div>
                 
                 <h4><i class="fas fa-calculator"></i> 6. Interpretação dos Valores</h4>
                 <p>Os números nos eixos representam <strong>hectares plantados</strong>:</p>
                 <ul>
-                    <li><strong>Eixo X (horizontal):</strong> Quantidade de hectares plantados com Soja</li>
-                    <li><strong>Eixo Y (vertical):</strong> Quantidade de hectares plantados com Milho</li>
+                    <li><strong>Eixo X (horizontal):</strong> Quantidade de hectares plantados com Soja \((x)\).</li>
+                    <li><strong>Eixo Y (vertical):</strong> Quantidade de hectares plantados com Milho \((y)\).</li>
                 </ul>
-                <p>O <strong>painel de status</strong> abaixo do slider mostra se a meta de lucro atual é atingível (SUB-ÓTIMO), ótima (META ÓTIMA!) ou impossível (RECURSO INSUFICIENTE), ajudando você a entender visualmente o comportamento da função objetivo.</p>
+                <p style="margin-top: 15px;">O <strong>painel de status</strong> abaixo do slider mostra se a meta de lucro atual é atingível (SUB-ÓTIMO), ótima (META ÓTIMA!) ou impossível (RECURSO INSUFICIENTE), ajudando você a entender visualmente o comportamento da função objetivo.</p>
                 
-                <p style="margin-top: 15px; font-style: italic; color: #555;"><i class="fas fa-graduation-cap"></i> Este gráfico é uma aplicação prática da Programação Linear, uma ferramenta matemática utilizada para tomada de decisões em gestão rural, permitindo otimizar recursos escassos para maximizar resultados financeiros.</p>
             </div>
         </div>
     </main>
@@ -259,14 +242,6 @@
     <footer style="background: #dceae0; padding: 30px 0; text-align: center; font-size: 0.8rem; margin-top: 40px; color: #555;">
         PET-AME UNESPAR - Campo Mourão | Pesquisa Operacional Aplicada
     </footer>
-
-    <script>
-        function toggleResolucao() {
-            var div = document.getElementById("resolucao-conteudo");
-            div.style.display = (div.style.display === "block") ? "none" : "block";
-            if (div.style.display === "block") MathJax.typeset();
-        }
-    </script>
 
     <py-config>
         packages = ["matplotlib", "numpy"]
@@ -284,7 +259,7 @@ def atualizar(event=None):
     
     # Criando a figura com tamanho responsivo
     fig = plt.figure(figsize=(8, 6), facecolor='white', dpi=100)
-    x_range = np.linspace(0, 110, 80)
+    x_range = np.linspace(-10, 110, 100)
     X, Y = np.meshgrid(x_range, x_range)
     mask = (3*X + 2*Y <= 240) & (2*X + 4*Y <= 320) & (X + Y <= 100) & (X >= 0) & (Y >= 0)
 
@@ -294,6 +269,7 @@ def atualizar(event=None):
     # Plotando as restrições
     ax.plot(x_range, (240 - 3*x_range)/2, color='#fb8c00', lw=2)
     ax.text(78, 2, "3x+2y=240", color='#ef6c00', fontsize=8, fontweight='bold')
+    
     ax.plot(x_range, (320 - 2*x_range)/4, color='#1e88e5', lw=2)
     ax.text(2, 78, "2x+4y=320", color='#1565c0', fontsize=8, fontweight='bold')
     
@@ -308,20 +284,27 @@ def atualizar(event=None):
     y_lucro = (z_alvo - 500*x_range) / 400
     ax.plot(x_range, y_lucro, color='#d32f2f', lw=3, label=f'Z = R$ {z_alvo:,.0f}')
     
+    # Destacando a Origem e os eixos
+    ax.axhline(0, color='black', linewidth=1.5, zorder=3)
+    ax.axvline(0, color='black', linewidth=1.5, zorder=3)
+    
     # Marcando os vértices
     vertices = [(0, 0), (0, 80), (40, 60), (80, 0)]
     for x, y in vertices:
         if x >= 0 and y >= 0 and x <= 100 and y <= 100:
-            ax.scatter(x, y, color='gold', s=100, edgecolors='black', zorder=5)
-            ax.annotate(f'({x},{y})', (x, y), xytext=(5, 5), textcoords='offset points', fontsize=8)
+            ax.scatter(x, y, color='#fbc02d', s=100, edgecolors='black', zorder=5)
+            # Deslocando um pouco o texto da origem para não sobrepor as linhas
+            offset = (5, 5) if (x,y) != (0,0) else (-25, -15)
+            ax.annotate(f'({x},{y})', (x, y), xytext=offset, textcoords='offset points', fontsize=8)
     
     # Destacando o ponto ótimo
     ax.scatter(40, 60, color='green', s=150, edgecolors='black', zorder=5, marker='*')
     ax.annotate('ÓTIMO\n(40,60)', (40, 60), xytext=(10, 10), textcoords='offset points', 
                 fontsize=9, fontweight='bold', color='green')
     
-    ax.set_xlim(0, 100)
-    ax.set_ylim(0, 100)
+    # Limites estendidos para mostrar quadrantes negativos
+    ax.set_xlim(-10, 110)
+    ax.set_ylim(-10, 110)
     ax.set_xlabel('Soja (hectares)', fontsize=10, fontweight='bold')
     ax.set_ylabel('Milho (hectares)', fontsize=10, fontweight='bold')
     ax.set_title(f'Análise Gráfica - Reta de Nível Z = R$ {z_alvo:,.0f}', fontsize=12, fontweight='bold', pad=15)
